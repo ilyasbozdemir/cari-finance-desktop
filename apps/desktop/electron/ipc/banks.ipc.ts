@@ -15,8 +15,21 @@ export function registerBanksIPC() {
     const db = getDatabase();
 
     const bankList = db
-      .select()
+      .select({
+        id: schema.entities.id,
+        name: schema.entities.name,
+        type: schema.entities.type,
+        accountId: schema.entities.accountId,
+        accountCode: schema.accounts.code,
+        phone: schema.entities.phone,
+        taxNumber: schema.entities.taxNumber,
+        address: schema.entities.address,
+        notes: schema.entities.notes,
+        isActive: schema.entities.isActive,
+        createdAt: schema.entities.createdAt,
+      })
       .from(schema.entities)
+      .leftJoin(schema.accounts, eq(schema.entities.accountId, schema.accounts.id))
       .where(eq(schema.entities.type, 'bank'))
       .all();
 
@@ -42,6 +55,7 @@ export function registerBanksIPC() {
 
       return {
         ...bank,
+        accountCode: bank.accountCode || '102.001',
         totalIncoming,
         totalOutgoing,
         balance,
@@ -55,8 +69,19 @@ export function registerBanksIPC() {
     const db = getDatabase();
 
     const bank = db
-      .select()
+      .select({
+        id: schema.entities.id,
+        name: schema.entities.name,
+        type: schema.entities.type,
+        accountId: schema.entities.accountId,
+        accountCode: schema.accounts.code,
+        phone: schema.entities.phone,
+        taxNumber: schema.entities.taxNumber,
+        address: schema.entities.address,
+        notes: schema.entities.notes,
+      })
       .from(schema.entities)
+      .leftJoin(schema.accounts, eq(schema.entities.accountId, schema.accounts.id))
       .where(eq(schema.entities.id, bankEntityId))
       .get();
 

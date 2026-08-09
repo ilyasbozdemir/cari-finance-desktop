@@ -60,21 +60,21 @@ export const BanksPage: React.FC = () => {
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight text-white flex items-center gap-2.5">
-            <Building2 className="w-6 h-6 text-sky-400" />
+          <h1 className="text-2xl font-bold tracking-tight text-slate-900 dark:text-white flex items-center gap-2.5">
+            <Building2 className="w-6 h-6 text-sky-500" />
             Banka Hesapları & Virman
           </h1>
-          <p className="text-xs text-slate-400 mt-1">
+          <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
             Banka bakiyeleri, gelen/giden havaleler ve kasa-banka arası transferler.
           </p>
         </div>
 
         <div className="flex items-center gap-3">
-          <Button onClick={() => openQuickTransaction('transfer')} variant="default" className="gap-2">
+          <Button onClick={() => openQuickTransaction('transfer')} variant="default" className="gap-2 text-xs">
             <ArrowRightLeft className="w-4 h-4" />
             Kasa / Banka Virmanı
           </Button>
-          <Button onClick={() => setAddBankOpen(true)} variant="outline" className="gap-2">
+          <Button onClick={() => setAddBankOpen(true)} variant="outline" className="gap-2 text-xs">
             <Plus className="w-4 h-4" />
             Yeni Banka Hesabı
           </Button>
@@ -90,23 +90,25 @@ export const BanksPage: React.FC = () => {
               onClick={() => setSelectedBankId(bank.id)}
               className={`cursor-pointer transition-all ${
                 isActive
-                  ? 'border-sky-500 ring-2 ring-sky-500/20 bg-slate-900'
-                  : 'hover:border-slate-700 bg-slate-900/60'
+                  ? 'border-sky-500 ring-2 ring-sky-500/20 shadow-md'
+                  : 'hover:border-slate-300 dark:hover:border-slate-700'
               }`}
             >
               <CardHeader className="pb-2 flex flex-row items-center justify-between">
                 <div>
-                  <CardTitle className="text-sm font-bold text-white">{bank.name}</CardTitle>
-                  <p className="text-[11px] text-slate-400 mt-0.5">{bank.address || 'Şube Belirtilmedi'}</p>
+                  <CardTitle className="text-sm font-bold">{bank.name}</CardTitle>
+                  <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">{bank.address || 'Şube Belirtilmedi'}</p>
                 </div>
-                <Badge variant="default">102 Banka</Badge>
+                <Badge variant="default" className="font-mono text-[11px]">
+                  {bank.accountCode || '102.001'}
+                </Badge>
               </CardHeader>
               <CardContent className="space-y-2">
-                <div className="text-2xl font-black tracking-tight text-sky-400">
+                <div className="text-2xl font-black tracking-tight text-sky-500">
                   {formatCurrency(bank.balance)}
                 </div>
                 {bank.notes && (
-                  <p className="text-[10px] font-mono text-slate-400 truncate bg-slate-950/60 p-1.5 rounded border border-slate-800">
+                  <p className="text-[10px] font-mono text-slate-600 dark:text-slate-400 truncate bg-slate-50 dark:bg-slate-950/60 p-1.5 rounded border border-slate-200 dark:border-slate-800">
                     IBAN: {bank.notes}
                   </p>
                 )}
@@ -118,8 +120,8 @@ export const BanksPage: React.FC = () => {
 
       <Card>
         <CardHeader>
-          <CardTitle className="text-base font-bold text-white">
-            {currentBank?.name || 'Banka'} - Hesap Hareketleri
+          <CardTitle className="text-base font-bold">
+            {currentBank?.name || 'Banka'} - Hesap Hareketleri ({currentBank?.accountCode || '102.001'})
           </CardTitle>
         </CardHeader>
         <CardContent>
@@ -150,14 +152,14 @@ export const BanksPage: React.FC = () => {
                         {mov.docNumber || 'İŞLEM'}
                       </Badge>
                     </TableCell>
-                    <TableCell className="font-medium text-slate-200">{mov.description}</TableCell>
-                    <TableCell className="text-right font-mono font-semibold text-emerald-400">
+                    <TableCell className="font-medium text-slate-800 dark:text-slate-200">{mov.description}</TableCell>
+                    <TableCell className="text-right font-mono font-semibold text-emerald-500">
                       {mov.incoming > 0 ? formatCurrency(mov.incoming) : '-'}
                     </TableCell>
-                    <TableCell className="text-right font-mono font-semibold text-rose-400">
+                    <TableCell className="text-right font-mono font-semibold text-rose-500">
                       {mov.outgoing > 0 ? formatCurrency(mov.outgoing) : '-'}
                     </TableCell>
-                    <TableCell className="text-right font-mono font-bold text-white">
+                    <TableCell className="text-right font-mono font-bold text-sky-500">
                       {formatCurrency(mov.runningBalance)}
                     </TableCell>
                   </TableRow>
@@ -169,14 +171,14 @@ export const BanksPage: React.FC = () => {
       </Card>
 
       <Dialog open={addBankOpen} onOpenChange={setAddBankOpen}>
-        <DialogContent className="max-w-md bg-slate-900 border-slate-800">
+        <DialogContent className="max-w-md">
           <DialogHeader>
-            <DialogTitle className="text-lg font-bold text-white">Yeni Banka Hesabı Tanımla</DialogTitle>
+            <DialogTitle className="text-lg font-bold">Yeni Banka Hesabı Tanımla</DialogTitle>
           </DialogHeader>
 
           <form onSubmit={handleCreateBank} className="space-y-4 pt-2">
             <div>
-              <label className="text-xs font-semibold text-slate-300 mb-1 block">Banka / Hesap Adı *</label>
+              <label className="text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1 block">Banka / Hesap Adı *</label>
               <Input
                 required
                 placeholder="Örn: Garanti BBVA Kurumsal"
@@ -186,7 +188,7 @@ export const BanksPage: React.FC = () => {
             </div>
 
             <div>
-              <label className="text-xs font-semibold text-slate-300 mb-1 block">IBAN Numarası</label>
+              <label className="text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1 block">IBAN Numarası</label>
               <Input
                 placeholder="TR99 0000 0000 0000 0000 0000 00"
                 value={iban}
@@ -195,11 +197,11 @@ export const BanksPage: React.FC = () => {
             </div>
 
             <div>
-              <label className="text-xs font-semibold text-slate-300 mb-1 block">Şube Adı</label>
+              <label className="text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1 block">Şube Adı</label>
               <Input placeholder="Organize Sanayi Şubesi" value={branch} onChange={(e) => setBranch(e.target.value)} />
             </div>
 
-            <div className="flex justify-end gap-3 pt-4 border-t border-slate-800">
+            <div className="flex justify-end gap-3 pt-4 border-t border-slate-200 dark:border-slate-800">
               <Button type="button" variant="outline" onClick={() => setAddBankOpen(false)}>
                 Vazgeç
               </Button>
