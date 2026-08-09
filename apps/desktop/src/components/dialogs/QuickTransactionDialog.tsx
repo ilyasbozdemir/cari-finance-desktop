@@ -14,7 +14,9 @@ import {
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { CheckCircle2, ArrowRightLeft, DollarSign } from 'lucide-react';
+import { Badge } from '@/components/ui/badge';
+import { CheckCircle2, ArrowRightLeft, DollarSign, BookOpen, ShieldCheck } from 'lucide-react';
+import { formatCurrency } from '@cari-finance/domain';
 
 const transactionSchema = z.object({
   type: z.enum([
@@ -64,6 +66,9 @@ export const QuickTransactionDialog: React.FC = () => {
   });
 
   const selectedType = watch('type');
+  const amountVal = watch('amount') || 0;
+  const selectedEntityId = watch('entityId');
+  const selectedTargetEntityId = watch('targetEntityId');
 
   useEffect(() => {
     if (quickTransactionOpen) {
@@ -107,6 +112,16 @@ export const QuickTransactionDialog: React.FC = () => {
 
   const cashAndBankOptions = [...cashDesks, ...banks];
 
+  const selectedEntityName =
+    customers.find((c: any) => c.id === selectedEntityId)?.name ||
+    suppliers.find((s: any) => s.id === selectedEntityId)?.name ||
+    partners.find((p: any) => p.id === selectedEntityId)?.name ||
+    cashAndBankOptions.find((cb: any) => cb.id === selectedEntityId)?.name ||
+    'Seçilmedi';
+
+  const selectedTargetName =
+    cashAndBankOptions.find((cb: any) => cb.id === selectedTargetEntityId)?.name || 'Kasa / Banka';
+
   const createMutation = useMutation({
     mutationFn: (payload: any) => window.api.transactions.create(payload),
     onSuccess: () => {
@@ -125,18 +140,82 @@ export const QuickTransactionDialog: React.FC = () => {
     createMutation.mutate(values);
   };
 
+  // Helper to determine Double-Entry Accounts for live preview
+  const getAccountingPreview = () => {
+    switch (selectedType) {
+      case 'sale':
+        return {
+          debitCode: '120',
+          debitName: `Müşteri Cari Hesabı (${selectedEntityName})`,
+          creditCode: '600',
+          creditName: 'Yurtiçi Satış Gelirleri',
+        };
+      case 'customer_payment':
+        return {
+          debitCode: '100 / 102',
+          debitName: `Nakit Kasa / Banka (${selectedTargetName})`,
+          creditCode: '120',
+          creditName: `Müşteri Cari Hesabı (${selectedEntityName})`,
+        };
+      case 'purchase':
+        return {
+          debitCode: '153',
+          debitName: 'Ticari Mallar / Stok Alımı',
+          creditCode: '320',
+          creditName: `Tedarikçi Cari Hesabı (${selectedEntityName})`,
+        };
+      case 'supplier_payment':
+        return {
+          debitCode: '320',
+          debitName: `Tedarikçi Cari Hesabı (${selectedEntityName})`,
+          creditCode: '100 / 102',
+          creditName: `Nakit Kasa / Banka (${selectedTargetName})`,
+        };
+      case 'expense':
+        return {
+          debitCode: '770',
+          debitName: 'Genel Yönetim Giderleri',
+          creditCode: '100 / 102',
+          creditName: `Nakit Kasa / Banka (${selectedTargetName})`,
+        };
+      case 'partner_draw':
+        return {
+          debitCode: '500',
+          debitName: `Ortak Cari Hesabı Borç (${selectedEntityName})`,
+          creditCode: '100 / 102',
+          creditName: `Nakit Kasa / Banka (${selectedTargetName})`,
+        };
+      case 'partner_deposit':
+        return {
+          debitCode: '100 / 102',
+          debitName: `Nakit Kasa / Banka (${selectedTargetName})`,
+          creditCode: '500',
+          creditName: `Ortak Cari Hesabı Alacak (${selectedEntityName})`,
+        };
+      case 'transfer':
+        return {
+          debitCode: '100 / 102',
+          debitName: `Hedef Hesap (${selectedTargetName})`,
+          creditCode: '100 / 102',
+          creditName: `Kaynak Hesap (${selectedEntityName})`,
+        };
+    }
+  };
+
+  const preview = getAccountingPreview();
+
   return (
     <Dialog open={quickTransactionOpen} onOpenChange={closeQuickTransaction}>
-      <DialogContent className="max-w-xl bg-slate-900/95 border-slate-800 backdrop-blur-xl shadow-2xl">
-        <DialogHeader className="border-b border-slate-800 pb-4">
+      <DialogContent className="max-w-xl">
+        <DialogHeader className="border-b border-slate-200 dark:border-slate-800 pb-4">
           <div className="flex items-center gap-3">
-            <div className="p-2.5 rounded-xl bg-sky-500/10 text-sky-400 border border-sky-500/20">
+            <div className="p-2.5 rounded-xl bg-sky-500/10 text-sky-500 border border-sky-500/20">
               <ArrowRightLeft className="w-5 h-5" />
             </div>
             <div>
-              <DialogTitle className="text-xl font-bold text-white">Yeni Finansal İşlem Ekle</DialogTitle>
-              <DialogDescription className="text-xs text-slate-400">
-                Arka planda çift taraflı muhasebe fişi (Borç = Alacak) otomatik oluşturulur.
+              <DialogTitle className="text-xl font-bold text-slate-900 dark:text-white">Yeni Finansal İşlem Fişi</DialogTitle>
+              <DialogDescription className="text-xs text-slate-500 dark:text-slate-400">
+                Tekdüzen Hesap Planı kurallarıyla çift taraflı borç/alacak yevmiye maddesi oluşturulur.
               </DialogDescription>
             </div>
           </div>
@@ -145,7 +224,7 @@ export const QuickTransactionDialog: React.FC = () => {
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 pt-2">
           {/* İşlem Türü */}
           <div>
-            <label className="text-xs font-semibold text-slate-300 mb-1.5 block">İşlem Türü</label>
+            <label className="text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5 block">İşlem Türü</label>
             <Select
               value={selectedType}
               onValueChange={(val) => {
@@ -154,18 +233,18 @@ export const QuickTransactionDialog: React.FC = () => {
                 setValue('targetEntityId', '');
               }}
             >
-              <SelectTrigger className="w-full bg-slate-950/80 border-slate-700/80">
+              <SelectTrigger className="w-full">
                 <SelectValue placeholder="İşlem türünü seçin" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="sale">🏷️ Müşteriye Satış (Alacaklandırma)</SelectItem>
-                <SelectItem value="customer_payment">💵 Müşteriden Tahsilat (Kasa/Banka Giriş)</SelectItem>
-                <SelectItem value="purchase">🚚 Tedarikçiden Alım (Satınalma)</SelectItem>
-                <SelectItem value="supplier_payment">💳 Satıcıya Ödeme Yapma (Kasa/Banka Çıkış)</SelectItem>
-                <SelectItem value="expense">⚡ Gider Kaydı (Elektrik, Nakliye, Yemek vs.)</SelectItem>
-                <SelectItem value="partner_draw">👤 Ortak Para Çekme (Şirketten Çıkış)</SelectItem>
-                <SelectItem value="partner_deposit">🏛️ Ortak Para Yatırma (Şirkete Giriş)</SelectItem>
-                <SelectItem value="transfer">🔄 Virman / Transfer (Kasa-Banka Arası)</SelectItem>
+                <SelectItem value="sale">🏷️ Müşteriye Vadeli Satış (120 Borç / 600 Alacak)</SelectItem>
+                <SelectItem value="customer_payment">💵 Müşteriden Tahsilat Alınması (100 Borç / 120 Alacak)</SelectItem>
+                <SelectItem value="purchase">🚚 Tedarikçiden Mal Alımı (153 Borç / 320 Alacak)</SelectItem>
+                <SelectItem value="supplier_payment">💳 Satıcıya Ödeme Yapılması (320 Borç / 100 Alacak)</SelectItem>
+                <SelectItem value="expense">⚡ Gider Kaydı (770 Borç / 100 Alacak)</SelectItem>
+                <SelectItem value="partner_draw">👤 Ortak Para Çekme (500 Borç / 100 Alacak)</SelectItem>
+                <SelectItem value="partner_deposit">🏛️ Ortak Para Yatırma (100 Borç / 500 Alacak)</SelectItem>
+                <SelectItem value="transfer">🔄 Hesaplar Arası Virman (100/102 Çift Taraflı)</SelectItem>
               </SelectContent>
             </Select>
           </div>
@@ -175,12 +254,12 @@ export const QuickTransactionDialog: React.FC = () => {
             {/* Primary Entity */}
             {selectedType === 'sale' || selectedType === 'customer_payment' ? (
               <div>
-                <label className="text-xs font-semibold text-slate-300 mb-1.5 block">Müşteri (Cari)</label>
+                <label className="text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5 block">Müşteri Cari Hesabı (120)</label>
                 <Select
                   value={watch('entityId')}
                   onValueChange={(val) => setValue('entityId', val)}
                 >
-                  <SelectTrigger className="w-full bg-slate-950/80 border-slate-700/80">
+                  <SelectTrigger className="w-full">
                     <SelectValue placeholder="Müşteri seçin" />
                   </SelectTrigger>
                   <SelectContent>
@@ -191,18 +270,18 @@ export const QuickTransactionDialog: React.FC = () => {
                     ))}
                   </SelectContent>
                 </Select>
-                {errors.entityId && <p className="text-xs text-rose-400 mt-1">{errors.entityId.message}</p>}
+                {errors.entityId && <p className="text-xs text-rose-500 mt-1">{errors.entityId.message}</p>}
               </div>
             ) : null}
 
             {selectedType === 'purchase' || selectedType === 'supplier_payment' ? (
               <div>
-                <label className="text-xs font-semibold text-slate-300 mb-1.5 block">Tedarikçi (Satıcı)</label>
+                <label className="text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5 block">Tedarikçi Cari Hesabı (320)</label>
                 <Select
                   value={watch('entityId')}
                   onValueChange={(val) => setValue('entityId', val)}
                 >
-                  <SelectTrigger className="w-full bg-slate-950/80 border-slate-700/80">
+                  <SelectTrigger className="w-full">
                     <SelectValue placeholder="Satıcı seçin" />
                   </SelectTrigger>
                   <SelectContent>
@@ -218,12 +297,12 @@ export const QuickTransactionDialog: React.FC = () => {
 
             {selectedType === 'partner_draw' || selectedType === 'partner_deposit' ? (
               <div>
-                <label className="text-xs font-semibold text-slate-300 mb-1.5 block">Şirket Ortağı</label>
+                <label className="text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5 block">Ortak Cari Hesabı (500)</label>
                 <Select
                   value={watch('entityId')}
                   onValueChange={(val) => setValue('entityId', val)}
                 >
-                  <SelectTrigger className="w-full bg-slate-950/80 border-slate-700/80">
+                  <SelectTrigger className="w-full">
                     <SelectValue placeholder="Ortak seçin" />
                   </SelectTrigger>
                   <SelectContent>
@@ -239,12 +318,12 @@ export const QuickTransactionDialog: React.FC = () => {
 
             {selectedType === 'transfer' ? (
               <div>
-                <label className="text-xs font-semibold text-slate-300 mb-1.5 block">Kaynak Kasa/Banka</label>
+                <label className="text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5 block">Kaynak Kasa / Banka Hesabı</label>
                 <Select
                   value={watch('entityId')}
                   onValueChange={(val) => setValue('entityId', val)}
                 >
-                  <SelectTrigger className="w-full bg-slate-950/80 border-slate-700/80">
+                  <SelectTrigger className="w-full">
                     <SelectValue placeholder="Çıkış yapılacak hesap" />
                   </SelectTrigger>
                   <SelectContent>
@@ -266,14 +345,14 @@ export const QuickTransactionDialog: React.FC = () => {
             selectedType === 'transfer' ||
             selectedType === 'expense' ? (
               <div>
-                <label className="text-xs font-semibold text-slate-300 mb-1.5 block">
-                  {selectedType === 'transfer' ? 'Hedef Kasa/Banka' : 'Kasa / Banka Hesabı'}
+                <label className="text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5 block">
+                  {selectedType === 'transfer' ? 'Hedef Kasa / Banka (100/102)' : 'Kasa / Banka Hesabı (100/102)'}
                 </label>
                 <Select
                   value={watch('targetEntityId')}
                   onValueChange={(val) => setValue('targetEntityId', val)}
                 >
-                  <SelectTrigger className="w-full bg-slate-950/80 border-slate-700/80">
+                  <SelectTrigger className="w-full">
                     <SelectValue placeholder="Kasa veya Banka seçin" />
                   </SelectTrigger>
                   <SelectContent>
@@ -291,50 +370,81 @@ export const QuickTransactionDialog: React.FC = () => {
           {/* Date & Amount */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <label className="text-xs font-semibold text-slate-300 mb-1.5 block">İşlem Tarihi</label>
+              <label className="text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5 block">İşlem Tarihi</label>
               <Input
                 type="date"
                 {...register('date')}
-                className="bg-slate-950/80 border-slate-700/80"
               />
-              {errors.date && <p className="text-xs text-rose-400 mt-1">{errors.date.message}</p>}
+              {errors.date && <p className="text-xs text-rose-500 mt-1">{errors.date.message}</p>}
             </div>
 
             <div>
-              <label className="text-xs font-semibold text-slate-300 mb-1.5 block">Tutar (TL)</label>
+              <label className="text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5 block">Tutar (TL)</label>
               <div className="relative">
                 <Input
                   type="number"
                   step="0.01"
                   placeholder="0,00"
                   {...register('amount')}
-                  className="bg-slate-950/80 border-slate-700/80 font-mono text-base font-bold text-sky-400 pl-8"
+                  className="font-mono text-base font-bold text-sky-500 pl-8"
                 />
-                <DollarSign className="w-4 h-4 text-slate-500 absolute left-2.5 top-3" />
+                <DollarSign className="w-4 h-4 text-slate-400 absolute left-2.5 top-3" />
               </div>
-              {errors.amount && <p className="text-xs text-rose-400 mt-1">{errors.amount.message}</p>}
+              {errors.amount && <p className="text-xs text-rose-500 mt-1">{errors.amount.message}</p>}
             </div>
           </div>
 
           {/* Description */}
           <div>
-            <label className="text-xs font-semibold text-slate-300 mb-1.5 block">İşlem Açıklaması</label>
+            <label className="text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5 block">İşlem Açıklaması</label>
             <Input
-              placeholder="Örn: 3 adet mutfak dolabı takımı siparişi..."
+              placeholder="Örn: 3 adet mutfak dolabı takımı sipariş satışı..."
               {...register('description')}
-              className="bg-slate-950/80 border-slate-700/80"
             />
-            {errors.description && <p className="text-xs text-rose-400 mt-1">{errors.description.message}</p>}
+            {errors.description && <p className="text-xs text-rose-500 mt-1">{errors.description.message}</p>}
           </div>
 
+          {/* Canlı Tekdüzen Yevmiye Fişi Önizleme Kartı (Live Double-Entry Preview Card) */}
+          {preview && (
+            <div className="p-3 rounded-xl bg-slate-50 dark:bg-slate-950/80 border border-slate-200 dark:border-slate-800 space-y-2">
+              <div className="flex items-center justify-between text-xs font-bold text-slate-800 dark:text-slate-200">
+                <span className="flex items-center gap-1.5">
+                  <BookOpen className="w-4 h-4 text-sky-500" />
+                  Tekdüzen Yevmiye Fişi Önizlemesi:
+                </span>
+                <span className="font-mono text-sky-500">{formatCurrency(amountVal)}</span>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs font-mono">
+                {/* Borç Satırı */}
+                <div className="p-2 rounded-lg bg-rose-500/10 border border-rose-500/20 text-rose-600 dark:text-rose-400 flex items-center justify-between">
+                  <div>
+                    <Badge variant="danger" className="text-[10px] mr-1.5">BORÇ ({preview.debitCode})</Badge>
+                    <span className="text-[11px] font-semibold">{preview.debitName}</span>
+                  </div>
+                  <span className="font-bold">{formatCurrency(amountVal)}</span>
+                </div>
+
+                {/* Alacak Satırı */}
+                <div className="p-2 rounded-lg bg-emerald-500/10 border border-emerald-500/20 text-emerald-600 dark:text-emerald-400 flex items-center justify-between">
+                  <div>
+                    <Badge variant="success" className="text-[10px] mr-1.5">ALACAK ({preview.creditCode})</Badge>
+                    <span className="text-[11px] font-semibold">{preview.creditName}</span>
+                  </div>
+                  <span className="font-bold">{formatCurrency(amountVal)}</span>
+                </div>
+              </div>
+            </div>
+          )}
+
           {createMutation.isError && (
-            <div className="p-3 rounded-lg bg-rose-950/60 border border-rose-800 text-rose-300 text-xs">
+            <div className="p-3 rounded-lg bg-rose-500/10 border border-rose-500/30 text-rose-500 text-xs">
               {(createMutation.error as Error).message}
             </div>
           )}
 
           {/* Actions */}
-          <div className="flex items-center justify-end gap-3 pt-4 border-t border-slate-800">
+          <div className="flex items-center justify-end gap-3 pt-3 border-t border-slate-200 dark:border-slate-800">
             <Button
               type="button"
               variant="outline"

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { BookOpen, FileSpreadsheet, Download, Layers, FileText } from 'lucide-react';
+import { BookOpen, Layers, FileText, Wallet, Download, RefreshCw, FileSpreadsheet } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from '@/components/ui/table';
@@ -9,27 +9,30 @@ import { formatCurrency } from '@cari-finance/domain';
 import { exportToPDF, exportToExcel } from '@/lib/export';
 
 export const AccountingPage: React.FC = () => {
-  const [activeTab, setActiveTab] = useState<'yevmiye' | 'kebir' | 'muavin'>('yevmiye');
+  const [activeTab, setActiveTab] = useState<'yevmiye' | 'kebir' | 'muavin' | 'kasa_banka'>('yevmiye');
 
-  // Yevmiye Defteri
+  // 1. Yevmiye Defteri
   const { data: journalEntries = [], isLoading: loadingYevmiye, refetch: refetchYevmiye } = useQuery({
     queryKey: ['accountingJournal'],
     queryFn: () => window.api.accounts.getJournalEntries(),
   });
 
-  // Defter-i Kebir (Büyük Defter)
+  // 2. Defter-i Kebir (Büyük Defter)
   const { data: kebirList = [], isLoading: loadingKebir, refetch: refetchKebir } = useQuery({
     queryKey: ['accountingKebir'],
     queryFn: () => window.api.reports.getKebir(),
     enabled: activeTab === 'kebir',
   });
 
-  // Muavin Defteri (Yardımcı Defter)
+  // 3. Muavin Defteri (Yardımcı Defter)
   const { data: muavinList = [], isLoading: loadingMuavin, refetch: refetchMuavin } = useQuery({
     queryKey: ['accountingMuavin'],
     queryFn: () => window.api.reports.getMuavin(),
-    enabled: activeTab === 'muavin',
+    enabled: activeTab === 'muavin' || activeTab === 'kasa_banka',
   });
+
+  // Kasa & Banka Yardımcı Defteri (Filtered Muavin)
+  const kasaBankaMuavin = muavinList.filter((m: any) => m.type === 'cash' || m.type === 'bank');
 
   const handleExportPDF = () => {
     if (activeTab === 'yevmiye') {
@@ -71,7 +74,7 @@ export const AccountingPage: React.FC = () => {
         rows,
         filename: `defteri_kebir_${new Date().toISOString().split('T')[0]}`,
       });
-    } else {
+    } else if (activeTab === 'muavin') {
       const headers = ['Cari / Kasa Adı', 'Tür', 'Toplam Borç', 'Toplam Alacak', 'Net Bakiye'];
       const rows = muavinList.map((m: any) => [
         m.name,
@@ -87,6 +90,45 @@ export const AccountingPage: React.FC = () => {
         rows,
         filename: `muavin_defter_${new Date().toISOString().split('T')[0]}`,
       });
+    } else {
+      const headers = ['Kasa / Banka Adı', 'Tür', 'Giren Para (Borç)', 'Çıkan Para (Alacak)', 'Net Mevcut Bakiye'];
+      const rows = kasaBankaMuavin.map((m: any) => [
+        m.name,
+        m.type === 'cash' ? 'Kasa' : 'Banka',
+        formatCurrency(m.totalDebit),
+        formatCurrency(m.totalCredit),
+        formatCurrency(m.balance),
+      ]);
+      exportToPDF({
+        title: 'Kasa & Banka Defteri (Cash & Bank Book)',
+        subtitle: 'Nakit ve banka hesap hareketleri defteri',
+        headers,
+        rows,
+        filename: `kasa_banka_defteri_${new Date().toISOString().split('T')[0]}`,
+      });
+    }
+  };
+
+  const handleExportExcel = () => {
+    if (activeTab === 'kebir') {
+      const data = kebirList.map((k: any) => ({
+        'Hesap Kodu': k.code,
+        'Hesap Adı': k.name,
+        'Hesap Türü': k.type,
+        'Toplam Borç (TL)': k.totalDebit,
+        'Toplam Alacak (TL)': k.totalCredit,
+        'Bakiye (TL)': k.balance,
+      }));
+      exportToExcel(`defteri_kebir_${new Date().toISOString().split('T')[0]}`, data, 'Büyük Defter');
+    } else if (activeTab === 'muavin') {
+      const data = muavinList.map((m: any) => ({
+        'Cari / Kasa Adı': m.name,
+        'Tür': m.type,
+        'Toplam Borç (TL)': m.totalDebit,
+        'Toplam Alacak (TL)': m.totalCredit,
+        'Son Bakiye (TL)': m.balance,
+      }));
+      exportToExcel(`muavin_defter_${new Date().toISOString().split('T')[0]}`, data, 'Muavin Defter');
     }
   };
 
@@ -97,14 +139,18 @@ export const AccountingPage: React.FC = () => {
         <div>
           <h1 className="text-2xl font-bold tracking-tight text-slate-900 dark:text-white flex items-center gap-2.5">
             <BookOpen className="w-6 h-6 text-sky-500" />
-            Resmi Defterler (Yevmiye, Kebir, Muavin)
+            Resmi Muhasebe Defterleri
           </h1>
           <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
-            Tekdüzen hesap planı bazlı Yevmiye Defteri, Defter-i Kebir ve Yardımcı Muavin Defteri.
+            Yevmiye Defteri, Defter-i Kebir (Büyük Defter), Muavin (Yardımcı Defter) ve Kasa/Banka Defteri.
           </p>
         </div>
 
         <div className="flex items-center gap-3">
+          <Button variant="outline" onClick={handleExportExcel} className="gap-2 text-xs font-semibold">
+            <FileSpreadsheet className="w-4 h-4 text-emerald-500" />
+            Excel İndir
+          </Button>
           <Button variant="default" onClick={handleExportPDF} className="gap-2 text-xs font-semibold">
             <Download className="w-4 h-4 text-sky-400" />
             Antetli Defter PDF İndir
@@ -112,8 +158,8 @@ export const AccountingPage: React.FC = () => {
         </div>
       </div>
 
-      {/* Tab Controls */}
-      <div className="flex items-center gap-2 border-b border-slate-200 dark:border-slate-800 pb-2">
+      {/* Tab Controls (4 Defter Türü) */}
+      <div className="flex flex-wrap items-center gap-2 border-b border-slate-200 dark:border-slate-800 pb-2">
         <Button
           variant={activeTab === 'yevmiye' ? 'default' : 'ghost'}
           size="sm"
@@ -130,7 +176,7 @@ export const AccountingPage: React.FC = () => {
           onClick={() => setActiveTab('kebir')}
           className="gap-2 text-xs font-semibold"
         >
-          <Layers className="w-4 h-4" />
+          <Layers className="w-4 h-4 text-purple-500" />
           Defter-i Kebir (Büyük Defter)
         </Button>
 
@@ -140,8 +186,18 @@ export const AccountingPage: React.FC = () => {
           onClick={() => setActiveTab('muavin')}
           className="gap-2 text-xs font-semibold"
         >
-          <FileText className="w-4 h-4" />
+          <FileText className="w-4 h-4 text-amber-500" />
           Muavin Defteri (Yardımcı Defter)
+        </Button>
+
+        <Button
+          variant={activeTab === 'kasa_banka' ? 'default' : 'ghost'}
+          size="sm"
+          onClick={() => setActiveTab('kasa_banka')}
+          className="gap-2 text-xs font-semibold"
+        >
+          <Wallet className="w-4 h-4 text-emerald-500" />
+          Kasa & Banka Defteri
         </Button>
       </div>
 
@@ -149,7 +205,10 @@ export const AccountingPage: React.FC = () => {
       {activeTab === 'yevmiye' && (
         <Card>
           <CardHeader>
-            <CardTitle className="text-base font-bold">Resmi Yevmiye Fişleri Dökümü</CardTitle>
+            <CardTitle className="text-base font-bold flex items-center justify-between">
+              <span>Resmi Yevmiye Defteri (Günlük İşlem Fişleri)</span>
+              <span className="text-xs font-normal text-slate-500 dark:text-slate-400">Toplam {journalEntries.length} Yevmiye Maddesi</span>
+            </CardTitle>
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
@@ -212,7 +271,10 @@ export const AccountingPage: React.FC = () => {
       {activeTab === 'kebir' && (
         <Card>
           <CardHeader>
-            <CardTitle className="text-base font-bold">Defter-i Kebir (Ana Hesap Grupları)</CardTitle>
+            <CardTitle className="text-base font-bold flex items-center justify-between">
+              <span>Defter-i Kebir (Büyük Defter / Ana Hesap Grupları)</span>
+              <span className="text-xs font-normal text-slate-500 dark:text-slate-400">Toplam {kebirList.length} Ana Hesap</span>
+            </CardTitle>
           </CardHeader>
           <CardContent className="space-y-6">
             {kebirList.map((kebir: any) => (
@@ -267,7 +329,10 @@ export const AccountingPage: React.FC = () => {
       {activeTab === 'muavin' && (
         <Card>
           <CardHeader>
-            <CardTitle className="text-base font-bold">Muavin Defteri (Yardımcı Defter Detayı)</CardTitle>
+            <CardTitle className="text-base font-bold flex items-center justify-between">
+              <span>Muavin Defteri (Yardımcı Defter - Tüm Cari Detayları)</span>
+              <span className="text-xs font-normal text-slate-500 dark:text-slate-400">Toplam {muavinList.length} Cari & Kasa Hesabı</span>
+            </CardTitle>
           </CardHeader>
           <CardContent className="space-y-6">
             {muavinList.map((muavin: any) => (
@@ -307,6 +372,68 @@ export const AccountingPage: React.FC = () => {
                           {it.debit > 0 ? formatCurrency(it.debit) : '-'}
                         </TableCell>
                         <TableCell className="text-right font-mono text-emerald-500 font-semibold">
+                          {it.credit > 0 ? formatCurrency(it.credit) : '-'}
+                        </TableCell>
+                        <TableCell className="text-right font-mono font-bold text-sky-500">
+                          {formatCurrency(it.runningBalance)}
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </div>
+            ))}
+          </CardContent>
+        </Card>
+      )}
+
+      {/* Tab 4: Kasa & Banka Defteri */}
+      {activeTab === 'kasa_banka' && (
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-base font-bold flex items-center justify-between">
+              <span>Kasa & Banka Defteri (Nakit ve Banka Hesap Hareketleri)</span>
+              <span className="text-xs font-normal text-slate-500 dark:text-slate-400">Toplam {kasaBankaMuavin.length} Kasa & Banka Hesabı</span>
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-6">
+            {kasaBankaMuavin.map((kb: any) => (
+              <div key={kb.entityId} className="border border-slate-200 dark:border-slate-800 rounded-xl p-4 space-y-3">
+                <div className="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 pb-2">
+                  <div className="flex items-center gap-3">
+                    <Badge variant="success" className="font-mono text-xs">
+                      {kb.type === 'cash' ? 'TL KASA' : 'BANKA'}
+                    </Badge>
+                    <span className="font-bold text-slate-900 dark:text-white text-sm">{kb.name}</span>
+                  </div>
+                  <div className="flex items-center gap-4 text-xs font-mono">
+                    <span>Giren Para: <strong className="text-emerald-500">{formatCurrency(kb.totalDebit)}</strong></span>
+                    <span>Çıkan Para: <strong className="text-rose-500">{formatCurrency(kb.totalCredit)}</strong></span>
+                    <span>Mevcut Bakiye: <strong className="text-sky-500">{formatCurrency(kb.balance)}</strong></span>
+                  </div>
+                </div>
+
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>Tarih</TableHead>
+                      <TableHead>Evrak No</TableHead>
+                      <TableHead>İşlem Açıklaması</TableHead>
+                      <TableHead className="text-right">Giren Para (TL)</TableHead>
+                      <TableHead className="text-right">Çıkan Para (TL)</TableHead>
+                      <TableHead className="text-right">Yürüyen Bakiye</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {kb.items.map((it: any) => (
+                      <TableRow key={it.id}>
+                        <TableCell className="font-mono text-xs">{it.date}</TableCell>
+                        <TableCell className="font-mono text-xs text-sky-500">{it.docNumber || '-'}</TableCell>
+                        <TableCell className="text-slate-800 dark:text-slate-200">{it.description}</TableCell>
+                        <TableCell className="text-right font-mono text-emerald-500 font-semibold">
+                          {it.debit > 0 ? formatCurrency(it.debit) : '-'}
+                        </TableCell>
+                        <TableCell className="text-right font-mono text-rose-500 font-semibold">
                           {it.credit > 0 ? formatCurrency(it.credit) : '-'}
                         </TableCell>
                         <TableCell className="text-right font-mono font-bold text-sky-500">
