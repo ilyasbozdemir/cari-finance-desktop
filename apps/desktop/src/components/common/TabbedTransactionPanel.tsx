@@ -15,9 +15,9 @@ import {
   PieChart,
   ArrowRightLeft,
   CheckCircle2,
-  BookOpen,
   DollarSign,
   X,
+  Sparkles,
 } from 'lucide-react';
 import { formatCurrency } from '@cari-finance/domain';
 
@@ -71,8 +71,8 @@ export const TabbedTransactionPanel: React.FC<{ onClose?: () => void }> = ({ onC
 
   const selectedTargetObj = cashAndBankOptions.find((cb: any) => cb.id === targetEntityId);
 
-  const selectedEntityName = selectedEntityObj ? `${selectedEntityObj.name} (${selectedEntityObj.accountCode || ''})` : 'Seçilmedi';
-  const selectedTargetName = selectedTargetObj ? `${selectedTargetObj.name} (${selectedTargetObj.accountCode || ''})` : 'Hesap';
+  const selectedEntityName = selectedEntityObj ? selectedEntityObj.name : 'Seçilmedi';
+  const selectedTargetName = selectedTargetObj ? selectedTargetObj.name : 'Kasa/Banka';
 
   const createMutation = useMutation({
     mutationFn: (payload: any) => window.api.transactions.create(payload),
@@ -117,81 +117,15 @@ export const TabbedTransactionPanel: React.FC<{ onClose?: () => void }> = ({ onC
     });
   };
 
-  // Helper to determine Double-Entry Accounts for live preview
-  const getAccountingPreview = () => {
-    const amt = Number(amount) || 0;
-    switch (activeTab) {
-      case 'sale':
-        return {
-          debitCode: selectedEntityObj?.accountCode || '120.001',
-          debitName: `Müşteri Cari Hesabı (${selectedEntityName})`,
-          creditCode: '600.01',
-          creditName: 'Yurtiçi Satış Gelirleri',
-          amount: amt,
-        };
-      case 'customer_payment':
-        return {
-          debitCode: selectedTargetObj?.accountCode || '100.001',
-          debitName: `Kasa / Banka Hesabı (${selectedTargetName})`,
-          creditCode: selectedEntityObj?.accountCode || '120.001',
-          creditName: `Müşteri Cari Hesabı (${selectedEntityName})`,
-          amount: amt,
-        };
-      case 'purchase':
-        return {
-          debitCode: '153.01',
-          debitName: 'Ticari Mallar / Depo Stok',
-          creditCode: selectedEntityObj?.accountCode || '320.001',
-          creditName: `Tedarikçi Cari Hesabı (${selectedEntityName})`,
-          amount: amt,
-        };
-      case 'supplier_payment':
-        return {
-          debitCode: selectedEntityObj?.accountCode || '320.001',
-          debitName: `Tedarikçi Cari Hesabı (${selectedEntityName})`,
-          creditCode: selectedTargetObj?.accountCode || '100.001',
-          creditName: `Kasa / Banka Hesabı (${selectedTargetName})`,
-          amount: amt,
-        };
-      case 'expense':
-        return {
-          debitCode: '770.01',
-          debitName: 'Genel Yönetim Giderleri',
-          creditCode: selectedTargetObj?.accountCode || '100.001',
-          creditName: `Kasa / Banka Hesabı (${selectedTargetName})`,
-          amount: amt,
-        };
-      case 'partner_draw':
-        return {
-          debitCode: selectedEntityObj?.accountCode || '500.001',
-          debitName: `Ortak Cari Hesabı (${selectedEntityName})`,
-          creditCode: selectedTargetObj?.accountCode || '100.001',
-          creditName: `Kasa / Banka Hesabı (${selectedTargetName})`,
-          amount: amt,
-        };
-      case 'transfer':
-        return {
-          debitCode: selectedTargetObj?.accountCode || '102.001',
-          debitName: `Hedef Hesap (${selectedTargetName})`,
-          creditCode: selectedEntityObj?.accountCode || '100.001',
-          creditName: `Kaynak Hesap (${selectedEntityName})`,
-          amount: amt,
-        };
-      default:
-        return null;
-    }
-  };
-
-  const preview = getAccountingPreview();
-
   const tabs = [
-    { id: 'sale', label: 'Satış Fişi', icon: Tag, color: 'text-sky-500' },
-    { id: 'customer_payment', label: 'Tahsilat Fişi', icon: ArrowDownLeft, color: 'text-emerald-500' },
-    { id: 'purchase', label: 'Alım Fişi', icon: Truck, color: 'text-purple-500' },
-    { id: 'supplier_payment', label: 'Ödeme Fişi', icon: ArrowUpRight, color: 'text-rose-500' },
-    { id: 'expense', label: 'Gider Fişi', icon: Zap, color: 'text-amber-500' },
-    { id: 'partner_draw', label: 'Ortak Hareketi', icon: PieChart, color: 'text-cyan-500' },
-    { id: 'transfer', label: 'Virman Transfer', icon: ArrowRightLeft, color: 'text-indigo-500' },
+    { id: 'sale', label: 'Satış Yap', icon: Tag, color: 'text-sky-500' },
+    { id: 'customer_payment', label: 'Tahsilat Al', icon: ArrowDownLeft, color: 'text-emerald-500' },
+    { id: 'purchase', label: 'Alış / Satınalma', icon: Truck, color: 'text-purple-500' },
+    { id: 'supplier_payment', label: 'Ödeme Yap', icon: ArrowUpRight, color: 'text-rose-500' },
+    { id: 'expense', label: 'Gider Kaydı', icon: Zap, color: 'text-amber-500' },
+    { id: 'partner_draw', label: 'Ortak Para Çekme', icon: PieChart, color: 'text-cyan-500' },
+    { id: 'partner_deposit', label: 'Ortak Para Yatırma', icon: Sparkles, color: 'text-emerald-500' },
+    { id: 'transfer', label: 'Para Transferi', icon: ArrowRightLeft, color: 'text-indigo-500' },
   ];
 
   return (
@@ -199,11 +133,11 @@ export const TabbedTransactionPanel: React.FC<{ onClose?: () => void }> = ({ onC
       <CardHeader className="pb-3 border-b border-slate-200 dark:border-slate-800">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <BookOpen className="w-5 h-5 text-sky-500" />
-            <CardTitle className="text-base font-bold">Sekmeli Hızlı İşlem & Kayıt Paneli</CardTitle>
+            <Sparkles className="w-5 h-5 text-sky-500" />
+            <CardTitle className="text-base font-bold">Hızlı Finans İşlem Paneli</CardTitle>
             {successMsg && (
               <Badge variant="success" className="gap-1 animate-pulse">
-                <CheckCircle2 className="w-3.5 h-3.5" /> İşlem Başarıyla Kaydedildi!
+                <CheckCircle2 className="w-3.5 h-3.5" /> İşlem Kaydedildi!
               </Badge>
             )}
           </div>
@@ -248,7 +182,7 @@ export const TabbedTransactionPanel: React.FC<{ onClose?: () => void }> = ({ onC
             {/* Primary Entity Selector */}
             {activeTab === 'sale' || activeTab === 'customer_payment' ? (
               <div>
-                <label className="text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1 block">Müşteri Cari Hesabı (120)</label>
+                <label className="text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1 block">Müşteri Seçin</label>
                 <Select value={entityId} onValueChange={setEntityId}>
                   <SelectTrigger className="h-9 text-xs">
                     <SelectValue placeholder="Müşteri seçin" />
@@ -256,7 +190,7 @@ export const TabbedTransactionPanel: React.FC<{ onClose?: () => void }> = ({ onC
                   <SelectContent>
                     {customers.map((c: any) => (
                       <SelectItem key={c.id} value={c.id} className="text-xs">
-                        {c.name} ({c.accountCode || '120.001'})
+                        {c.name} ({c.accountCode || '120'})
                       </SelectItem>
                     ))}
                   </SelectContent>
@@ -266,7 +200,7 @@ export const TabbedTransactionPanel: React.FC<{ onClose?: () => void }> = ({ onC
 
             {activeTab === 'purchase' || activeTab === 'supplier_payment' ? (
               <div>
-                <label className="text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1 block">Tedarikçi Cari Hesabı (320)</label>
+                <label className="text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1 block">Tedarikçi Seçin</label>
                 <Select value={entityId} onValueChange={setEntityId}>
                   <SelectTrigger className="h-9 text-xs">
                     <SelectValue placeholder="Satıcı seçin" />
@@ -274,7 +208,7 @@ export const TabbedTransactionPanel: React.FC<{ onClose?: () => void }> = ({ onC
                   <SelectContent>
                     {suppliers.map((s: any) => (
                       <SelectItem key={s.id} value={s.id} className="text-xs">
-                        {s.name} ({s.accountCode || '320.001'})
+                        {s.name} ({s.accountCode || '320'})
                       </SelectItem>
                     ))}
                   </SelectContent>
@@ -282,9 +216,9 @@ export const TabbedTransactionPanel: React.FC<{ onClose?: () => void }> = ({ onC
               </div>
             ) : null}
 
-            {activeTab === 'partner_draw' ? (
+            {activeTab === 'partner_draw' || activeTab === 'partner_deposit' ? (
               <div>
-                <label className="text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1 block">Ortak Cari Hesabı (500)</label>
+                <label className="text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1 block">Şirket Ortağı Seçin</label>
                 <Select value={entityId} onValueChange={setEntityId}>
                   <SelectTrigger className="h-9 text-xs">
                     <SelectValue placeholder="Ortak seçin" />
@@ -292,7 +226,7 @@ export const TabbedTransactionPanel: React.FC<{ onClose?: () => void }> = ({ onC
                   <SelectContent>
                     {partners.map((p: any) => (
                       <SelectItem key={p.id} value={p.id} className="text-xs">
-                        {p.name} ({p.accountCode || '500.001'})
+                        {p.name}
                       </SelectItem>
                     ))}
                   </SelectContent>
@@ -310,7 +244,7 @@ export const TabbedTransactionPanel: React.FC<{ onClose?: () => void }> = ({ onC
                   <SelectContent>
                     {cashAndBankOptions.map((e: any) => (
                       <SelectItem key={e.id} value={e.id} className="text-xs">
-                        {e.name} ({e.accountCode || '100.001'})
+                        {e.name}
                       </SelectItem>
                     ))}
                   </SelectContent>
@@ -323,6 +257,7 @@ export const TabbedTransactionPanel: React.FC<{ onClose?: () => void }> = ({ onC
             activeTab === 'supplier_payment' ||
             activeTab === 'expense' ||
             activeTab === 'partner_draw' ||
+            activeTab === 'partner_deposit' ||
             activeTab === 'transfer' ? (
               <div>
                 <label className="text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1 block">
@@ -335,7 +270,7 @@ export const TabbedTransactionPanel: React.FC<{ onClose?: () => void }> = ({ onC
                   <SelectContent>
                     {cashAndBankOptions.map((e: any) => (
                       <SelectItem key={e.id} value={e.id} className="text-xs">
-                        {e.name} ({e.accountCode || '100.001'})
+                        {e.name}
                       </SelectItem>
                     ))}
                   </SelectContent>
@@ -371,7 +306,7 @@ export const TabbedTransactionPanel: React.FC<{ onClose?: () => void }> = ({ onC
             <div className="flex-1 w-full">
               <label className="text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1 block">İşlem Açıklaması</label>
               <Input
-                placeholder="Örn: 3 adet ahşap masa teslimat satışı..."
+                placeholder="Örn: Mutfak dolabı satışı, Elektrik faturası ödemesi vb."
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
                 className="h-9 text-xs"
@@ -383,39 +318,6 @@ export const TabbedTransactionPanel: React.FC<{ onClose?: () => void }> = ({ onC
               {createMutation.isPending ? 'Kaydediliyor...' : 'İşlemi Kaydet'}
             </Button>
           </div>
-
-          {/* Live Accounting Preview */}
-          {preview && (
-            <div className="p-3 rounded-xl bg-slate-50 dark:bg-slate-950/80 border border-slate-200 dark:border-slate-800 space-y-2">
-              <div className="flex items-center justify-between text-xs font-bold text-slate-800 dark:text-slate-200">
-                <span className="flex items-center gap-1.5">
-                  <BookOpen className="w-4 h-4 text-sky-500" />
-                  Tekdüzen Yevmiye Fişi Önizlemesi:
-                </span>
-                <span className="font-mono text-sky-500">{formatCurrency(preview.amount)}</span>
-              </div>
-
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs font-mono">
-                {/* Borç Satırı */}
-                <div className="p-2 rounded-lg bg-rose-500/10 border border-rose-500/20 text-rose-600 dark:text-rose-400 flex items-center justify-between">
-                  <div>
-                    <Badge variant="danger" className="text-[10px] mr-1.5">BORÇ ({preview.debitCode})</Badge>
-                    <span className="text-[11px] font-semibold">{preview.debitName}</span>
-                  </div>
-                  <span className="font-bold">{formatCurrency(preview.amount)}</span>
-                </div>
-
-                {/* Alacak Satırı */}
-                <div className="p-2 rounded-lg bg-emerald-500/10 border border-emerald-500/20 text-emerald-600 dark:text-emerald-400 flex items-center justify-between">
-                  <div>
-                    <Badge variant="success" className="text-[10px] mr-1.5">ALACAK ({preview.creditCode})</Badge>
-                    <span className="text-[11px] font-semibold">{preview.creditName}</span>
-                  </div>
-                  <span className="font-bold">{formatCurrency(preview.amount)}</span>
-                </div>
-              </div>
-            </div>
-          )}
         </form>
       </CardContent>
     </Card>

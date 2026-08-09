@@ -1,4 +1,4 @@
-# 💼 Cari & Kasa Finance — Kurumsal Cari, Kasa & Stok Yönetim Sistemi
+# 💼 Cari & Kasa Finance — Pratik Cari, Kasa, Banka & Finans Takip Sistemi
 
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.6-blue.svg)](https://www.typescriptlang.org/)
 [![Electron](https://img.shields.io/badge/Electron-33.0-47848F.svg)](https://www.electronjs.org/)
@@ -6,126 +6,82 @@
 [![Drizzle ORM](https://img.shields.io/badge/Drizzle_ORM-SQLite-C5F74F.svg)](https://orm.drizzle.team/)
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-3.4-38BDF8.svg)](https://tailwindcss.com/)
 [![pnpm Workspace](https://img.shields.io/badge/pnpm-Monorepo-F69220.svg)](https://pnpm.io/)
-[![Docker](https://img.shields.io/badge/Docker-Supported-2496ED.svg)](https://www.docker.com/)
 
-**Cari & Kasa Finance**, genel özel firmalar, imalathaneler, tedarikçiler, ticaret, perakende ve hizmet sektörleri için geliştirilmiş; **Çift Taraflı Yevmiye Kaydı Motoru (Double-Entry Bookkeeping)** tabanlı kurumsal masaüstü ve web finans yönetim sistemidir.
+**Cari & Kasa Finance**, işletmeler, imalathaneler, perakende ve hizmet sektörleri için tasarlanmış; karmaşık muhasebe terimlerinden arındırılmış **Pratik Cari, Kasa, Banka ve İşletme Finans Takip Sistemi**dir.
+
+> 💡 **Arka Plan Mimarisi**: Kullanıcı arayüzünde sadece *Satış*, *Tahsilat*, *Alış*, *Ödeme*, *Gider*, *Ortak İşlemi* gibi doğal iş dili kullanılır. İşlemlerinizin tam bakiye tutarlılığı ve güvenilirliği için sistem arka planda **çift taraflı bakiye doğrulama motoru** ile hareketleri otomatik işler.
 
 ---
 
-## 🌟 Öne Çıkan Özellikler
+## 🌟 Ana Özellikler & İşlevler
 
-- ⚖️ **%100 Çift Taraflı Yevmiye Kayıt Motoru**: Her işlem arka planda `SUM(Borç) === SUM(Alacak)` eşitliğiyle yevmiye maddesi oluşturur. Bakiyeler canlı SQL toplamlarıyla hesaplanır.
-- 🏢 **Genel Özel Firma & Sektör Esnekliği**: Firma ünvanı ve sektör amblemi (`Genel Şirket`, `Mobilya & İmalat`, `Lojistik`, `Ticaret`, `Hizmet`, `Sanayi`, `Finans`, `E-Ticaret`) özelleştirilebilir.
-- 📦 **Stok & Ürün Yönetim Modülü**: Hammadde, mamul, yarı mamul ve aksesuar stok kartları; alış/satış fiyatları, depo stok miktarları, kritik stok uyarıları ve tarihsel hareket ekstreleri.
-- 📄 **Dinamik Kurumsal Antetli PDF & Excel Raporlama**: Firma logonuz ve bilgilerinizi içeren kurumsal antetli PDF ekstreleri, mizan dökümleri ve kaşe/imza bloklu resmi evrak çıktısı.
-- 💾 **Özel `.cari` Şirket Dosya Formatı**: Excel şablonu gibi firmanıza ait tüm veritabanını tek tıkla `.cari` dosyası olarak yedekleme ve geri yükleme.
-- 📅 **Mali & Bütçe Yılı Filtreleme (`N`, `N-1` .. `N-5`)**: Cari çalışma yılı ($N$) ve 5 yıl geriye dönük ($N-1 \dots N-5$) bütçe ve hesap filtrelemesi.
-- 🌓 **Tam Light / Dark Tema Desteği**: Aydınlık ve karanlık modlar arasında anında akıcı geçiş.
-- 🔒 **Güvenlik PIN Kodu Kilidi**: Ekran kilitleme ve PIN kodu koruması.
+- 💼 **Pratik İşletme Finans Yönetimi**: Karmaşık yevmiye fişi yazmadan, doğal dille hızlı Satış, Tahsilat, Ödeme ve Gider takibi.
+- 👥 **Müşteri & Tedarikçi Carileri**: Alacak ve borç bakiyeleri, hareket detayları ve tek tıkla kurumsal ekstreler.
+- 💵 **Kasa & Banka Yönetimi**: Nakit TL kasaları, banka hesapları, gelen/giden havaleler ve hesaplar arası virman/transferler.
+- 👤 **Ortak İşlemleri**: Şirket ortaklarının işletmeye koyduğu fonlar veya işletmeden yaptığı para çekişlerinin şeffaf takibi.
+- 📄 **Kurumsal Antetli PDF & Excel Raporlama**: Şirket logonuz ve bilgilerinizi içeren antetli PDF dökümleri, mizan ve muavin hesap özetleri.
+- 💾 **Özel `.cari` Şirket Dosya Formatı**: Veritabanınızı tek tıkla `.cari` dosyası olarak yedekleme ve geri yükleme.
+- 📅 **Bütçe & Mali Yıl Filtreleme ($N, N-1 \dots N-5$)**: Cari yıl ve 5 yıl geriye dönük mali dönem filtrelemesi.
+- 🌓 **Aydınlık / Karanlık Tema**: Tek tıkla göz yormayan Light ve Dark tema geçişi.
+
+---
+
+## 🚀 MVP Modül Öncelik Sıralaması
+
+Proje temel işletme ihtiyaçlarına göre önceliklendirilmiştir:
+
+1. 👥 **Cari Hesap Yönetimi** (Müşteriler & Tedarikçiler)
+2. 💵 **Kasa Takibi** (Nakit Kasalar)
+3. 🏦 **Banka Hesapları & Transfer**
+4. 👤 **Şirket Ortakları Hesabı**
+5. ⚡ **Hızlı Gelir / Gider & Harcama Kaydı**
+6. 📊 **Ana Ekran & İşlem Fişleri**
+7. 📄 **Raporlar & Antetli Ekstreler**
+8. 💾 **Yedekleme (`.cari` Dosya Formatı)**
+9. 📦 **Stok & Ürün Takibi (Opsiyonel Destek)**
 
 ---
 
 ## 🏛️ Monorepo Mimari Yapısı
 
-Proje `pnpm workspace` mimarisinde 4 temel pakete ayrılmıştır:
+Masaüstü öncelikli monorepo mimarisi:
 
 ```
 cari-finance-desktop/
-├── pnpm-workspace.yaml               # Workspace tanım dosyası
-├── package.json                      # Kök dizin komutları ve pnpm bağımlılık yönetimi
-├── docker-compose.yml                # Docker konteyner orkestrasyonu
-├── Dockerfile                        # Multi-stage Next.js Web Dockerfile
+├── pnpm-workspace.yaml               # Monorepo paket tanım dosyası
+├── package.json                      # Kök dizin komutları
 │
 ├── apps/
-│   ├── desktop/                      # (@cari-finance/desktop) Electron 33 + React + Vite Masaüstü Uygulaması
-│   └── web/                          # (@cari-finance/web) Next.js 14 App Router Web Uygulaması & REST API
+│   ├── desktop/                      # (@cari-finance/desktop) Electron 33 + React Masaüstü Uygulaması (Ana Hedef)
+│   └── web/                          # (@cari-finance/web) Next.js 14 Web / API Katmanı
 │
 └── packages/
-    ├── domain/                       # (@cari-finance/domain) Saf Muhasebe Kuralları, Para Birimi & Tip Tanımları
+    ├── domain/                       # (@cari-finance/domain) Saf Finans Mantığı & Tip Tanımları
     └── db/                           # (@cari-finance/db) Drizzle ORM SQLite Veritabanı Şemaları
 ```
 
 ---
 
-## 🚀 Hızlı Başlangıç & Kurulum
-
-### Ön Gereksinimler
-- **Node.js** `>= 18.0.0`
-- **pnpm** `>= 9.0.0`
+## 🚀 Kurulum ve Çalıştırma
 
 ### 1. Bağımlılıkları Yükleme
 ```bash
-git clone https://github.com/ilyas-bozdemir/cari-finance-desktop.git
-cd cari-finance-desktop
 pnpm install
 ```
 
-### 2. Geliştirme Modunda Çalıştırma
+### 2. Masaüstü Uygulamasını Çalıştırma
+```bash
+pnpm dev:desktop
+```
 
-- **Masaüstü Electron Uygulaması**:
-  ```bash
-  pnpm dev:desktop
-  # veya
-  pnpm dev
-  ```
-
-- **Next.js Web Uygulaması & REST API**:
-  ```bash
-  pnpm dev:web
-  ```
-
-### 3. Tüm Paketleri Derleme (Production Build)
+### 3. Uygulamayı Derleme
 ```bash
 pnpm build
 ```
 
-### 4. Windows `.exe` Yükleyicisi Paketi Oluşturma
-```bash
-pnpm package
-```
-*Çıktı dosyası `apps/desktop/release/` dizininde oluşturulur.*
-
 ---
 
-## 🐳 Docker Yapılandırması
+## 🤝 Lisans
 
-Next.js Web ve API sunucusunu Docker konteyneri olarak tek komutla başlatabilirsiniz:
-
-```bash
-# Docker İmajını Derleme
-pnpm docker:build
-
-# Konteyneri Başlatma (Port 3000)
-pnpm docker:up
-```
-
-veya doğrudan Docker Compose ile:
-
-```bash
-docker compose up -d --build
-```
-Uygulama **`http://localhost:3000`** adresinde çalışmaya başlar.
-
----
-
-## 📊 Çift Taraflı Yevmiye Hesap Planı
-
-Sistem standart tekdüzen hesap planı mantığında çalışır:
-
-| Hesap Kodu | Hesap Adı | Türü | Borç Çalışma | Alacak Çalışma |
-| :--- | :--- | :--- | :--- | :--- |
-| **`100`** | Kasa Hesabı | Varlık (Asset) | Para Girişi | Para Çıkışı |
-| **`102`** | Banka Hesapları | Varlık (Asset) | Havale / Gelen | Gönderilen Ödeme |
-| **`120`** | Müşteri Cari Hesapları | Varlık (Asset) | Vadeli Satış | Tahsilat Alınması |
-| **`153`** | Ticari Mallar / Stok | Varlık (Asset) | Mal Alımı | Mal Satışı |
-| **`320`** | Tedarikçi & Satıcılar | Kaynak (Liability) | Ödeme Yapılması | Mal / Hizmet Alımı |
-| **`500`** | Ortak Cari Hesapları | Özkaynak (Equity) | Ortak Para Çekme | Ortak Para Yatırma |
-| **`600`** | Yurtiçi Satış Gelirleri | Gelir (Revenue) | - | Satış Hasılatı |
-| **`770`** | Genel Yönetim Giderleri | Gider (Expense) | Harcama / Fatura | - |
-
----
-
-## 🤝 Katkıda Bulunma & Lisans
-
-Bu proje **MIT Lisansı** ile lisanslanmıştır.  
+Bu proje **MIT Lisansı** altında lisanslanmıştır.  
 Geliştirici: **İlyas Bozdemir**
