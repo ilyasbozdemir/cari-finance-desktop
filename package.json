@@ -1,0 +1,21 @@
+{
+  "name": "cari-finance-workspace",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "pnpm --filter @cari-finance/desktop dev",
+    "dev:desktop": "pnpm --filter @cari-finance/desktop dev",
+    "dev:web": "pnpm --filter @cari-finance/web dev",
+    "build": "pnpm --filter \"@cari-finance/*\" build",
+    "package": "pnpm --filter @cari-finance/desktop package",
+    "docker:build": "docker compose build",
+    "docker:up": "docker compose up -d"
+  },
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "better-sqlite3",
+      "electron",
+      "esbuild"
+    ]
+  }
+}

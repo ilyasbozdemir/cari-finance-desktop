@@ -1,0 +1,19 @@
+version: '3.8'
+
+services:
+  cari-finance-web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: cari_finance_web
+    restart: always
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+      - PORT=3000
+    volumes:
+      - cari_finance_data:/app/data
+
+volumes:
+  cari_finance_data:

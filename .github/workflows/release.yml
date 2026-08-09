@@ -1,0 +1,73 @@
+name: Build and Release
+
+on:
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: windows-2022
+    steps:
+      - name: Check out Git repository
+        uses: actions/checkout@v4
+
+      - name: Install Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: 'npm'
+
+      - name: Sync version with git tag
+        if: startsWith(github.ref, 'refs/tags/')
+        shell: bash
+        run: |
+          VERSION=${GITHUB_REF_NAME#v}
+          npm version $VERSION --no-git-tag-version
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build Application
+        run: npm run build
+
+      - name: Package Desktop Executable with Electron Builder
+        run: npx electron-builder --win --x64
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Prepare Release Notes
+        shell: bash
+        run: |
+          if [[ "${{ github.ref_name }}" == *"beta"* || "${{ github.ref_name }}" == *"alpha"* ]]; then
+            echo "RELEASE_NAME=Cari & Kasa Finance Desktop ${{ github.ref_name }} (Erken Erişim)" >> $GITHUB_ENV
+            echo "RELEASE_BODY<<EOF" >> $GITHUB_ENV
+            echo "Mobilya İmalatı Cari Hesap ve Kasa Takip Masaüstü Uygulaması. 🚀" >> $GITHUB_ENV
+            echo "" >> $GITHUB_ENV
+            echo "**Erken Erişim Sürümü (Early Access)**" >> $GITHUB_ENV
+            echo "Bu sürüm erken erişim aşamasında olup tüm çift taraflı muhasebe fişi ve kasa fonksiyonlarını içermektedir." >> $GITHUB_ENV
+            echo "EOF" >> $GITHUB_ENV
+          else
+            echo "RELEASE_NAME=Cari & Kasa Finance Desktop ${{ github.ref_name }}" >> $GITHUB_ENV
+            echo "RELEASE_BODY<<EOF" >> $GITHUB_ENV
+            echo "Mobilya İmalatı Cari Hesap ve Kasa Takip Masaüstü Uygulaması Kararlı Sürümü. 🚀" >> $GITHUB_ENV
+            echo "EOF" >> $GITHUB_ENV
+          fi
+
+      - name: Publish GitHub Release
+        uses: softprops/action-gh-release@v2
+        if: startsWith(github.ref, 'refs/tags/')
+        with:
+          files: |
+            release/*.exe
+            release/*.exe.blockmap
+            release/*.yml
+          draft: false
+          prerelease: false
+          name: ${{ env.RELEASE_NAME }}
+          body: ${{ env.RELEASE_BODY }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
