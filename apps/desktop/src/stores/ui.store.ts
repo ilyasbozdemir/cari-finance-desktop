@@ -1,6 +1,7 @@
 import { create } from 'zustand';
 
 export type ThemeMode = 'dark' | 'light';
+export type FiscalYearType = number | 'all';
 
 interface UIState {
   sidebarOpen: boolean;
@@ -16,6 +17,8 @@ interface UIState {
   setCompanyName: (name: string) => void;
   companyLogoIcon: string;
   setCompanyLogoIcon: (icon: string) => void;
+  selectedFiscalYear: FiscalYearType;
+  setSelectedFiscalYear: (year: FiscalYearType) => void;
 }
 
 const getInitialTheme = (): ThemeMode => {
@@ -23,6 +26,8 @@ const getInitialTheme = (): ThemeMode => {
   if (saved === 'light' || saved === 'dark') return saved;
   return 'dark';
 };
+
+const currentYear = new Date().getFullYear();
 
 export const useUIStore = create<UIState>((set) => ({
   sidebarOpen: true,
@@ -61,4 +66,6 @@ export const useUIStore = create<UIState>((set) => ({
   setCompanyName: (name: string) => set({ companyName: name }),
   companyLogoIcon: 'building',
   setCompanyLogoIcon: (icon: string) => set({ companyLogoIcon: icon }),
+  selectedFiscalYear: currentYear,
+  setSelectedFiscalYear: (year: FiscalYearType) => set({ selectedFiscalYear: year }),
 }));

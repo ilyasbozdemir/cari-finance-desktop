@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button';
 import { useUIStore } from '@/stores/ui.store';
 import { useSessionStore } from '@/stores/session.store';
 import { CompanyLogo } from '@/components/common/CompanyLogo';
+import { FiscalYearSelect } from '@/components/common/FiscalYearSelect';
 
 export const Header: React.FC = () => {
   const { openQuickTransaction, theme, toggleTheme, companyName, companyLogoIcon } = useUIStore();
@@ -22,7 +23,7 @@ export const Header: React.FC = () => {
       <div className="flex items-center gap-3 text-xs font-medium">
         <div className="flex items-center gap-2 text-slate-800 dark:text-slate-200 font-bold">
           <CompanyLogo icon={companyLogoIcon} className="h-6 w-6 rounded-lg bg-gradient-to-tr from-sky-600 to-cyan-500 text-white shadow-sm" iconClassName="h-3.5 w-3.5" />
-          <span className="truncate max-w-[280px] md:max-w-md">
+          <span className="truncate max-w-[240px] md:max-w-xs">
             {companyName || 'Genel Cari & Kasa Takibi (Demo/Beta)'}
           </span>
         </div>
@@ -31,6 +32,9 @@ export const Header: React.FC = () => {
           <Sparkles className="w-3 h-3 text-emerald-500" />
           Demo / Beta
         </span>
+
+        {/* Dynamic Fiscal Year Selector (N, N-1..N-5) */}
+        <FiscalYearSelect />
 
         <div className="hidden lg:flex items-center gap-1.5 text-slate-500 dark:text-slate-400 text-[11px]">
           <Calendar className="h-3.5 w-3.5 text-slate-400" />
