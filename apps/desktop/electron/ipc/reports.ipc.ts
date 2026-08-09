@@ -1,7 +1,7 @@
 import { ipcMain } from 'electron';
 import { getDatabase } from '../database/client';
 import * as schema from '../database/schema';
-import { eq, desc, sql, and, gte, lte } from 'drizzle-orm';
+import { eq, desc, sql, and } from 'drizzle-orm';
 
 export function registerReportsIPC() {
   // Get Dashboard Summary Data
@@ -35,7 +35,7 @@ export function registerReportsIPC() {
       totalCashBalance += (bRes?.debit || 0) - (bRes?.credit || 0);
     }
 
-    // 2. Total Customer Receivables (Toplam Müşteri Alacağı)
+    // 2. Total Customer Receivables
     const customerEntities = db
       .select()
       .from(schema.entities)
@@ -164,9 +164,10 @@ export function registerReportsIPC() {
     };
   });
 
-  // Get Trial Balance (Mizan Raporu)
-  ipcMain.handle('reports:getTrialBalance', async () => {
+  // Get Trial Balance (Geçici ve Kesin Mizan Cetveli)
+  ipcMain.handle('reports:getTrialBalance', async (_, options?: { type?: 'gecici' | 'kesin' }) => {
     const db = getDatabase();
+    const type = options?.type || 'gecici';
 
     const accountsList = db.select().from(schema.accounts).orderBy(schema.accounts.code).all();
 
@@ -199,9 +200,106 @@ export function registerReportsIPC() {
         totalCredit,
         debitBalance,
         creditBalance,
+        isClosed: type === 'kesin' && acc.code.startsWith('6'), // 600 Gelir hesapları kesin mizanda sıfırlanır
       };
     });
 
     return result.filter((a) => a.totalDebit > 0 || a.totalCredit > 0);
+  });
+
+  // Defter-i Kebir (Büyük Defter) - Ana Hesap Grupları
+  ipcMain.handle('reports:getKebir', async () => {
+    const db = getDatabase();
+    const accountsList = db.select().from(schema.accounts).orderBy(schema.accounts.code).all();
+
+    const kebirList = accountsList.map((acc) => {
+      const items = db
+        .select({
+          id: schema.journalItems.id,
+          date: schema.journalEntries.date,
+          docNumber: schema.documents.docNumber,
+          description: schema.journalItems.description,
+          debit: schema.journalItems.debit,
+          credit: schema.journalItems.credit,
+        })
+        .from(schema.journalItems)
+        .innerJoin(schema.journalEntries, eq(schema.journalItems.journalEntryId, schema.journalEntries.id))
+        .leftJoin(schema.documents, eq(schema.journalEntries.documentId, schema.documents.id))
+        .where(
+          and(
+            eq(schema.journalItems.accountId, acc.id),
+            eq(schema.journalEntries.status, 'active')
+          )
+        )
+        .orderBy(schema.journalEntries.date)
+        .all();
+
+      const totalDebit = items.reduce((acc, i) => acc + i.debit, 0);
+      const totalCredit = items.reduce((acc, i) => acc + i.credit, 0);
+
+      return {
+        accountId: acc.id,
+        code: acc.code,
+        name: acc.name,
+        type: acc.type,
+        totalDebit,
+        totalCredit,
+        balance: totalDebit - totalCredit,
+        items,
+      };
+    });
+
+    return kebirList.filter((k) => k.items.length > 0);
+  });
+
+  // Muavin Defteri (Yardımcı Defter - Cari / Kasa Detaylı)
+  ipcMain.handle('reports:getMuavin', async (_, options?: { entityId?: string }) => {
+    const db = getDatabase();
+
+    const entitiesList = db.select().from(schema.entities).orderBy(schema.entities.name).all();
+
+    const muavinList = entitiesList.map((ent) => {
+      const items = db
+        .select({
+          id: schema.journalItems.id,
+          date: schema.journalEntries.date,
+          docNumber: schema.documents.docNumber,
+          description: schema.journalItems.description,
+          debit: schema.journalItems.debit,
+          credit: schema.journalItems.credit,
+        })
+        .from(schema.journalItems)
+        .innerJoin(schema.journalEntries, eq(schema.journalItems.journalEntryId, schema.journalEntries.id))
+        .leftJoin(schema.documents, eq(schema.journalEntries.documentId, schema.documents.id))
+        .where(
+          and(
+            eq(schema.journalItems.entityId, ent.id),
+            eq(schema.journalEntries.status, 'active')
+          )
+        )
+        .orderBy(schema.journalEntries.date)
+        .all();
+
+      let runningBalance = 0;
+      const itemsWithBalance = items.map((it) => {
+        runningBalance += it.debit - it.credit;
+        return { ...it, runningBalance };
+      });
+
+      const totalDebit = items.reduce((acc, i) => acc + i.debit, 0);
+      const totalCredit = items.reduce((acc, i) => acc + i.credit, 0);
+
+      return {
+        entityId: ent.id,
+        name: ent.name,
+        type: ent.type,
+        totalDebit,
+        totalCredit,
+        balance: runningBalance,
+        items: itemsWithBalance,
+      };
+    });
+
+    return muavinList.filter((m) => m.items.length > 0);
   });
 }

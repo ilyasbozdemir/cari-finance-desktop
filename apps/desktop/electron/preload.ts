@@ -32,10 +32,13 @@ const api = {
   },
   accounts: {
     list: () => ipcRenderer.invoke('accounts:list'),
+    getJournalEntries: () => ipcRenderer.invoke('accounts:getJournalEntries'),
   },
   reports: {
     getDashboard: () => ipcRenderer.invoke('reports:getDashboard'),
-    getTrialBalance: () => ipcRenderer.invoke('reports:getTrialBalance'),
+    getTrialBalance: (options?: { type?: 'gecici' | 'kesin' }) => ipcRenderer.invoke('reports:getTrialBalance', options),
+    getKebir: () => ipcRenderer.invoke('reports:getKebir'),
+    getMuavin: (options?: { entityId?: string }) => ipcRenderer.invoke('reports:getMuavin', options),
   },
   inventory: {
     list: () => ipcRenderer.invoke('inventory:list'),

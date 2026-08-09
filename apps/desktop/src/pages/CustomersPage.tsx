@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { Users, Plus, Search, FileSpreadsheet, ArrowDownLeft, FileText, Download } from 'lucide-react';
+import { Users, Plus, Search, FileSpreadsheet, ArrowDownLeft, FileText, Download, X, Save, CheckCircle2 } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -17,7 +17,7 @@ export const CustomersPage: React.FC = () => {
 
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCustomerId, setSelectedCustomerId] = useState<string | null>(null);
-  const [addCustomerOpen, setAddCustomerOpen] = useState(false);
+  const [showInlineForm, setShowInlineForm] = useState(false);
 
   // New Customer Form State
   const [newCustName, setNewCustName] = useState('');
@@ -25,6 +25,7 @@ export const CustomersPage: React.FC = () => {
   const [newCustTax, setNewCustTax] = useState('');
   const [newCustAddress, setNewCustAddress] = useState('');
   const [newCustNotes, setNewCustNotes] = useState('');
+  const [successMsg, setSuccessMsg] = useState(false);
 
   // Fetch Customers List
   const { data: customers = [], isLoading } = useQuery({
@@ -44,12 +45,14 @@ export const CustomersPage: React.FC = () => {
     mutationFn: (payload: any) => window.api.customers.create(payload),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['customers'] });
-      setAddCustomerOpen(false);
+      setShowInlineForm(false);
       setNewCustName('');
       setNewCustPhone('');
       setNewCustTax('');
       setNewCustAddress('');
       setNewCustNotes('');
+      setSuccessMsg(true);
+      setTimeout(() => setSuccessMsg(false), 3000);
     },
   });
 
@@ -125,12 +128,94 @@ export const CustomersPage: React.FC = () => {
         </div>
 
         <div className="flex items-center gap-3">
-          <Button onClick={() => setAddCustomerOpen(true)} variant="default" className="gap-2 shadow-sm">
-            <Plus className="w-4 h-4" />
-            Yeni Müşteri Ekle
+          {successMsg && (
+            <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 text-xs font-semibold">
+              <CheckCircle2 className="w-4 h-4" />
+              Müşteri Eklendi!
+            </div>
+          )}
+          <Button
+            onClick={() => setShowInlineForm(!showInlineForm)}
+            variant={showInlineForm ? 'outline' : 'default'}
+            className="gap-2 shadow-sm text-xs"
+          >
+            {showInlineForm ? <X className="w-4 h-4" /> : <Plus className="w-4 h-4" />}
+            {showInlineForm ? 'Formu Kapat' : 'Ekran İçi Yeni Müşteri Ekle'}
           </Button>
         </div>
       </div>
+
+      {/* Ekran İçi Dahili Müşteri Kayıt Formu (Inline Screen Form) */}
+      {showInlineForm && (
+        <Card className="border-sky-500/40 bg-sky-500/5 dark:bg-sky-950/20">
+          <CardHeader className="pb-3">
+            <CardTitle className="text-base font-bold text-sky-600 dark:text-sky-400 flex items-center gap-2">
+              <Plus className="w-4 h-4" />
+              Hızlı Müşteri Kartı Tanımlama (Ekran İçi Form)
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <form onSubmit={handleCreateCustomer} className="space-y-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+                <div>
+                  <label className="text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1 block">Müşteri / Firma Adı *</label>
+                  <Input
+                    required
+                    placeholder="Örn: ABC Ticaret Ltd."
+                    value={newCustName}
+                    onChange={(e) => setNewCustName(e.target.value)}
+                  />
+                </div>
+                <div>
+                  <label className="text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1 block">Telefon Numarası</label>
+                  <Input
+                    placeholder="0532 000 00 00"
+                    value={newCustPhone}
+                    onChange={(e) => setNewCustPhone(e.target.value)}
+                  />
+                </div>
+                <div>
+                  <label className="text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1 block">Vergi No / T.C. No</label>
+                  <Input
+                    placeholder="1234567890"
+                    value={newCustTax}
+                    onChange={(e) => setNewCustTax(e.target.value)}
+                  />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                  <label className="text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1 block">Adres</label>
+                  <Input
+                    placeholder="Sanayi Bölgesi No: 12..."
+                    value={newCustAddress}
+                    onChange={(e) => setNewCustAddress(e.target.value)}
+                  />
+                </div>
+                <div>
+                  <label className="text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1 block">Notlar</label>
+                  <Input
+                    placeholder="Genel notlar..."
+                    value={newCustNotes}
+                    onChange={(e) => setNewCustNotes(e.target.value)}
+                  />
+                </div>
+              </div>
+
+              <div className="flex justify-end gap-3 pt-2">
+                <Button type="button" variant="outline" size="sm" onClick={() => setShowInlineForm(false)}>
+                  İptal
+                </Button>
+                <Button type="submit" variant="default" size="sm" disabled={createCustomerMutation.isPending} className="gap-2">
+                  <Save className="w-4 h-4" />
+                  Müşteri Kartını Kaydet
+                </Button>
+              </div>
+            </form>
+          </CardContent>
+        </Card>
+      )}
 
       {/* Search & Stats Bar */}
       <div className="flex flex-col md:flex-row items-center justify-between gap-4">
@@ -216,7 +301,7 @@ export const CustomersPage: React.FC = () => {
         })}
       </div>
 
-      {/* Customer Statement Dialog / Detailed Ledger View */}
+      {/* Customer Statement Dialog */}
       {selectedCustomerId && customerStatement && (
         <Dialog open={!!selectedCustomerId} onOpenChange={() => setSelectedCustomerId(null)}>
           <DialogContent className="max-w-4xl">
@@ -290,72 +375,6 @@ export const CustomersPage: React.FC = () => {
           </DialogContent>
         </Dialog>
       )}
-
-      {/* Add New Customer Dialog */}
-      <Dialog open={addCustomerOpen} onOpenChange={setAddCustomerOpen}>
-        <DialogContent className="max-w-md">
-          <DialogHeader>
-            <DialogTitle className="text-lg font-bold">Yeni Müşteri Kartı Oluştur</DialogTitle>
-          </DialogHeader>
-
-          <form onSubmit={handleCreateCustomer} className="space-y-4 pt-2">
-            <div>
-              <label className="text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1 block">Müşteri / Firma Adı *</label>
-              <Input
-                required
-                placeholder="Örn: ABC Ticaret & Sanayi"
-                value={newCustName}
-                onChange={(e) => setNewCustName(e.target.value)}
-              />
-            </div>
-
-            <div>
-              <label className="text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1 block">Telefon Numarası</label>
-              <Input
-                placeholder="0532 000 00 00"
-                value={newCustPhone}
-                onChange={(e) => setNewCustPhone(e.target.value)}
-              />
-            </div>
-
-            <div>
-              <label className="text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1 block">Vergi No / T.C. No</label>
-              <Input
-                placeholder="1234567890"
-                value={newCustTax}
-                onChange={(e) => setNewCustTax(e.target.value)}
-              />
-            </div>
-
-            <div>
-              <label className="text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1 block">Adres</label>
-              <Input
-                placeholder="Sanayi Bölgesi No: 12..."
-                value={newCustAddress}
-                onChange={(e) => setNewCustAddress(e.target.value)}
-              />
-            </div>
-
-            <div>
-              <label className="text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1 block">Notlar</label>
-              <Input
-                placeholder="Genel cari notlar..."
-                value={newCustNotes}
-                onChange={(e) => setNewCustNotes(e.target.value)}
-              />
-            </div>
-
-            <div className="flex justify-end gap-3 pt-4 border-t border-slate-200 dark:border-slate-800">
-              <Button type="button" variant="outline" onClick={() => setAddCustomerOpen(false)}>
-                Vazgeç
-              </Button>
-              <Button type="submit" variant="default" disabled={createCustomerMutation.isPending}>
-                Müşteriyi Kaydet
-              </Button>
-            </div>
-          </form>
-        </DialogContent>
-      </Dialog>
     </div>
   );
 };

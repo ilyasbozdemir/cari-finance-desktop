@@ -1,46 +1,46 @@
 var Ei = Object.defineProperty;
 var _i = (n, e, t) => e in n ? Ei(n, e, { enumerable: !0, configurable: !0, writable: !0, value: t }) : n[e] = t;
-var o = (n, e, t) => _i(n, typeof e != "symbol" ? e + "" : e, t);
-import { app as he, ipcMain as x, dialog as _t, BrowserWindow as Es } from "electron";
+var c = (n, e, t) => _i(n, typeof e != "symbol" ? e + "" : e, t);
+import { app as he, ipcMain as q, dialog as Et, BrowserWindow as Ns } from "electron";
 import Qe from "node:path";
 import Li from "node:fs";
 import { fileURLToPath as Ai } from "node:url";
-import _e from "better-sqlite3";
-import tt from "path";
+import Ee from "better-sqlite3";
+import et from "path";
 import ue from "fs";
-const p = Symbol.for("drizzle:entityKind");
-function m(n, e) {
+const b = Symbol.for("drizzle:entityKind");
+function p(n, e) {
   if (!n || typeof n != "object")
     return !1;
   if (n instanceof e)
     return !0;
-  if (!Object.prototype.hasOwnProperty.call(e, p))
+  if (!Object.prototype.hasOwnProperty.call(e, b))
     throw new Error(
       `Class "${e.name ?? "<unknown>"}" doesn't look like a Drizzle entity. If this is incorrect and the class is provided by Drizzle, please report this as a bug.`
     );
   let t = Object.getPrototypeOf(n).constructor;
   if (t)
     for (; t; ) {
-      if (p in t && t[p] === e[p])
+      if (b in t && t[b] === e[b])
         return !0;
       t = Object.getPrototypeOf(t);
     }
   return !1;
 }
-var Bt;
-Bt = p;
-class _s {
+var Ot;
+Ot = b;
+class Es {
   write(e) {
     console.log(e);
   }
 }
-o(_s, Bt, "ConsoleLogWriter");
-var xt;
-xt = p;
-class Ls {
+c(Es, Ot, "ConsoleLogWriter");
+var Bt;
+Bt = b;
+class _s {
   constructor(e) {
-    o(this, "writer");
-    this.writer = (e == null ? void 0 : e.writer) ?? new _s();
+    c(this, "writer");
+    this.writer = (e == null ? void 0 : e.writer) ?? new Es();
   }
   logQuery(e, t) {
     const r = t.map((i) => {
@@ -53,87 +53,87 @@ class Ls {
     this.writer.write(`Query: ${e}${s}`);
   }
 }
-o(Ls, xt, "DefaultLogger");
+c(_s, Bt, "DefaultLogger");
 var Qt;
-Qt = p;
-class As {
+Qt = b;
+class Ls {
   logQuery() {
   }
 }
-o(As, Qt, "NoopLogger");
-const ce = Symbol.for("drizzle:Name"), xe = Symbol.for("drizzle:Schema"), rt = Symbol.for("drizzle:Columns"), Lt = Symbol.for("drizzle:ExtraConfigColumns"), He = Symbol.for("drizzle:OriginalName"), Ze = Symbol.for("drizzle:BaseName"), nt = Symbol.for("drizzle:IsAlias"), At = Symbol.for("drizzle:ExtraConfigBuilder"), vi = Symbol.for("drizzle:IsDrizzleTable");
-var qt, Dt, kt, jt, Pt, Ut, Mt, Ft, Rt, Kt;
-Kt = p, Rt = ce, Ft = He, Mt = xe, Ut = rt, Pt = Lt, jt = Ze, kt = nt, Dt = vi, qt = At;
-class S {
+c(Ls, Qt, "NoopLogger");
+const ce = Symbol.for("drizzle:Name"), Be = Symbol.for("drizzle:Schema"), tt = Symbol.for("drizzle:Columns"), _t = Symbol.for("drizzle:ExtraConfigColumns"), We = Symbol.for("drizzle:OriginalName"), He = Symbol.for("drizzle:BaseName"), rt = Symbol.for("drizzle:IsAlias"), Lt = Symbol.for("drizzle:ExtraConfigBuilder"), vi = Symbol.for("drizzle:IsDrizzleTable");
+var xt, qt, Dt, jt, Pt, kt, Ut, Mt, Ft, Rt;
+Rt = b, Ft = ce, Mt = We, Ut = Be, kt = tt, Pt = _t, jt = He, Dt = rt, qt = vi, xt = Lt;
+class w {
   constructor(e, t, r) {
     /**
      * @internal
      * Can be changed if the table is aliased.
      */
-    o(this, Rt);
+    c(this, Ft);
     /**
      * @internal
      * Used to store the original name of the table, before any aliasing.
      */
-    o(this, Ft);
+    c(this, Mt);
     /** @internal */
-    o(this, Mt);
+    c(this, Ut);
     /** @internal */
-    o(this, Ut);
+    c(this, kt);
     /** @internal */
-    o(this, Pt);
+    c(this, Pt);
     /**
      *  @internal
      * Used to store the table name before the transformation via the `tableCreator` functions.
      */
-    o(this, jt);
+    c(this, jt);
     /** @internal */
-    o(this, kt, !1);
+    c(this, Dt, !1);
     /** @internal */
-    o(this, Dt, !0);
+    c(this, qt, !0);
     /** @internal */
-    o(this, qt);
-    this[ce] = this[He] = e, this[xe] = t, this[Ze] = r;
+    c(this, xt);
+    this[ce] = this[We] = e, this[Be] = t, this[He] = r;
   }
 }
-o(S, Kt, "Table"), /** @internal */
-o(S, "Symbol", {
+c(w, Rt, "Table"), /** @internal */
+c(w, "Symbol", {
   Name: ce,
-  Schema: xe,
-  OriginalName: He,
-  Columns: rt,
-  ExtraConfigColumns: Lt,
-  BaseName: Ze,
-  IsAlias: nt,
-  ExtraConfigBuilder: At
+  Schema: Be,
+  OriginalName: We,
+  Columns: tt,
+  ExtraConfigColumns: _t,
+  BaseName: He,
+  IsAlias: rt,
+  ExtraConfigBuilder: Lt
 });
-function Ee(n) {
+function Ne(n) {
   return n[ce];
 }
-function ve(n) {
-  return `${n[xe] ?? "public"}.${n[ce]}`;
+function Ae(n) {
+  return `${n[Be] ?? "public"}.${n[ce]}`;
 }
-var zt;
-zt = p;
-class D {
+var Kt;
+Kt = b;
+class j {
   constructor(e, t) {
-    o(this, "name");
-    o(this, "keyAsName");
-    o(this, "primary");
-    o(this, "notNull");
-    o(this, "default");
-    o(this, "defaultFn");
-    o(this, "onUpdateFn");
-    o(this, "hasDefault");
-    o(this, "isUnique");
-    o(this, "uniqueName");
-    o(this, "uniqueType");
-    o(this, "dataType");
-    o(this, "columnType");
-    o(this, "enumValues");
-    o(this, "generated");
-    o(this, "generatedIdentity");
-    o(this, "config");
+    c(this, "name");
+    c(this, "keyAsName");
+    c(this, "primary");
+    c(this, "notNull");
+    c(this, "default");
+    c(this, "defaultFn");
+    c(this, "onUpdateFn");
+    c(this, "hasDefault");
+    c(this, "isUnique");
+    c(this, "uniqueName");
+    c(this, "uniqueType");
+    c(this, "dataType");
+    c(this, "columnType");
+    c(this, "enumValues");
+    c(this, "generated");
+    c(this, "generatedIdentity");
+    c(this, "config");
     this.table = e, this.config = t, this.name = t.name, this.keyAsName = t.keyAsName, this.notNull = t.notNull, this.default = t.default, this.defaultFn = t.defaultFn, this.onUpdateFn = t.onUpdateFn, this.hasDefault = t.hasDefault, this.primary = t.primaryKey, this.isUnique = t.isUnique, this.uniqueName = t.uniqueName, this.uniqueType = t.uniqueType, this.dataType = t.dataType, this.columnType = t.columnType, this.generated = t.generated, this.generatedIdentity = t.generatedIdentity;
   }
   mapFromDriverValue(e) {
@@ -147,20 +147,20 @@ class D {
     return this.config.generated !== void 0 && this.config.generated.type !== "byDefault";
   }
 }
-o(D, zt, "Column");
-var Vt;
-Vt = p;
-class vs {
+c(j, Kt, "Column");
+var zt;
+zt = b;
+class As {
   constructor(e, t, r) {
-    o(this, "config");
+    c(this, "config");
     /**
      * Alias for {@link $defaultFn}.
      */
-    o(this, "$default", this.$defaultFn);
+    c(this, "$default", this.$defaultFn);
     /**
      * Alias for {@link $onUpdateFn}.
      */
-    o(this, "$onUpdate", this.$onUpdateFn);
+    c(this, "$onUpdate", this.$onUpdateFn);
     this.config = {
       name: e,
       keyAsName: e === "",
@@ -240,14 +240,14 @@ class vs {
     this.config.name === "" && (this.config.name = e);
   }
 }
-o(vs, Vt, "ColumnBuilder");
-const vt = Symbol.for("drizzle:isPgEnum");
+c(As, zt, "ColumnBuilder");
+const At = Symbol.for("drizzle:isPgEnum");
 function Ci(n) {
-  return !!n && typeof n == "function" && vt in n && n[vt] === !0;
+  return !!n && typeof n == "function" && At in n && n[At] === !0;
 }
-var Xt;
-Xt = p;
-class J {
+var Vt;
+Vt = b;
+class G {
   constructor(e, t, r, s = !1) {
     this._ = {
       brand: "Subquery",
@@ -261,17 +261,17 @@ class J {
   // 	return new SQL([this]);
   // }
 }
-o(J, Xt, "Subquery");
-var Jt, Gt;
-class gt extends (Gt = J, Jt = p, Gt) {
+c(G, Vt, "Subquery");
+var Jt, Xt;
+class yt extends (Xt = G, Jt = b, Xt) {
 }
-o(gt, Jt, "WithSubquery");
+c(yt, Jt, "WithSubquery");
 const Ii = {
   startActiveSpan(n, e) {
     return e();
   }
-}, F = Symbol.for("drizzle:ViewBaseConfig");
-function Cs(n) {
+}, K = Symbol.for("drizzle:ViewBaseConfig");
+function vs(n) {
   return n != null && typeof n.getSQL == "function";
 }
 function $i(n) {
@@ -282,24 +282,24 @@ function $i(n) {
   return e;
 }
 var Yt;
-Yt = p;
-class k {
+Yt = b;
+class U {
   constructor(e) {
-    o(this, "value");
+    c(this, "value");
     this.value = Array.isArray(e) ? e : [e];
   }
   getSQL() {
-    return new L([this]);
+    return new v([this]);
   }
 }
-o(k, Yt, "StringChunk");
-var Wt;
-Wt = p;
+c(U, Yt, "StringChunk");
+var Gt;
+Gt = b;
 const de = class de {
   constructor(e) {
     /** @internal */
-    o(this, "decoder", Is);
-    o(this, "shouldInlineParams", !1);
+    c(this, "decoder", Cs);
+    c(this, "shouldInlineParams", !1);
     this.queryChunks = e;
   }
   append(e) {
@@ -321,75 +321,75 @@ const de = class de {
     }), {
       casing: s,
       escapeName: i,
-      escapeParam: c,
+      escapeParam: o,
       prepareTyping: a,
       inlineParams: u,
-      paramStartIndex: g
+      paramStartIndex: y
     } = r;
     return $i(e.map((d) => {
-      var C;
-      if (m(d, k))
+      var L;
+      if (p(d, U))
         return { sql: d.value.join(""), params: [] };
-      if (m(d, qe))
+      if (p(d, xe))
         return { sql: i(d.value), params: [] };
       if (d === void 0)
         return { sql: "", params: [] };
       if (Array.isArray(d)) {
-        const N = [new k("(")];
-        for (const [A, _] of d.entries())
-          N.push(_), A < d.length - 1 && N.push(new k(", "));
-        return N.push(new k(")")), this.buildQueryFromSourceParams(N, r);
+        const g = [new U("(")];
+        for (const [A, N] of d.entries())
+          g.push(N), A < d.length - 1 && g.push(new U(", "));
+        return g.push(new U(")")), this.buildQueryFromSourceParams(g, r);
       }
-      if (m(d, de))
+      if (p(d, de))
         return this.buildQueryFromSourceParams(d.queryChunks, {
           ...r,
           inlineParams: u || d.shouldInlineParams
         });
-      if (m(d, S)) {
-        const N = d[S.Symbol.Schema], A = d[S.Symbol.Name];
+      if (p(d, w)) {
+        const g = d[w.Symbol.Schema], A = d[w.Symbol.Name];
         return {
-          sql: N === void 0 ? i(A) : i(N) + "." + i(A),
+          sql: g === void 0 ? i(A) : i(g) + "." + i(A),
           params: []
         };
       }
-      if (m(d, D)) {
-        const N = s.getColumnCasing(d);
+      if (p(d, j)) {
+        const g = s.getColumnCasing(d);
         if (t.invokeSource === "indexes")
-          return { sql: i(N), params: [] };
-        const A = d.table[S.Symbol.Schema];
+          return { sql: i(g), params: [] };
+        const A = d.table[w.Symbol.Schema];
         return {
-          sql: d.table[nt] || A === void 0 ? i(d.table[S.Symbol.Name]) + "." + i(N) : i(A) + "." + i(d.table[S.Symbol.Name]) + "." + i(N),
+          sql: d.table[rt] || A === void 0 ? i(d.table[w.Symbol.Name]) + "." + i(g) : i(A) + "." + i(d.table[w.Symbol.Name]) + "." + i(g),
           params: []
         };
       }
-      if (m(d, be)) {
-        const N = d[F].schema, A = d[F].name;
+      if (p(d, be)) {
+        const g = d[K].schema, A = d[K].name;
         return {
-          sql: N === void 0 ? i(A) : i(N) + "." + i(A),
+          sql: g === void 0 ? i(A) : i(g) + "." + i(A),
           params: []
         };
       }
-      if (m(d, se)) {
-        if (m(d.value, me))
-          return { sql: c(g.value++, d), params: [d], typings: ["none"] };
-        const N = d.value === null ? null : d.encoder.mapToDriverValue(d.value);
-        if (m(N, de))
-          return this.buildQueryFromSourceParams([N], r);
+      if (p(d, se)) {
+        if (p(d.value, me))
+          return { sql: o(y.value++, d), params: [d], typings: ["none"] };
+        const g = d.value === null ? null : d.encoder.mapToDriverValue(d.value);
+        if (p(g, de))
+          return this.buildQueryFromSourceParams([g], r);
         if (u)
-          return { sql: this.mapInlineParam(N, r), params: [] };
+          return { sql: this.mapInlineParam(g, r), params: [] };
         let A = ["none"];
-        return a && (A = [a(d.encoder)]), { sql: c(g.value++, N), params: [N], typings: A };
+        return a && (A = [a(d.encoder)]), { sql: o(y.value++, g), params: [g], typings: A };
       }
-      return m(d, me) ? { sql: c(g.value++, d), params: [d], typings: ["none"] } : m(d, de.Aliased) && d.fieldAlias !== void 0 ? { sql: i(d.fieldAlias), params: [] } : m(d, J) ? d._.isWith ? { sql: i(d._.alias), params: [] } : this.buildQueryFromSourceParams([
-        new k("("),
+      return p(d, me) ? { sql: o(y.value++, d), params: [d], typings: ["none"] } : p(d, de.Aliased) && d.fieldAlias !== void 0 ? { sql: i(d.fieldAlias), params: [] } : p(d, G) ? d._.isWith ? { sql: i(d._.alias), params: [] } : this.buildQueryFromSourceParams([
+        new U("("),
         d._.sql,
-        new k(") "),
-        new qe(d._.alias)
-      ], r) : Ci(d) ? d.schema ? { sql: i(d.schema) + "." + i(d.enumName), params: [] } : { sql: i(d.enumName), params: [] } : Cs(d) ? (C = d.shouldOmitSQLParens) != null && C.call(d) ? this.buildQueryFromSourceParams([d.getSQL()], r) : this.buildQueryFromSourceParams([
-        new k("("),
+        new U(") "),
+        new xe(d._.alias)
+      ], r) : Ci(d) ? d.schema ? { sql: i(d.schema) + "." + i(d.enumName), params: [] } : { sql: i(d.enumName), params: [] } : vs(d) ? (L = d.shouldOmitSQLParens) != null && L.call(d) ? this.buildQueryFromSourceParams([d.getSQL()], r) : this.buildQueryFromSourceParams([
+        new U("("),
         d.getSQL(),
-        new k(")")
-      ], r) : u ? { sql: this.mapInlineParam(d, r), params: [] } : { sql: c(g.value++, d), params: [d], typings: ["none"] };
+        new U(")")
+      ], r) : u ? { sql: this.mapInlineParam(d, r), params: [] } : { sql: o(y.value++, d), params: [d], typings: ["none"] };
     }));
   }
   mapInlineParam(e, { escapeString: t }) {
@@ -427,96 +427,96 @@ const de = class de {
     return e ? this : void 0;
   }
 };
-o(de, Wt, "SQL");
-let L = de;
-var Ht;
-Ht = p;
-class qe {
+c(de, Gt, "SQL");
+let v = de;
+var Wt;
+Wt = b;
+class xe {
   constructor(e) {
-    o(this, "brand");
+    c(this, "brand");
     this.value = e;
   }
   getSQL() {
-    return new L([this]);
+    return new v([this]);
   }
 }
-o(qe, Ht, "Name");
+c(xe, Wt, "Name");
 function Oi(n) {
   return typeof n == "object" && n !== null && "mapToDriverValue" in n && typeof n.mapToDriverValue == "function";
 }
-const Is = {
+const Cs = {
   mapFromDriverValue: (n) => n
-}, $s = {
+}, Is = {
   mapToDriverValue: (n) => n
 };
 ({
-  ...Is,
-  ...$s
+  ...Cs,
+  ...Is
 });
-var Zt;
-Zt = p;
+var Ht;
+Ht = b;
 class se {
   /**
    * @param value - Parameter value
    * @param encoder - Encoder to convert the value to a driver parameter
    */
-  constructor(e, t = $s) {
-    o(this, "brand");
+  constructor(e, t = Is) {
+    c(this, "brand");
     this.value = e, this.encoder = t;
   }
   getSQL() {
-    return new L([this]);
+    return new v([this]);
   }
 }
-o(se, Zt, "Param");
+c(se, Ht, "Param");
 function l(n, ...e) {
   const t = [];
-  (e.length > 0 || n.length > 0 && n[0] !== "") && t.push(new k(n[0]));
+  (e.length > 0 || n.length > 0 && n[0] !== "") && t.push(new U(n[0]));
   for (const [r, s] of e.entries())
-    t.push(s, new k(n[r + 1]));
-  return new L(t);
+    t.push(s, new U(n[r + 1]));
+  return new v(t);
 }
 ((n) => {
   function e() {
-    return new L([]);
+    return new v([]);
   }
   n.empty = e;
   function t(u) {
-    return new L(u);
+    return new v(u);
   }
   n.fromList = t;
   function r(u) {
-    return new L([new k(u)]);
+    return new v([new U(u)]);
   }
   n.raw = r;
-  function s(u, g) {
+  function s(u, y) {
     const d = [];
-    for (const [C, N] of u.entries())
-      C > 0 && g !== void 0 && d.push(g), d.push(N);
-    return new L(d);
+    for (const [L, g] of u.entries())
+      L > 0 && y !== void 0 && d.push(y), d.push(g);
+    return new v(d);
   }
   n.join = s;
   function i(u) {
-    return new qe(u);
+    return new xe(u);
   }
   n.identifier = i;
-  function c(u) {
+  function o(u) {
     return new me(u);
   }
-  n.placeholder = c;
-  function a(u, g) {
-    return new se(u, g);
+  n.placeholder = o;
+  function a(u, y) {
+    return new se(u, y);
   }
   n.param = a;
 })(l || (l = {}));
 ((n) => {
   var t;
-  t = p;
+  t = b;
   const r = class r {
-    constructor(i, c) {
+    constructor(i, o) {
       /** @internal */
-      o(this, "isSelectionField", !1);
-      this.sql = i, this.fieldAlias = c;
+      c(this, "isSelectionField", !1);
+      this.sql = i, this.fieldAlias = o;
     }
     getSQL() {
       return this.sql;
@@ -526,29 +526,29 @@ function l(n, ...e) {
       return new r(this.sql, this.fieldAlias);
     }
   };
-  o(r, t, "SQL.Aliased");
+  c(r, t, "SQL.Aliased");
   let e = r;
   n.Aliased = e;
-})(L || (L = {}));
-var er;
-er = p;
+})(v || (v = {}));
+var Zt;
+Zt = b;
 class me {
   constructor(e) {
     this.name = e;
   }
   getSQL() {
-    return new L([this]);
+    return new v([this]);
   }
 }
-o(me, er, "Placeholder");
-function Oe(n, e) {
+c(me, Zt, "Placeholder");
+function $e(n, e) {
   return n.map((t) => {
-    if (m(t, me)) {
+    if (p(t, me)) {
       if (!(t.name in e))
         throw new Error(`No value for placeholder "${t.name}" was provided`);
       return e[t.name];
     }
-    if (m(t, se) && m(t.value, me)) {
+    if (p(t, se) && p(t.value, me)) {
       if (!(t.value.name in e))
         throw new Error(`No value for placeholder "${t.value.name}" was provided`);
       return t.encoder.mapToDriverValue(e[t.value.name]);
@@ -556,13 +556,13 @@ function Oe(n, e) {
     return t;
   });
 }
-var tr, rr;
-rr = p, tr = F;
+var er, tr;
+tr = b, er = K;
 class be {
   constructor({ name: e, schema: t, selectedFields: r, query: s }) {
     /** @internal */
-    o(this, tr);
-    this[F] = {
+    c(this, er);
+    this[K] = {
       name: e,
       originalName: e,
       schema: t,
@@ -573,33 +573,33 @@ class be {
     };
   }
   getSQL() {
-    return new L([this]);
+    return new v([this]);
   }
 }
-o(be, rr, "View");
-D.prototype.getSQL = function() {
-  return new L([this]);
+c(be, tr, "View");
+j.prototype.getSQL = function() {
+  return new v([this]);
 };
-S.prototype.getSQL = function() {
-  return new L([this]);
+w.prototype.getSQL = function() {
+  return new v([this]);
 };
-J.prototype.getSQL = function() {
-  return new L([this]);
+G.prototype.getSQL = function() {
+  return new v([this]);
 };
-function Ct(n, e, t) {
+function vt(n, e, t) {
   const r = {}, s = n.reduce(
-    (i, { path: c, field: a }, u) => {
-      let g;
-      m(a, D) ? g = a : m(a, L) ? g = a.decoder : g = a.sql.decoder;
+    (i, { path: o, field: a }, u) => {
+      let y;
+      p(a, j) ? y = a : p(a, v) ? y = a.decoder : y = a.sql.decoder;
       let d = i;
-      for (const [C, N] of c.entries())
-        if (C < c.length - 1)
-          N in d || (d[N] = {}), d = d[N];
+      for (const [L, g] of o.entries())
+        if (L < o.length - 1)
+          g in d || (d[g] = {}), d = d[g];
         else {
-          const A = e[u], _ = d[N] = A === null ? null : g.mapFromDriverValue(A);
-          if (t && m(a, D) && c.length === 2) {
-            const T = c[0];
-            T in r ? typeof r[T] == "string" && r[T] !== Ee(a.table) && (r[T] = !1) : r[T] = _ === null ? Ee(a.table) : !1;
+          const A = e[u], N = d[g] = A === null ? null : y.mapFromDriverValue(A);
+          if (t && p(a, j) && o.length === 2) {
+            const S = o[0];
+            S in r ? typeof r[S] == "string" && r[S] !== Ne(a.table) && (r[S] = !1) : r[S] = N === null ? Ne(a.table) : !1;
           }
         }
       return i;
@@ -607,8 +607,8 @@ function Ct(n, e, t) {
     {}
   );
   if (t && Object.keys(r).length > 0)
-    for (const [i, c] of Object.entries(r))
-      typeof c == "string" && !t[c] && (s[i] = null);
+    for (const [i, o] of Object.entries(r))
+      typeof o == "string" && !t[o] && (s[i] = null);
   return s;
 }
 function fe(n, e) {
@@ -616,7 +616,7 @@ function fe(n, e) {
     if (typeof r != "string")
       return t;
     const i = e ? [...e, r] : [r];
-    return m(s, D) || m(s, L) || m(s, L.Aliased) ? t.push({ path: i, field: s }) : m(s, S) ? t.push(...fe(s[S.Symbol.Columns], i)) : t.push(...fe(s, i)), t;
+    return p(s, j) || p(s, v) || p(s, v.Aliased) ? t.push({ path: i, field: s }) : p(s, w) ? t.push(...fe(s[w.Symbol.Columns], i)) : t.push(...fe(s, i)), t;
   }, []);
 }
 function bt(n, e) {
@@ -628,8 +628,8 @@ function bt(n, e) {
       return !1;
   return !0;
 }
-function Os(n, e) {
-  const t = Object.entries(e).filter(([, r]) => r !== void 0).map(([r, s]) => m(s, L) || m(s, D) ? [r, s] : [r, new se(s, n[S.Symbol.Columns][r])]);
+function $s(n, e) {
+  const t = Object.entries(e).filter(([, r]) => r !== void 0).map(([r, s]) => p(s, v) || p(s, j) ? [r, s] : [r, new se(s, n[w.Symbol.Columns][r])]);
   if (t.length === 0)
     throw new Error("No values to set");
   return Object.fromEntries(t);
@@ -643,19 +643,19 @@ function Bi(n, e) {
         Object.getOwnPropertyDescriptor(t.prototype, r) || /* @__PURE__ */ Object.create(null)
       );
 }
-function xi(n) {
-  return n[S.Symbol.Columns];
+function Qi(n) {
+  return n[w.Symbol.Columns];
 }
-function st(n) {
-  return m(n, J) ? n._.alias : m(n, be) ? n[F].name : m(n, L) ? void 0 : n[S.Symbol.IsAlias] ? n[S.Symbol.Name] : n[S.Symbol.BaseName];
+function nt(n) {
+  return p(n, G) ? n._.alias : p(n, be) ? n[K].name : p(n, v) ? void 0 : n[w.Symbol.IsAlias] ? n[w.Symbol.Name] : n[w.Symbol.BaseName];
 }
-function Ke(n, e) {
+function Re(n, e) {
   return {
     name: typeof n == "string" && n.length > 0 ? n : "",
     config: typeof n == "object" ? n : e
   };
 }
-function Qi(n) {
+function xi(n) {
   if (typeof n != "object" || n === null || n.constructor.name !== "Object")
     return !1;
   if ("logger" in n) {
@@ -682,66 +682,66 @@ function Qi(n) {
   }
   return Object.keys(n).length === 0;
 }
-const It = Symbol.for("drizzle:PgInlineForeignKeys"), $t = Symbol.for("drizzle:EnableRLS");
-var nr, sr, ir, ar, or;
-class it extends (or = S, ar = p, ir = It, sr = $t, nr = S.Symbol.ExtraConfigBuilder, or) {
+const Ct = Symbol.for("drizzle:PgInlineForeignKeys"), It = Symbol.for("drizzle:EnableRLS");
+var rr, nr, sr, ir, ar;
+class st extends (ar = w, ir = b, sr = Ct, nr = It, rr = w.Symbol.ExtraConfigBuilder, ar) {
   constructor() {
     super(...arguments);
     /**@internal */
-    o(this, ir, []);
+    c(this, sr, []);
     /** @internal */
-    o(this, sr, !1);
+    c(this, nr, !1);
     /** @internal */
-    o(this, nr);
+    c(this, rr);
   }
 }
-o(it, ar, "PgTable"), /** @internal */
-o(it, "Symbol", Object.assign({}, S.Symbol, {
-  InlineForeignKeys: It,
-  EnableRLS: $t
+c(st, ir, "PgTable"), /** @internal */
+c(st, "Symbol", Object.assign({}, w.Symbol, {
+  InlineForeignKeys: Ct,
+  EnableRLS: It
 }));
-var cr;
-cr = p;
-class Bs {
+var or;
+or = b;
+class Os {
   constructor(e, t) {
     /** @internal */
-    o(this, "columns");
+    c(this, "columns");
     /** @internal */
-    o(this, "name");
+    c(this, "name");
     this.columns = e, this.name = t;
   }
   /** @internal */
   build(e) {
-    return new xs(e, this.columns, this.name);
+    return new Bs(e, this.columns, this.name);
   }
 }
-o(Bs, cr, "PgPrimaryKeyBuilder");
-var lr;
-lr = p;
-class xs {
+c(Os, or, "PgPrimaryKeyBuilder");
+var cr;
+cr = b;
+class Bs {
   constructor(e, t, r) {
-    o(this, "columns");
-    o(this, "name");
+    c(this, "columns");
+    c(this, "name");
     this.table = e, this.columns = t, this.name = r;
   }
   getName() {
-    return this.name ?? `${this.table[it.Symbol.Name]}_${this.columns.map((e) => e.name).join("_")}_pk`;
+    return this.name ?? `${this.table[st.Symbol.Name]}_${this.columns.map((e) => e.name).join("_")}_pk`;
   }
 }
-o(xs, lr, "PgPrimaryKey");
-function R(n, e) {
-  return Oi(e) && !Cs(n) && !m(n, se) && !m(n, me) && !m(n, D) && !m(n, S) && !m(n, be) ? new se(n, e) : n;
+c(Bs, cr, "PgPrimaryKey");
+function z(n, e) {
+  return Oi(e) && !vs(n) && !p(n, se) && !p(n, me) && !p(n, j) && !p(n, w) && !p(n, be) ? new se(n, e) : n;
 }
-const h = (n, e) => l`${n} = ${R(e, n)}`, qi = (n, e) => l`${n} <> ${R(e, n)}`;
-function U(...n) {
+const f = (n, e) => l`${n} = ${z(e, n)}`, qi = (n, e) => l`${n} <> ${z(e, n)}`;
+function k(...n) {
   const e = n.filter(
     (t) => t !== void 0
   );
   if (e.length !== 0)
-    return e.length === 1 ? new L(e) : new L([
-      new k("("),
-      l.join(e, new k(" and ")),
-      new k(")")
+    return e.length === 1 ? new v(e) : new v([
+      new U("("),
+      l.join(e, new U(" and ")),
+      new U(")")
     ]);
 }
 function Di(...n) {
@@ -749,21 +749,21 @@ function Di(...n) {
     (t) => t !== void 0
   );
   if (e.length !== 0)
-    return e.length === 1 ? new L(e) : new L([
-      new k("("),
-      l.join(e, new k(" or ")),
-      new k(")")
+    return e.length === 1 ? new v(e) : new v([
+      new U("("),
+      l.join(e, new U(" or ")),
+      new U(")")
     ]);
 }
-function ki(n) {
+function ji(n) {
   return l`not ${n}`;
 }
-const ji = (n, e) => l`${n} > ${R(e, n)}`, Pi = (n, e) => l`${n} >= ${R(e, n)}`, Ui = (n, e) => l`${n} < ${R(e, n)}`, Mi = (n, e) => l`${n} <= ${R(e, n)}`;
+const Pi = (n, e) => l`${n} > ${z(e, n)}`, ki = (n, e) => l`${n} >= ${z(e, n)}`, Ui = (n, e) => l`${n} < ${z(e, n)}`, Mi = (n, e) => l`${n} <= ${z(e, n)}`;
 function Fi(n, e) {
-  return Array.isArray(e) ? e.length === 0 ? l`false` : l`${n} in ${e.map((t) => R(t, n))}` : l`${n} in ${R(e, n)}`;
+  return Array.isArray(e) ? e.length === 0 ? l`false` : l`${n} in ${e.map((t) => z(t, n))}` : l`${n} in ${z(e, n)}`;
 }
 function Ri(n, e) {
-  return Array.isArray(e) ? e.length === 0 ? l`true` : l`${n} not in ${e.map((t) => R(t, n))}` : l`${n} not in ${R(e, n)}`;
+  return Array.isArray(e) ? e.length === 0 ? l`true` : l`${n} not in ${e.map((t) => z(t, n))}` : l`${n} not in ${z(e, n)}`;
 }
 function Ki(n) {
   return l`${n} is null`;
@@ -774,22 +774,22 @@ function zi(n) {
 function Vi(n) {
   return l`exists ${n}`;
 }
-function Xi(n) {
+function Ji(n) {
   return l`not exists ${n}`;
 }
-function Ji(n, e, t) {
-  return l`${n} between ${R(e, n)} and ${R(
+function Xi(n, e, t) {
+  return l`${n} between ${z(e, n)} and ${z(
     t,
     n
   )}`;
 }
-function Gi(n, e, t) {
-  return l`${n} not between ${R(
+function Yi(n, e, t) {
+  return l`${n} not between ${z(
     e,
     n
-  )} and ${R(t, n)}`;
+  )} and ${z(t, n)}`;
 }
-function Yi(n, e) {
+function Gi(n, e) {
   return l`${n} like ${e}`;
 }
 function Wi(n, e) {
@@ -804,34 +804,34 @@ function Zi(n, e) {
 function ea(n) {
   return l`${n} asc`;
 }
-function pe(n) {
+function ie(n) {
   return l`${n} desc`;
 }
-var ur;
-ur = p;
-class wt {
+var lr;
+lr = b;
+class gt {
   constructor(e, t, r) {
-    o(this, "referencedTableName");
-    o(this, "fieldName");
-    this.sourceTable = e, this.referencedTable = t, this.relationName = r, this.referencedTableName = t[S.Symbol.Name];
+    c(this, "referencedTableName");
+    c(this, "fieldName");
+    this.sourceTable = e, this.referencedTable = t, this.relationName = r, this.referencedTableName = t[w.Symbol.Name];
   }
 }
-o(wt, ur, "Relation");
-var dr;
-dr = p;
+c(gt, lr, "Relation");
+var ur;
+ur = b;
 class Qs {
   constructor(e, t) {
     this.table = e, this.config = t;
   }
 }
-o(Qs, dr, "Relations");
-var hr, mr;
-const Ue = class Ue extends (mr = wt, hr = p, mr) {
+c(Qs, ur, "Relations");
+var dr, hr;
+const ke = class ke extends (hr = gt, dr = b, hr) {
   constructor(e, t, r, s) {
     super(e, t, r == null ? void 0 : r.relationName), this.config = r, this.isNullable = s;
   }
   withFieldName(e) {
-    const t = new Ue(
+    const t = new ke(
       this.sourceTable,
       this.referencedTable,
       this.config,
@@ -840,15 +840,15 @@ const Ue = class Ue extends (mr = wt, hr = p, mr) {
     return t.fieldName = e, t;
   }
 };
-o(Ue, hr, "One");
-let ye = Ue;
-var fr, pr;
-const Me = class Me extends (pr = wt, fr = p, pr) {
+c(ke, dr, "One");
+let pe = ke;
+var mr, fr;
+const Ue = class Ue extends (fr = gt, mr = b, fr) {
   constructor(e, t, r) {
     super(e, t, r == null ? void 0 : r.relationName), this.config = r;
   }
   withFieldName(e) {
-    const t = new Me(
+    const t = new Ue(
       this.sourceTable,
       this.referencedTable,
       this.config
@@ -856,27 +856,27 @@ const Me = class Me extends (pr = wt, fr = p, pr) {
     return t.fieldName = e, t;
   }
 };
-o(Me, fr, "Many");
-let De = Me;
+c(Ue, mr, "Many");
+let qe = Ue;
 function ta() {
   return {
-    and: U,
-    between: Ji,
-    eq: h,
+    and: k,
+    between: Xi,
+    eq: f,
     exists: Vi,
-    gt: ji,
-    gte: Pi,
+    gt: Pi,
+    gte: ki,
     ilike: Hi,
     inArray: Fi,
     isNull: Ki,
     isNotNull: zi,
-    like: Yi,
+    like: Gi,
     lt: Ui,
     lte: Mi,
     ne: qi,
-    not: ki,
-    notBetween: Gi,
-    notExists: Xi,
+    not: ji,
+    notBetween: Yi,
+    notExists: Ji,
     notLike: Wi,
     notIlike: Zi,
     notInArray: Ri,
@@ -888,52 +888,52 @@ function ra() {
   return {
     sql: l,
     asc: ea,
-    desc: pe
+    desc: ie
   };
 }
 function na(n, e) {
   var i;
-  Object.keys(n).length === 1 && "default" in n && !m(n.default, S) && (n = n.default);
+  Object.keys(n).length === 1 && "default" in n && !p(n.default, w) && (n = n.default);
   const t = {}, r = {}, s = {};
-  for (const [c, a] of Object.entries(n))
-    if (m(a, S)) {
-      const u = ve(a), g = r[u];
-      t[u] = c, s[c] = {
-        tsName: c,
-        dbName: a[S.Symbol.Name],
-        schema: a[S.Symbol.Schema],
-        columns: a[S.Symbol.Columns],
-        relations: (g == null ? void 0 : g.relations) ?? {},
-        primaryKey: (g == null ? void 0 : g.primaryKey) ?? []
+  for (const [o, a] of Object.entries(n))
+    if (p(a, w)) {
+      const u = Ae(a), y = r[u];
+      t[u] = o, s[o] = {
+        tsName: o,
+        dbName: a[w.Symbol.Name],
+        schema: a[w.Symbol.Schema],
+        columns: a[w.Symbol.Columns],
+        relations: (y == null ? void 0 : y.relations) ?? {},
+        primaryKey: (y == null ? void 0 : y.primaryKey) ?? []
       };
-      for (const C of Object.values(
-        a[S.Symbol.Columns]
+      for (const L of Object.values(
+        a[w.Symbol.Columns]
       ))
-        C.primary && s[c].primaryKey.push(C);
-      const d = (i = a[S.Symbol.ExtraConfigBuilder]) == null ? void 0 : i.call(a, a[S.Symbol.ExtraConfigColumns]);
+        L.primary && s[o].primaryKey.push(L);
+      const d = (i = a[w.Symbol.ExtraConfigBuilder]) == null ? void 0 : i.call(a, a[w.Symbol.ExtraConfigColumns]);
       if (d)
-        for (const C of Object.values(d))
-          m(C, Bs) && s[c].primaryKey.push(...C.columns);
-    } else if (m(a, Qs)) {
-      const u = ve(a.table), g = t[u], d = a.config(
+        for (const L of Object.values(d))
+          p(L, Os) && s[o].primaryKey.push(...L.columns);
+    } else if (p(a, Qs)) {
+      const u = Ae(a.table), y = t[u], d = a.config(
         e(a.table)
       );
-      let C;
-      for (const [N, A] of Object.entries(d))
-        if (g) {
-          const _ = s[g];
-          _.relations[N] = A;
+      let L;
+      for (const [g, A] of Object.entries(d))
+        if (y) {
+          const N = s[y];
+          N.relations[g] = A;
         } else
           u in r || (r[u] = {
             relations: {},
-            primaryKey: C
-          }), r[u].relations[N] = A;
+            primaryKey: L
+          }), r[u].relations[g] = A;
     }
   return { tables: s, tableNamesMap: t };
 }
 function sa(n) {
   return function(t, r) {
-    return new ye(
+    return new pe(
       n,
       t,
       r,
@@ -943,27 +943,27 @@ function sa(n) {
 }
 function ia(n) {
   return function(t, r) {
-    return new De(n, t, r);
+    return new qe(n, t, r);
   };
 }
 function aa(n, e, t) {
-  if (m(t, ye) && t.config)
+  if (p(t, pe) && t.config)
     return {
       fields: t.config.fields,
       references: t.config.references
     };
-  const r = e[ve(t.referencedTable)];
+  const r = e[Ae(t.referencedTable)];
   if (!r)
     throw new Error(
-      `Table "${t.referencedTable[S.Symbol.Name]}" not found in schema`
+      `Table "${t.referencedTable[w.Symbol.Name]}" not found in schema`
     );
   const s = n[r];
   if (!s)
     throw new Error(`Table "${r}" not found in schema`);
-  const i = t.sourceTable, c = e[ve(i)];
-  if (!c)
+  const i = t.sourceTable, o = e[Ae(i)];
+  if (!o)
     throw new Error(
-      `Table "${i[S.Symbol.Name]}" not found in schema`
+      `Table "${i[w.Symbol.Name]}" not found in schema`
     );
   const a = [];
   for (const u of Object.values(
@@ -974,15 +974,15 @@ function aa(n, e, t) {
     throw t.relationName ? new Error(
       `There are multiple relations with name "${t.relationName}" in table "${r}"`
     ) : new Error(
-      `There are multiple relations between "${r}" and "${t.sourceTable[S.Symbol.Name]}". Please specify relation name`
+      `There are multiple relations between "${r}" and "${t.sourceTable[w.Symbol.Name]}". Please specify relation name`
     );
-  if (a[0] && m(a[0], ye) && a[0].config)
+  if (a[0] && p(a[0], pe) && a[0].config)
     return {
       fields: a[0].config.references,
       references: a[0].config.fields
     };
   throw new Error(
-    `There is not enough information to infer relation "${c}.${t.fieldName}"`
+    `There is not enough information to infer relation "${o}.${t.fieldName}"`
   );
 }
 function oa(n) {
@@ -991,39 +991,39 @@ function oa(n) {
     many: ia(n)
   };
 }
-function at(n, e, t, r, s = (i) => i) {
+function it(n, e, t, r, s = (i) => i) {
   const i = {};
   for (const [
-    c,
+    o,
     a
   ] of r.entries())
     if (a.isJson) {
-      const u = e.relations[a.tsKey], g = t[c], d = typeof g == "string" ? JSON.parse(g) : g;
-      i[a.tsKey] = m(u, ye) ? d && at(
+      const u = e.relations[a.tsKey], y = t[o], d = typeof y == "string" ? JSON.parse(y) : y;
+      i[a.tsKey] = p(u, pe) ? d && it(
         n,
         n[a.relationTableTsKey],
         d,
         a.selection,
         s
       ) : d.map(
-        (C) => at(
+        (L) => it(
           n,
           n[a.relationTableTsKey],
-          C,
+          L,
           a.selection,
           s
         )
       );
     } else {
-      const u = s(t[c]), g = a.field;
+      const u = s(t[o]), y = a.field;
       let d;
-      m(g, D) ? d = g : m(g, L) ? d = g.decoder : d = g.sql.decoder, i[a.tsKey] = u === null ? null : d.mapFromDriverValue(u);
+      p(y, j) ? d = y : p(y, v) ? d = y.decoder : d = y.sql.decoder, i[a.tsKey] = u === null ? null : d.mapFromDriverValue(u);
     }
   return i;
 }
-var yr;
-yr = p;
-class Ce {
+var pr;
+pr = b;
+class ve {
   constructor(e) {
     this.table = e;
   }
@@ -1031,63 +1031,63 @@ class Ce {
     return t === "table" ? this.table : e[t];
   }
 }
-o(Ce, yr, "ColumnAliasProxyHandler");
-var gr;
-gr = p;
-class ze {
+c(ve, pr, "ColumnAliasProxyHandler");
+var yr;
+yr = b;
+class Ke {
   constructor(e, t) {
     this.alias = e, this.replaceOriginalName = t;
   }
   get(e, t) {
-    if (t === S.Symbol.IsAlias)
+    if (t === w.Symbol.IsAlias)
       return !0;
-    if (t === S.Symbol.Name)
+    if (t === w.Symbol.Name)
       return this.alias;
-    if (this.replaceOriginalName && t === S.Symbol.OriginalName)
+    if (this.replaceOriginalName && t === w.Symbol.OriginalName)
       return this.alias;
-    if (t === F)
+    if (t === K)
       return {
-        ...e[F],
+        ...e[K],
         name: this.alias,
         isAlias: !0
       };
-    if (t === S.Symbol.Columns) {
-      const s = e[S.Symbol.Columns];
+    if (t === w.Symbol.Columns) {
+      const s = e[w.Symbol.Columns];
       if (!s)
         return s;
       const i = {};
-      return Object.keys(s).map((c) => {
-        i[c] = new Proxy(
-          s[c],
-          new Ce(new Proxy(e, this))
+      return Object.keys(s).map((o) => {
+        i[o] = new Proxy(
+          s[o],
+          new ve(new Proxy(e, this))
         );
       }), i;
     }
     const r = e[t];
-    return m(r, D) ? new Proxy(r, new Ce(new Proxy(e, this))) : r;
+    return p(r, j) ? new Proxy(r, new ve(new Proxy(e, this))) : r;
   }
 }
-o(ze, gr, "TableAliasProxyHandler");
-function et(n, e) {
-  return new Proxy(n, new ze(e, !1));
+c(Ke, yr, "TableAliasProxyHandler");
+function Ze(n, e) {
+  return new Proxy(n, new Ke(e, !1));
 }
 function re(n, e) {
   return new Proxy(
     n,
-    new Ce(new Proxy(n.table, new ze(e, !1)))
+    new ve(new Proxy(n.table, new Ke(e, !1)))
   );
 }
-function qs(n, e) {
-  return new L.Aliased(ke(n.sql, e), n.fieldAlias);
+function xs(n, e) {
+  return new v.Aliased(De(n.sql, e), n.fieldAlias);
 }
-function ke(n, e) {
-  return l.join(n.queryChunks.map((t) => m(t, D) ? re(t, e) : m(t, L) ? ke(t, e) : m(t, L.Aliased) ? qs(t, e) : t));
+function De(n, e) {
+  return l.join(n.queryChunks.map((t) => p(t, j) ? re(t, e) : p(t, v) ? De(t, e) : p(t, v.Aliased) ? xs(t, e) : t));
 }
 var br;
-br = p;
-const Fe = class Fe {
+br = b;
+const Me = class Me {
   constructor(e) {
-    o(this, "config");
+    c(this, "config");
     this.config = { ...e };
   }
   get(e, t) {
@@ -1099,48 +1099,48 @@ const Fe = class Fe {
           this
         )
       };
-    if (t === F)
+    if (t === K)
       return {
-        ...e[F],
+        ...e[K],
         selectedFields: new Proxy(
-          e[F].selectedFields,
+          e[K].selectedFields,
           this
         )
       };
     if (typeof t == "symbol")
       return e[t];
-    const s = (m(e, J) ? e._.selectedFields : m(e, be) ? e[F].selectedFields : e)[t];
-    if (m(s, L.Aliased)) {
+    const s = (p(e, G) ? e._.selectedFields : p(e, be) ? e[K].selectedFields : e)[t];
+    if (p(s, v.Aliased)) {
       if (this.config.sqlAliasedBehavior === "sql" && !s.isSelectionField)
         return s.sql;
       const i = s.clone();
       return i.isSelectionField = !0, i;
     }
-    if (m(s, L)) {
+    if (p(s, v)) {
       if (this.config.sqlBehavior === "sql")
         return s;
       throw new Error(
         `You tried to reference "${t}" field from a subquery, which is a raw SQL field, but it doesn't have an alias declared. Please add an alias to the field using ".as('alias')" method.`
       );
     }
-    return m(s, D) ? this.config.alias ? new Proxy(
+    return p(s, j) ? this.config.alias ? new Proxy(
       s,
-      new Ce(
+      new ve(
         new Proxy(
           s.table,
-          new ze(this.config.alias, this.config.replaceOriginalName ?? !1)
+          new Ke(this.config.alias, this.config.replaceOriginalName ?? !1)
         )
       )
-    ) : s : typeof s != "object" || s === null ? s : new Proxy(s, new Fe(this.config));
+    ) : s : typeof s != "object" || s === null ? s : new Proxy(s, new Me(this.config));
   }
 };
-o(Fe, br, "SelectionProxyHandler");
-let M = Fe;
-var wr, Sr;
-Sr = p, wr = Symbol.toStringTag;
+c(Me, br, "SelectionProxyHandler");
+let R = Me;
+var gr, wr;
+wr = b, gr = Symbol.toStringTag;
 class le {
   constructor() {
-    o(this, wr, "QueryPromise");
+    c(this, gr, "QueryPromise");
   }
   catch(e) {
     return this.then(void 0, e);
@@ -1157,17 +1157,17 @@ class le {
     return this.execute().then(e, t);
   }
 }
-o(le, Sr, "QueryPromise");
-var Tr;
-Tr = p;
-class Ds {
+c(le, wr, "QueryPromise");
+var Sr;
+Sr = b;
+class qs {
   constructor(e, t) {
     /** @internal */
-    o(this, "reference");
+    c(this, "reference");
     /** @internal */
-    o(this, "_onUpdate");
+    c(this, "_onUpdate");
     /** @internal */
-    o(this, "_onDelete");
+    c(this, "_onDelete");
     this.reference = () => {
       const { name: r, columns: s, foreignColumns: i } = e();
       return { name: r, columns: s, foreignTable: i[0].table, foreignColumns: i };
@@ -1181,38 +1181,38 @@ class Ds {
   }
   /** @internal */
   build(e) {
-    return new ks(e, this);
+    return new Ds(e, this);
   }
 }
-o(Ds, Tr, "SQLiteForeignKeyBuilder");
-var Nr;
-Nr = p;
-class ks {
+c(qs, Sr, "SQLiteForeignKeyBuilder");
+var Tr;
+Tr = b;
+class Ds {
   constructor(e, t) {
-    o(this, "reference");
-    o(this, "onUpdate");
-    o(this, "onDelete");
+    c(this, "reference");
+    c(this, "onUpdate");
+    c(this, "onDelete");
     this.table = e, this.reference = t.reference, this.onUpdate = t._onUpdate, this.onDelete = t._onDelete;
   }
   getName() {
-    const { name: e, columns: t, foreignColumns: r } = this.reference(), s = t.map((a) => a.name), i = r.map((a) => a.name), c = [
+    const { name: e, columns: t, foreignColumns: r } = this.reference(), s = t.map((a) => a.name), i = r.map((a) => a.name), o = [
       this.table[ce],
       ...s,
       r[0].table[ce],
       ...i
     ];
-    return e ?? `${c.join("_")}_fk`;
+    return e ?? `${o.join("_")}_fk`;
   }
 }
-o(ks, Nr, "SQLiteForeignKey");
+c(Ds, Tr, "SQLiteForeignKey");
 function ca(n, e) {
   return `${n[ce]}_${e.join("_")}_unique`;
 }
-var Er, _r;
-class te extends (_r = vs, Er = p, _r) {
+var Nr, Er;
+class te extends (Er = As, Nr = b, Er) {
   constructor() {
     super(...arguments);
-    o(this, "foreignKeyConfigs", []);
+    c(this, "foreignKeyConfigs", []);
   }
   references(t, r = {}) {
     return this.foreignKeyConfigs.push({ ref: t, actions: r }), this;
@@ -1229,25 +1229,25 @@ class te extends (_r = vs, Er = p, _r) {
   }
   /** @internal */
   buildForeignKeys(t, r) {
-    return this.foreignKeyConfigs.map(({ ref: s, actions: i }) => ((c, a) => {
-      const u = new Ds(() => {
-        const g = c();
-        return { columns: [t], foreignColumns: [g] };
+    return this.foreignKeyConfigs.map(({ ref: s, actions: i }) => ((o, a) => {
+      const u = new qs(() => {
+        const y = o();
+        return { columns: [t], foreignColumns: [y] };
       });
       return a.onUpdate && u.onUpdate(a.onUpdate), a.onDelete && u.onDelete(a.onDelete), u.build(r);
     })(s, i));
   }
 }
-o(te, Er, "SQLiteColumnBuilder");
-var Lr, Ar;
-class K extends (Ar = D, Lr = p, Ar) {
+c(te, Nr, "SQLiteColumnBuilder");
+var _r, Lr;
+class V extends (Lr = j, _r = b, Lr) {
   constructor(e, t) {
     t.uniqueName || (t.uniqueName = ca(e, [t.name])), super(e, t), this.table = e;
   }
 }
-o(K, Lr, "SQLiteColumn");
-var vr, Cr;
-class js extends (Cr = te, vr = p, Cr) {
+c(V, _r, "SQLiteColumn");
+var Ar, vr;
+class js extends (vr = te, Ar = b, vr) {
   constructor(e) {
     super(e, "bigint", "SQLiteBigInt");
   }
@@ -1256,9 +1256,9 @@ class js extends (Cr = te, vr = p, Cr) {
     return new Ps(e, this.config);
   }
 }
-o(js, vr, "SQLiteBigIntBuilder");
-var Ir, $r;
-class Ps extends ($r = K, Ir = p, $r) {
+c(js, Ar, "SQLiteBigIntBuilder");
+var Cr, Ir;
+class Ps extends (Ir = V, Cr = b, Ir) {
   getSQLType() {
     return "blob";
   }
@@ -1269,23 +1269,23 @@ class Ps extends ($r = K, Ir = p, $r) {
     return Buffer.from(e.toString());
   }
 }
-o(Ps, Ir, "SQLiteBigInt");
-var Or, Br;
-class Us extends (Br = te, Or = p, Br) {
+c(Ps, Cr, "SQLiteBigInt");
+var $r, Or;
+class ks extends (Or = te, $r = b, Or) {
   constructor(e) {
     super(e, "json", "SQLiteBlobJson");
   }
   /** @internal */
   build(e) {
-    return new Ms(
+    return new Us(
       e,
       this.config
     );
   }
 }
-o(Us, Or, "SQLiteBlobJsonBuilder");
-var xr, Qr;
-class Ms extends (Qr = K, xr = p, Qr) {
+c(ks, $r, "SQLiteBlobJsonBuilder");
+var Br, Qr;
+class Us extends (Qr = V, Br = b, Qr) {
   getSQLType() {
     return "blob";
   }
@@ -1296,50 +1296,50 @@ class Ms extends (Qr = K, xr = p, Qr) {
     return Buffer.from(JSON.stringify(e));
   }
 }
-o(Ms, xr, "SQLiteBlobJson");
-var qr, Dr;
-class Fs extends (Dr = te, qr = p, Dr) {
+c(Us, Br, "SQLiteBlobJson");
+var xr, qr;
+class Ms extends (qr = te, xr = b, qr) {
   constructor(e) {
     super(e, "buffer", "SQLiteBlobBuffer");
   }
   /** @internal */
   build(e) {
-    return new Rs(e, this.config);
+    return new Fs(e, this.config);
   }
 }
-o(Fs, qr, "SQLiteBlobBufferBuilder");
-var kr, jr;
-class Rs extends (jr = K, kr = p, jr) {
+c(Ms, xr, "SQLiteBlobBufferBuilder");
+var Dr, jr;
+class Fs extends (jr = V, Dr = b, jr) {
   getSQLType() {
     return "blob";
   }
 }
-o(Rs, kr, "SQLiteBlobBuffer");
+c(Fs, Dr, "SQLiteBlobBuffer");
 function la(n, e) {
-  const { name: t, config: r } = Ke(n, e);
-  return (r == null ? void 0 : r.mode) === "json" ? new Us(t) : (r == null ? void 0 : r.mode) === "bigint" ? new js(t) : new Fs(t);
+  const { name: t, config: r } = Re(n, e);
+  return (r == null ? void 0 : r.mode) === "json" ? new ks(t) : (r == null ? void 0 : r.mode) === "bigint" ? new js(t) : new Ms(t);
 }
-var Pr, Ur;
-class Ks extends (Ur = te, Pr = p, Ur) {
+var Pr, kr;
+class Rs extends (kr = te, Pr = b, kr) {
   constructor(e, t, r) {
     super(e, "custom", "SQLiteCustomColumn"), this.config.fieldConfig = t, this.config.customTypeParams = r;
   }
   /** @internal */
   build(e) {
-    return new zs(
+    return new Ks(
       e,
       this.config
     );
   }
 }
-o(Ks, Pr, "SQLiteCustomColumnBuilder");
-var Mr, Fr;
-class zs extends (Fr = K, Mr = p, Fr) {
+c(Rs, Pr, "SQLiteCustomColumnBuilder");
+var Ur, Mr;
+class Ks extends (Mr = V, Ur = b, Mr) {
   constructor(t, r) {
     super(t, r);
-    o(this, "sqlName");
-    o(this, "mapTo");
-    o(this, "mapFrom");
+    c(this, "sqlName");
+    c(this, "mapTo");
+    c(this, "mapFrom");
     this.sqlName = r.customTypeParams.dataType(r.fieldConfig), this.mapTo = r.customTypeParams.toDriver, this.mapFrom = r.customTypeParams.fromDriver;
   }
   getSQLType() {
@@ -1352,19 +1352,19 @@ class zs extends (Fr = K, Mr = p, Fr) {
     return typeof this.mapTo == "function" ? this.mapTo(t) : t;
   }
 }
-o(zs, Mr, "SQLiteCustomColumn");
+c(Ks, Ur, "SQLiteCustomColumn");
 function ua(n) {
   return (e, t) => {
-    const { name: r, config: s } = Ke(e, t);
-    return new Ks(
+    const { name: r, config: s } = Re(e, t);
+    return new Rs(
       r,
       s,
       n
     );
   };
 }
-var Rr, Kr;
-class Ve extends (Kr = te, Rr = p, Kr) {
+var Fr, Rr;
+class ze extends (Rr = te, Fr = b, Rr) {
   constructor(e, t, r) {
     super(e, t, r), this.config.autoIncrement = !1;
   }
@@ -1372,37 +1372,37 @@ class Ve extends (Kr = te, Rr = p, Kr) {
     return e != null && e.autoIncrement && (this.config.autoIncrement = !0), this.config.hasDefault = !0, super.primaryKey();
   }
 }
-o(Ve, Rr, "SQLiteBaseIntegerBuilder");
-var zr, Vr;
-class Xe extends (Vr = K, zr = p, Vr) {
+c(ze, Fr, "SQLiteBaseIntegerBuilder");
+var Kr, zr;
+class Ve extends (zr = V, Kr = b, zr) {
   constructor() {
     super(...arguments);
-    o(this, "autoIncrement", this.config.autoIncrement);
+    c(this, "autoIncrement", this.config.autoIncrement);
   }
   getSQLType() {
     return "integer";
   }
 }
-o(Xe, zr, "SQLiteBaseInteger");
-var Xr, Jr;
-class Vs extends (Jr = Ve, Xr = p, Jr) {
+c(Ve, Kr, "SQLiteBaseInteger");
+var Vr, Jr;
+class zs extends (Jr = ze, Vr = b, Jr) {
   constructor(e) {
     super(e, "number", "SQLiteInteger");
   }
   build(e) {
-    return new Xs(
+    return new Vs(
       e,
       this.config
     );
   }
 }
-o(Vs, Xr, "SQLiteIntegerBuilder");
-var Gr, Yr;
-class Xs extends (Yr = Xe, Gr = p, Yr) {
+c(zs, Vr, "SQLiteIntegerBuilder");
+var Xr, Yr;
+class Vs extends (Yr = Ve, Xr = b, Yr) {
 }
-o(Xs, Gr, "SQLiteInteger");
-var Wr, Hr;
-class Js extends (Hr = Ve, Wr = p, Hr) {
+c(Vs, Xr, "SQLiteInteger");
+var Gr, Wr;
+class Js extends (Wr = ze, Gr = b, Wr) {
   constructor(e, t) {
     super(e, "date", "SQLiteTimestamp"), this.config.mode = t;
   }
@@ -1415,18 +1415,18 @@ class Js extends (Hr = Ve, Wr = p, Hr) {
     return this.default(l`(cast((julianday('now') - 2440587.5)*86400000 as integer))`);
   }
   build(e) {
-    return new Gs(
+    return new Xs(
       e,
       this.config
     );
   }
 }
-o(Js, Wr, "SQLiteTimestampBuilder");
-var Zr, en;
-class Gs extends (en = Xe, Zr = p, en) {
+c(Js, Gr, "SQLiteTimestampBuilder");
+var Hr, Zr;
+class Xs extends (Zr = Ve, Hr = b, Zr) {
   constructor() {
     super(...arguments);
-    o(this, "mode", this.config.mode);
+    c(this, "mode", this.config.mode);
   }
   mapFromDriverValue(t) {
     return this.config.mode === "timestamp" ? new Date(t * 1e3) : new Date(t);
@@ -1436,25 +1436,25 @@ class Gs extends (en = Xe, Zr = p, en) {
     return this.config.mode === "timestamp" ? Math.floor(r / 1e3) : r;
   }
 }
-o(Gs, Zr, "SQLiteTimestamp");
-var tn, rn;
-class Ys extends (rn = Ve, tn = p, rn) {
+c(Xs, Hr, "SQLiteTimestamp");
+var en, tn;
+class Ys extends (tn = ze, en = b, tn) {
   constructor(e, t) {
     super(e, "boolean", "SQLiteBoolean"), this.config.mode = t;
   }
   build(e) {
-    return new Ws(
+    return new Gs(
       e,
       this.config
     );
   }
 }
-o(Ys, tn, "SQLiteBooleanBuilder");
-var nn, sn;
-class Ws extends (sn = Xe, nn = p, sn) {
+c(Ys, en, "SQLiteBooleanBuilder");
+var rn, nn;
+class Gs extends (nn = Ve, rn = b, nn) {
   constructor() {
     super(...arguments);
-    o(this, "mode", this.config.mode);
+    c(this, "mode", this.config.mode);
   }
   mapFromDriverValue(t) {
     return Number(t) === 1;
@@ -1463,95 +1463,95 @@ class Ws extends (sn = Xe, nn = p, sn) {
     return t ? 1 : 0;
   }
 }
-o(Ws, nn, "SQLiteBoolean");
-function ge(n, e) {
-  const { name: t, config: r } = Ke(n, e);
-  return (r == null ? void 0 : r.mode) === "timestamp" || (r == null ? void 0 : r.mode) === "timestamp_ms" ? new Js(t, r.mode) : (r == null ? void 0 : r.mode) === "boolean" ? new Ys(t, r.mode) : new Vs(t);
+c(Gs, rn, "SQLiteBoolean");
+function ye(n, e) {
+  const { name: t, config: r } = Re(n, e);
+  return (r == null ? void 0 : r.mode) === "timestamp" || (r == null ? void 0 : r.mode) === "timestamp_ms" ? new Js(t, r.mode) : (r == null ? void 0 : r.mode) === "boolean" ? new Ys(t, r.mode) : new zs(t);
 }
-var an, on;
-class Hs extends (on = te, an = p, on) {
+var sn, an;
+class Ws extends (an = te, sn = b, an) {
   constructor(e) {
     super(e, "string", "SQLiteNumeric");
   }
   /** @internal */
   build(e) {
-    return new Zs(
+    return new Hs(
       e,
       this.config
     );
   }
 }
-o(Hs, an, "SQLiteNumericBuilder");
-var cn, ln;
-class Zs extends (ln = K, cn = p, ln) {
+c(Ws, sn, "SQLiteNumericBuilder");
+var on, cn;
+class Hs extends (cn = V, on = b, cn) {
   getSQLType() {
     return "numeric";
   }
 }
-o(Zs, cn, "SQLiteNumeric");
+c(Hs, on, "SQLiteNumeric");
 function da(n) {
-  return new Hs(n ?? "");
+  return new Ws(n ?? "");
 }
-var un, dn;
-class ei extends (dn = te, un = p, dn) {
+var ln, un;
+class Zs extends (un = te, ln = b, un) {
   constructor(e) {
     super(e, "number", "SQLiteReal");
   }
   /** @internal */
   build(e) {
-    return new ti(e, this.config);
+    return new ei(e, this.config);
   }
 }
-o(ei, un, "SQLiteRealBuilder");
-var hn, mn;
-class ti extends (mn = K, hn = p, mn) {
+c(Zs, ln, "SQLiteRealBuilder");
+var dn, hn;
+class ei extends (hn = V, dn = b, hn) {
   getSQLType() {
     return "real";
   }
 }
-o(ti, hn, "SQLiteReal");
-function W(n) {
-  return new ei(n ?? "");
+c(ei, dn, "SQLiteReal");
+function H(n) {
+  return new Zs(n ?? "");
 }
-var fn, pn;
-class ri extends (pn = te, fn = p, pn) {
+var mn, fn;
+class ti extends (fn = te, mn = b, fn) {
   constructor(e, t) {
     super(e, "string", "SQLiteText"), this.config.enumValues = t.enum, this.config.length = t.length;
   }
   /** @internal */
   build(e) {
-    return new ni(e, this.config);
+    return new ri(e, this.config);
   }
 }
-o(ri, fn, "SQLiteTextBuilder");
-var yn, gn;
-class ni extends (gn = K, yn = p, gn) {
+c(ti, mn, "SQLiteTextBuilder");
+var pn, yn;
+class ri extends (yn = V, pn = b, yn) {
   constructor(t, r) {
     super(t, r);
-    o(this, "enumValues", this.config.enumValues);
-    o(this, "length", this.config.length);
+    c(this, "enumValues", this.config.enumValues);
+    c(this, "length", this.config.length);
   }
   getSQLType() {
     return `text${this.config.length ? `(${this.config.length})` : ""}`;
   }
 }
-o(ni, yn, "SQLiteText");
-var bn, wn;
-class si extends (wn = te, bn = p, wn) {
+c(ri, pn, "SQLiteText");
+var bn, gn;
+class ni extends (gn = te, bn = b, gn) {
   constructor(e) {
     super(e, "json", "SQLiteTextJson");
   }
   /** @internal */
   build(e) {
-    return new ii(
+    return new si(
       e,
       this.config
     );
   }
 }
-o(si, bn, "SQLiteTextJsonBuilder");
-var Sn, Tn;
-class ii extends (Tn = K, Sn = p, Tn) {
+c(ni, bn, "SQLiteTextJsonBuilder");
+var wn, Sn;
+class si extends (Sn = V, wn = b, Sn) {
   getSQLType() {
     return "text";
   }
@@ -1562,60 +1562,60 @@ class ii extends (Tn = K, Sn = p, Tn) {
     return JSON.stringify(e);
   }
 }
-o(ii, Sn, "SQLiteTextJson");
-function E(n, e = {}) {
-  const { name: t, config: r } = Ke(n, e);
-  return r.mode === "json" ? new si(t) : new ri(t, r);
+c(si, wn, "SQLiteTextJson");
+function _(n, e = {}) {
+  const { name: t, config: r } = Re(n, e);
+  return r.mode === "json" ? new ni(t) : new ti(t, r);
 }
 function ha() {
   return {
     blob: la,
     customType: ua,
-    integer: ge,
+    integer: ye,
     numeric: da,
-    real: W,
-    text: E
+    real: H,
+    text: _
   };
 }
-const ot = Symbol.for("drizzle:SQLiteInlineForeignKeys");
-var Nn, En, _n, Ln, An;
-class X extends (An = S, Ln = p, _n = S.Symbol.Columns, En = ot, Nn = S.Symbol.ExtraConfigBuilder, An) {
+const at = Symbol.for("drizzle:SQLiteInlineForeignKeys");
+var Tn, Nn, En, _n, Ln;
+class Y extends (Ln = w, _n = b, En = w.Symbol.Columns, Nn = at, Tn = w.Symbol.ExtraConfigBuilder, Ln) {
   constructor() {
     super(...arguments);
     /** @internal */
-    o(this, _n);
+    c(this, En);
     /** @internal */
-    o(this, En, []);
+    c(this, Nn, []);
     /** @internal */
-    o(this, Nn);
+    c(this, Tn);
   }
 }
-o(X, Ln, "SQLiteTable"), /** @internal */
-o(X, "Symbol", Object.assign({}, S.Symbol, {
-  InlineForeignKeys: ot
+c(Y, _n, "SQLiteTable"), /** @internal */
+c(Y, "Symbol", Object.assign({}, w.Symbol, {
+  InlineForeignKeys: at
 }));
 function ma(n, e, t, r, s = n) {
-  const i = new X(n, r, s), c = typeof e == "function" ? e(ha()) : e, a = Object.fromEntries(
-    Object.entries(c).map(([g, d]) => {
-      const C = d;
-      C.setName(g);
-      const N = C.build(i);
-      return i[ot].push(...C.buildForeignKeys(N, i)), [g, N];
+  const i = new Y(n, r, s), o = typeof e == "function" ? e(ha()) : e, a = Object.fromEntries(
+    Object.entries(o).map(([y, d]) => {
+      const L = d;
+      L.setName(y);
+      const g = L.build(i);
+      return i[at].push(...L.buildForeignKeys(g, i)), [y, g];
     })
   ), u = Object.assign(i, a);
-  return u[S.Symbol.Columns] = a, u[S.Symbol.ExtraConfigColumns] = a, u;
+  return u[w.Symbol.Columns] = a, u[w.Symbol.ExtraConfigColumns] = a, u;
 }
-const ie = (n, e, t) => ma(n, e);
-var vn, Cn;
-class ct extends (Cn = le, vn = p, Cn) {
+const ae = (n, e, t) => ma(n, e);
+var An, vn;
+class ot extends (vn = le, An = b, vn) {
   constructor(t, r, s, i) {
     super();
     /** @internal */
-    o(this, "config");
-    o(this, "run", (t) => this._prepare().run(t));
-    o(this, "all", (t) => this._prepare().all(t));
-    o(this, "get", (t) => this._prepare().get(t));
-    o(this, "values", (t) => this._prepare().values(t));
+    c(this, "config");
+    c(this, "run", (t) => this._prepare().run(t));
+    c(this, "all", (t) => this._prepare().all(t));
+    c(this, "get", (t) => this._prepare().get(t));
+    c(this, "values", (t) => this._prepare().values(t));
     this.table = t, this.session = r, this.dialect = s, this.config = { table: t, withList: i };
   }
   /**
@@ -1654,8 +1654,8 @@ class ct extends (Cn = le, vn = p, Cn) {
     if (typeof t[0] == "function") {
       const r = t[0](
         new Proxy(
-          this.config.table[S.Symbol.Columns],
-          new M({ sqlAliasedBehavior: "alias", sqlBehavior: "sql" })
+          this.config.table[w.Symbol.Columns],
+          new R({ sqlAliasedBehavior: "alias", sqlBehavior: "sql" })
         )
       ), s = Array.isArray(r) ? r : [r];
       this.config.orderBy = s;
@@ -1668,7 +1668,7 @@ class ct extends (Cn = le, vn = p, Cn) {
   limit(t) {
     return this.config.limit = t, this;
   }
-  returning(t = this.table[X.Symbol.Columns]) {
+  returning(t = this.table[Y.Symbol.Columns]) {
     return this.config.returning = fe(t), this;
   }
   /** @internal */
@@ -1698,7 +1698,7 @@ class ct extends (Cn = le, vn = p, Cn) {
     return this;
   }
 }
-o(ct, vn, "SQLiteDelete");
+c(ot, An, "SQLiteDelete");
 function fa(n) {
   return (n.replace(/['\u2019]/g, "").match(/[\da-z]+|[A-Z]+(?![a-z])|[A-Z][\da-z]+/g) ?? []).map((t) => t.toLowerCase()).join("_");
 }
@@ -1711,28 +1711,28 @@ function pa(n) {
 function ya(n) {
   return n;
 }
-var In;
-In = p;
-class ai {
+var Cn;
+Cn = b;
+class ii {
   constructor(e) {
     /** @internal */
-    o(this, "cache", {});
-    o(this, "cachedTables", {});
-    o(this, "convert");
+    c(this, "cache", {});
+    c(this, "cachedTables", {});
+    c(this, "convert");
     this.convert = e === "snake_case" ? fa : e === "camelCase" ? pa : ya;
   }
   getColumnCasing(e) {
     if (!e.keyAsName)
       return e.name;
-    const t = e.table[S.Symbol.Schema] ?? "public", r = e.table[S.Symbol.OriginalName], s = `${t}.${r}.${e.name}`;
+    const t = e.table[w.Symbol.Schema] ?? "public", r = e.table[w.Symbol.OriginalName], s = `${t}.${r}.${e.name}`;
     return this.cache[s] || this.cacheTable(e.table), this.cache[s];
   }
   cacheTable(e) {
-    const t = e[S.Symbol.Schema] ?? "public", r = e[S.Symbol.OriginalName], s = `${t}.${r}`;
+    const t = e[w.Symbol.Schema] ?? "public", r = e[w.Symbol.OriginalName], s = `${t}.${r}`;
     if (!this.cachedTables[s]) {
-      for (const i of Object.values(e[S.Symbol.Columns])) {
-        const c = `${s}.${i.name}`;
-        this.cache[c] = this.convert(i.name);
+      for (const i of Object.values(e[w.Symbol.Columns])) {
+        const o = `${s}.${i.name}`;
+        this.cache[o] = this.convert(i.name);
       }
       this.cachedTables[s] = !0;
     }
@@ -1741,32 +1741,32 @@ class ai {
     this.cache = {}, this.cachedTables = {};
   }
 }
-o(ai, In, "CasingCache");
-var $n, On;
-class Je extends (On = Error, $n = p, On) {
+c(ii, Cn, "CasingCache");
+var In, $n;
+class Je extends ($n = Error, In = b, $n) {
   constructor({ message: e, cause: t }) {
     super(e), this.name = "DrizzleError", this.cause = t;
   }
 }
-o(Je, $n, "DrizzleError");
-var Bn, xn;
-class oi extends (xn = Je, Bn = p, xn) {
+c(Je, In, "DrizzleError");
+var On, Bn;
+class ai extends (Bn = Je, On = b, Bn) {
   constructor() {
     super({ message: "Rollback" });
   }
 }
-o(oi, Bn, "TransactionRollbackError");
-var Qn, qn;
-class Ge extends (qn = be, Qn = p, qn) {
+c(ai, On, "TransactionRollbackError");
+var Qn, xn;
+class Xe extends (xn = be, Qn = b, xn) {
 }
-o(Ge, Qn, "SQLiteViewBase");
-var Dn;
-Dn = p;
+c(Xe, Qn, "SQLiteViewBase");
+var qn;
+qn = b;
 class je {
   constructor(e) {
     /** @internal */
-    o(this, "casing");
-    this.casing = new ai(e == null ? void 0 : e.casing);
+    c(this, "casing");
+    this.casing = new ii(e == null ? void 0 : e.casing);
   }
   escapeName(e) {
     return `"${e}"`;
@@ -1785,25 +1785,25 @@ class je {
       t.push(l`${l.identifier(s._.alias)} as (${s._.sql})`), r < e.length - 1 && t.push(l`, `);
     return t.push(l` `), l.join(t);
   }
-  buildDeleteQuery({ table: e, where: t, returning: r, withList: s, limit: i, orderBy: c }) {
-    const a = this.buildWithCTE(s), u = r ? l` returning ${this.buildSelection(r, { isSingleTable: !0 })}` : void 0, g = t ? l` where ${t}` : void 0, d = this.buildOrderBy(c), C = this.buildLimit(i);
-    return l`${a}delete from ${e}${g}${u}${d}${C}`;
+  buildDeleteQuery({ table: e, where: t, returning: r, withList: s, limit: i, orderBy: o }) {
+    const a = this.buildWithCTE(s), u = r ? l` returning ${this.buildSelection(r, { isSingleTable: !0 })}` : void 0, y = t ? l` where ${t}` : void 0, d = this.buildOrderBy(o), L = this.buildLimit(i);
+    return l`${a}delete from ${e}${y}${u}${d}${L}`;
   }
   buildUpdateSet(e, t) {
-    const r = e[S.Symbol.Columns], s = Object.keys(r).filter(
-      (c) => {
+    const r = e[w.Symbol.Columns], s = Object.keys(r).filter(
+      (o) => {
         var a;
-        return t[c] !== void 0 || ((a = r[c]) == null ? void 0 : a.onUpdateFn) !== void 0;
+        return t[o] !== void 0 || ((a = r[o]) == null ? void 0 : a.onUpdateFn) !== void 0;
       }
     ), i = s.length;
-    return l.join(s.flatMap((c, a) => {
-      const u = r[c], g = t[c] ?? l.param(u.onUpdateFn(), u), d = l`${l.identifier(this.casing.getColumnCasing(u))} = ${g}`;
+    return l.join(s.flatMap((o, a) => {
+      const u = r[o], y = t[o] ?? l.param(u.onUpdateFn(), u), d = l`${l.identifier(this.casing.getColumnCasing(u))} = ${y}`;
       return a < i - 1 ? [d, l.raw(", ")] : [d];
     }));
   }
-  buildUpdateQuery({ table: e, set: t, where: r, returning: s, withList: i, joins: c, from: a, limit: u, orderBy: g }) {
-    const d = this.buildWithCTE(i), C = this.buildUpdateSet(e, t), N = a && l.join([l.raw(" from "), this.buildFromTable(a)]), A = this.buildJoins(c), _ = s ? l` returning ${this.buildSelection(s, { isSingleTable: !0 })}` : void 0, T = r ? l` where ${r}` : void 0, $ = this.buildOrderBy(g), Q = this.buildLimit(u);
-    return l`${d}update ${e} set ${C}${N}${A}${T}${_}${$}${Q}`;
+  buildUpdateQuery({ table: e, set: t, where: r, returning: s, withList: i, joins: o, from: a, limit: u, orderBy: y }) {
+    const d = this.buildWithCTE(i), L = this.buildUpdateSet(e, t), g = a && l.join([l.raw(" from "), this.buildFromTable(a)]), A = this.buildJoins(o), N = s ? l` returning ${this.buildSelection(s, { isSingleTable: !0 })}` : void 0, S = r ? l` where ${r}` : void 0, B = this.buildOrderBy(y), Q = this.buildLimit(u);
+    return l`${d}update ${e} set ${L}${g}${A}${S}${N}${B}${Q}`;
   }
   /**
    * Builds selection SQL with provided fields/expressions
@@ -1817,22 +1817,22 @@ class je {
    * If `isSingleTable` is true, then columns won't be prefixed with table name
    */
   buildSelection(e, { isSingleTable: t = !1 } = {}) {
-    const r = e.length, s = e.flatMap(({ field: i }, c) => {
+    const r = e.length, s = e.flatMap(({ field: i }, o) => {
       const a = [];
-      if (m(i, L.Aliased) && i.isSelectionField)
+      if (p(i, v.Aliased) && i.isSelectionField)
         a.push(l.identifier(i.fieldAlias));
-      else if (m(i, L.Aliased) || m(i, L)) {
-        const u = m(i, L.Aliased) ? i.sql : i;
+      else if (p(i, v.Aliased) || p(i, v)) {
+        const u = p(i, v.Aliased) ? i.sql : i;
         t ? a.push(
-          new L(
-            u.queryChunks.map((g) => m(g, D) ? l.identifier(this.casing.getColumnCasing(g)) : g)
+          new v(
+            u.queryChunks.map((y) => p(y, j) ? l.identifier(this.casing.getColumnCasing(y)) : y)
           )
-        ) : a.push(u), m(i, L.Aliased) && a.push(l` as ${l.identifier(i.fieldAlias)}`);
-      } else if (m(i, D)) {
-        const u = i.table[S.Symbol.Name];
+        ) : a.push(u), p(i, v.Aliased) && a.push(l` as ${l.identifier(i.fieldAlias)}`);
+      } else if (p(i, j)) {
+        const u = i.table[w.Symbol.Name];
         t ? a.push(l.identifier(this.casing.getColumnCasing(i))) : a.push(l`${l.identifier(u)}.${l.identifier(this.casing.getColumnCasing(i))}`);
       }
-      return c < r - 1 && a.push(l`, `), a;
+      return o < r - 1 && a.push(l`, `), a;
     });
     return l.join(s);
   }
@@ -1844,10 +1844,10 @@ class je {
       for (const [r, s] of e.entries()) {
         r === 0 && t.push(l` `);
         const i = s.table;
-        if (m(i, X)) {
-          const c = i[X.Symbol.Name], a = i[X.Symbol.Schema], u = i[X.Symbol.OriginalName], g = c === u ? void 0 : s.alias;
+        if (p(i, Y)) {
+          const o = i[Y.Symbol.Name], a = i[Y.Symbol.Schema], u = i[Y.Symbol.OriginalName], y = o === u ? void 0 : s.alias;
           t.push(
-            l`${l.raw(s.joinType)} join ${a ? l`${l.identifier(a)}.` : void 0}${l.identifier(u)}${g && l` ${l.identifier(g)}`} on ${s.on}`
+            l`${l.raw(s.joinType)} join ${a ? l`${l.identifier(a)}.` : void 0}${l.identifier(u)}${y && l` ${l.identifier(y)}`} on ${s.on}`
           );
         } else
           t.push(
@@ -1868,7 +1868,7 @@ class je {
     return t.length > 0 ? l` order by ${l.join(t)}` : void 0;
   }
   buildFromTable(e) {
-    return m(e, S) && e[S.Symbol.OriginalName] !== e[S.Symbol.Name] ? l`${l.identifier(e[S.Symbol.OriginalName])} ${l.identifier(e[S.Symbol.Name])}` : e;
+    return p(e, w) && e[w.Symbol.OriginalName] !== e[w.Symbol.Name] ? l`${l.identifier(e[w.Symbol.OriginalName])} ${l.identifier(e[w.Symbol.Name])}` : e;
   }
   buildSelectQuery({
     withList: e,
@@ -1876,31 +1876,31 @@ class je {
     fieldsFlat: r,
     where: s,
     having: i,
-    table: c,
+    table: o,
     joins: a,
     orderBy: u,
-    groupBy: g,
+    groupBy: y,
     limit: d,
-    offset: C,
-    distinct: N,
+    offset: L,
+    distinct: g,
     setOperators: A
   }) {
-    const _ = r ?? fe(t);
-    for (const Y of _)
-      if (m(Y.field, D) && Ee(Y.field.table) !== (m(c, J) ? c._.alias : m(c, Ge) ? c[F].name : m(c, L) ? void 0 : Ee(c)) && !((H) => a == null ? void 0 : a.some(
-        ({ alias: $e }) => $e === (H[S.Symbol.IsAlias] ? Ee(H) : H[S.Symbol.BaseName])
-      ))(Y.field.table)) {
-        const H = Ee(Y.field.table);
+    const N = r ?? fe(t);
+    for (const W of N)
+      if (p(W.field, j) && Ne(W.field.table) !== (p(o, G) ? o._.alias : p(o, Xe) ? o[K].name : p(o, v) ? void 0 : Ne(o)) && !((Z) => a == null ? void 0 : a.some(
+        ({ alias: Ie }) => Ie === (Z[w.Symbol.IsAlias] ? Ne(Z) : Z[w.Symbol.BaseName])
+      ))(W.field.table)) {
+        const Z = Ne(W.field.table);
         throw new Error(
-          `Your "${Y.path.join("->")}" field references a column "${H}"."${Y.field.name}", but the table "${H}" is not part of the query! Did you forget to join it?`
+          `Your "${W.path.join("->")}" field references a column "${Z}"."${W.field.name}", but the table "${Z}" is not part of the query! Did you forget to join it?`
         );
       }
-    const T = !a || a.length === 0, $ = this.buildWithCTE(e), Q = N ? l` distinct` : void 0, j = this.buildSelection(_, { isSingleTable: T }), P = this.buildFromTable(c), B = this.buildJoins(a), G = s ? l` where ${s}` : void 0, v = i ? l` having ${i}` : void 0, b = [];
-    if (g)
-      for (const [Y, H] of g.entries())
-        b.push(H), Y < g.length - 1 && b.push(l`, `);
-    const q = b.length > 0 ? l` group by ${l.join(b)}` : void 0, z = this.buildOrderBy(u), Ie = this.buildLimit(d), We = C ? l` offset ${C}` : void 0, we = l`${$}select${Q} ${j} from ${P}${B}${G}${q}${v}${z}${Ie}${We}`;
-    return A.length > 0 ? this.buildSetOperations(we, A) : we;
+    const S = !a || a.length === 0, B = this.buildWithCTE(e), Q = g ? l` distinct` : void 0, P = this.buildSelection(N, { isSingleTable: S }), M = this.buildFromTable(o), E = this.buildJoins(a), $ = s ? l` where ${s}` : void 0, F = i ? l` having ${i}` : void 0, I = [];
+    if (y)
+      for (const [W, Z] of y.entries())
+        I.push(Z), W < y.length - 1 && I.push(l`, `);
+    const D = I.length > 0 ? l` group by ${l.join(I)}` : void 0, J = this.buildOrderBy(u), Ce = this.buildLimit(d), Ge = L ? l` offset ${L}` : void 0, ge = l`${B}select${Q} ${P} from ${M}${E}${$}${D}${F}${J}${Ce}${Ge}`;
+    return A.length > 0 ? this.buildSetOperations(ge, A) : ge;
   }
   buildSetOperations(e, t) {
     const [r, ...s] = t;
@@ -1913,63 +1913,63 @@ class je {
   }
   buildSetOperationQuery({
     leftSelect: e,
-    setOperator: { type: t, isAll: r, rightSelect: s, limit: i, orderBy: c, offset: a }
+    setOperator: { type: t, isAll: r, rightSelect: s, limit: i, orderBy: o, offset: a }
   }) {
-    const u = l`${e.getSQL()} `, g = l`${s.getSQL()}`;
+    const u = l`${e.getSQL()} `, y = l`${s.getSQL()}`;
     let d;
-    if (c && c.length > 0) {
-      const _ = [];
-      for (const T of c)
-        if (m(T, K))
-          _.push(l.identifier(T.name));
-        else if (m(T, L)) {
-          for (let $ = 0; $ < T.queryChunks.length; $++) {
-            const Q = T.queryChunks[$];
-            m(Q, K) && (T.queryChunks[$] = l.identifier(this.casing.getColumnCasing(Q)));
+    if (o && o.length > 0) {
+      const N = [];
+      for (const S of o)
+        if (p(S, V))
+          N.push(l.identifier(S.name));
+        else if (p(S, v)) {
+          for (let B = 0; B < S.queryChunks.length; B++) {
+            const Q = S.queryChunks[B];
+            p(Q, V) && (S.queryChunks[B] = l.identifier(this.casing.getColumnCasing(Q)));
           }
-          _.push(l`${T}`);
+          N.push(l`${S}`);
         } else
-          _.push(l`${T}`);
-      d = l` order by ${l.join(_, l`, `)}`;
+          N.push(l`${S}`);
+      d = l` order by ${l.join(N, l`, `)}`;
     }
-    const C = typeof i == "object" || typeof i == "number" && i >= 0 ? l` limit ${i}` : void 0, N = l.raw(`${t} ${r ? "all " : ""}`), A = a ? l` offset ${a}` : void 0;
-    return l`${u}${N}${g}${d}${C}${A}`;
+    const L = typeof i == "object" || typeof i == "number" && i >= 0 ? l` limit ${i}` : void 0, g = l.raw(`${t} ${r ? "all " : ""}`), A = a ? l` offset ${a}` : void 0;
+    return l`${u}${g}${y}${d}${L}${A}`;
   }
-  buildInsertQuery({ table: e, values: t, onConflict: r, returning: s, withList: i, select: c }) {
-    const a = [], u = e[S.Symbol.Columns], g = Object.entries(u).filter(
-      ([T, $]) => !$.shouldDisableInsert()
-    ), d = g.map(([, T]) => l.identifier(this.casing.getColumnCasing(T)));
-    if (c) {
-      const T = t;
-      m(T, L) ? a.push(T) : a.push(T.getSQL());
+  buildInsertQuery({ table: e, values: t, onConflict: r, returning: s, withList: i, select: o }) {
+    const a = [], u = e[w.Symbol.Columns], y = Object.entries(u).filter(
+      ([S, B]) => !B.shouldDisableInsert()
+    ), d = y.map(([, S]) => l.identifier(this.casing.getColumnCasing(S)));
+    if (o) {
+      const S = t;
+      p(S, v) ? a.push(S) : a.push(S.getSQL());
     } else {
-      const T = t;
+      const S = t;
       a.push(l.raw("values "));
-      for (const [$, Q] of T.entries()) {
-        const j = [];
-        for (const [P, B] of g) {
-          const G = Q[P];
-          if (G === void 0 || m(G, se) && G.value === void 0) {
-            let v;
-            if (B.default !== null && B.default !== void 0)
-              v = m(B.default, L) ? B.default : l.param(B.default, B);
-            else if (B.defaultFn !== void 0) {
-              const b = B.defaultFn();
-              v = m(b, L) ? b : l.param(b, B);
-            } else if (!B.default && B.onUpdateFn !== void 0) {
-              const b = B.onUpdateFn();
-              v = m(b, L) ? b : l.param(b, B);
+      for (const [B, Q] of S.entries()) {
+        const P = [];
+        for (const [M, E] of y) {
+          const $ = Q[M];
+          if ($ === void 0 || p($, se) && $.value === void 0) {
+            let F;
+            if (E.default !== null && E.default !== void 0)
+              F = p(E.default, v) ? E.default : l.param(E.default, E);
+            else if (E.defaultFn !== void 0) {
+              const I = E.defaultFn();
+              F = p(I, v) ? I : l.param(I, E);
+            } else if (!E.default && E.onUpdateFn !== void 0) {
+              const I = E.onUpdateFn();
+              F = p(I, v) ? I : l.param(I, E);
             } else
-              v = l`null`;
-            j.push(v);
+              F = l`null`;
+            P.push(F);
           } else
-            j.push(G);
+            P.push($);
         }
-        a.push(j), $ < T.length - 1 && a.push(l`, `);
+        a.push(P), B < S.length - 1 && a.push(l`, `);
       }
     }
-    const C = this.buildWithCTE(i), N = l.join(a), A = s ? l` returning ${this.buildSelection(s, { isSingleTable: !0 })}` : void 0, _ = r ? l` on conflict ${r}` : void 0;
-    return l`${C}insert into ${e} ${d} ${N}${_}${A}`;
+    const L = this.buildWithCTE(i), g = l.join(a), A = s ? l` returning ${this.buildSelection(s, { isSingleTable: !0 })}` : void 0, N = r ? l` on conflict ${r}` : void 0;
+    return l`${L}insert into ${e} ${d} ${g}${N}${A}`;
   }
   sqlToQuery(e, t) {
     return e.toQuery({
@@ -1986,98 +1986,98 @@ class je {
     tableNamesMap: r,
     table: s,
     tableConfig: i,
-    queryConfig: c,
+    queryConfig: o,
     tableAlias: a,
     nestedQueryRelation: u,
-    joinOn: g
+    joinOn: y
   }) {
-    let d = [], C, N, A = [], _;
-    const T = [];
-    if (c === !0)
-      d = Object.entries(i.columns).map(([j, P]) => ({
-        dbKey: P.name,
-        tsKey: j,
-        field: re(P, a),
+    let d = [], L, g, A = [], N;
+    const S = [];
+    if (o === !0)
+      d = Object.entries(i.columns).map(([P, M]) => ({
+        dbKey: M.name,
+        tsKey: P,
+        field: re(M, a),
         relationTableTsKey: void 0,
         isJson: !1,
         selection: []
       }));
     else {
       const Q = Object.fromEntries(
-        Object.entries(i.columns).map(([b, q]) => [b, re(q, a)])
+        Object.entries(i.columns).map(([I, D]) => [I, re(D, a)])
       );
-      if (c.where) {
-        const b = typeof c.where == "function" ? c.where(Q, ta()) : c.where;
-        _ = b && ke(b, a);
+      if (o.where) {
+        const I = typeof o.where == "function" ? o.where(Q, ta()) : o.where;
+        N = I && De(I, a);
       }
-      const j = [];
-      let P = [];
-      if (c.columns) {
-        let b = !1;
-        for (const [q, z] of Object.entries(c.columns))
-          z !== void 0 && q in i.columns && (!b && z === !0 && (b = !0), P.push(q));
-        P.length > 0 && (P = b ? P.filter((q) => {
-          var z;
-          return ((z = c.columns) == null ? void 0 : z[q]) === !0;
-        }) : Object.keys(i.columns).filter((q) => !P.includes(q)));
+      const P = [];
+      let M = [];
+      if (o.columns) {
+        let I = !1;
+        for (const [D, J] of Object.entries(o.columns))
+          J !== void 0 && D in i.columns && (!I && J === !0 && (I = !0), M.push(D));
+        M.length > 0 && (M = I ? M.filter((D) => {
+          var J;
+          return ((J = o.columns) == null ? void 0 : J[D]) === !0;
+        }) : Object.keys(i.columns).filter((D) => !M.includes(D)));
       } else
-        P = Object.keys(i.columns);
-      for (const b of P) {
-        const q = i.columns[b];
-        j.push({ tsKey: b, value: q });
+        M = Object.keys(i.columns);
+      for (const I of M) {
+        const D = i.columns[I];
+        P.push({ tsKey: I, value: D });
       }
-      let B = [];
-      c.with && (B = Object.entries(c.with).filter((b) => !!b[1]).map(([b, q]) => ({ tsKey: b, queryConfig: q, relation: i.relations[b] })));
-      let G;
-      if (c.extras) {
-        G = typeof c.extras == "function" ? c.extras(Q, { sql: l }) : c.extras;
-        for (const [b, q] of Object.entries(G))
-          j.push({
-            tsKey: b,
-            value: qs(q, a)
+      let E = [];
+      o.with && (E = Object.entries(o.with).filter((I) => !!I[1]).map(([I, D]) => ({ tsKey: I, queryConfig: D, relation: i.relations[I] })));
+      let $;
+      if (o.extras) {
+        $ = typeof o.extras == "function" ? o.extras(Q, { sql: l }) : o.extras;
+        for (const [I, D] of Object.entries($))
+          P.push({
+            tsKey: I,
+            value: xs(D, a)
           });
       }
-      for (const { tsKey: b, value: q } of j)
+      for (const { tsKey: I, value: D } of P)
         d.push({
-          dbKey: m(q, L.Aliased) ? q.fieldAlias : i.columns[b].name,
-          tsKey: b,
-          field: m(q, D) ? re(q, a) : q,
+          dbKey: p(D, v.Aliased) ? D.fieldAlias : i.columns[I].name,
+          tsKey: I,
+          field: p(D, j) ? re(D, a) : D,
           relationTableTsKey: void 0,
           isJson: !1,
           selection: []
         });
-      let v = typeof c.orderBy == "function" ? c.orderBy(Q, ra()) : c.orderBy ?? [];
-      Array.isArray(v) || (v = [v]), A = v.map((b) => m(b, D) ? re(b, a) : ke(b, a)), C = c.limit, N = c.offset;
+      let F = typeof o.orderBy == "function" ? o.orderBy(Q, ra()) : o.orderBy ?? [];
+      Array.isArray(F) || (F = [F]), A = F.map((I) => p(I, j) ? re(I, a) : De(I, a)), L = o.limit, g = o.offset;
       for (const {
-        tsKey: b,
-        queryConfig: q,
-        relation: z
-      } of B) {
-        const Ie = aa(t, r, z), We = ve(z.referencedTable), we = r[We], Y = `${a}_${b}`, H = U(
-          ...Ie.fields.map(
-            (Ti, Ni) => h(
-              re(Ie.references[Ni], Y),
+        tsKey: I,
+        queryConfig: D,
+        relation: J
+      } of E) {
+        const Ce = aa(t, r, J), Ge = Ae(J.referencedTable), ge = r[Ge], W = `${a}_${I}`, Z = k(
+          ...Ce.fields.map(
+            (Ti, Ni) => f(
+              re(Ce.references[Ni], W),
               re(Ti, a)
             )
           )
-        ), $e = this.buildRelationalQuery({
+        ), Ie = this.buildRelationalQuery({
           fullSchema: e,
           schema: t,
           tableNamesMap: r,
-          table: e[we],
-          tableConfig: t[we],
-          queryConfig: m(z, ye) ? q === !0 ? { limit: 1 } : { ...q, limit: 1 } : q,
-          tableAlias: Y,
-          joinOn: H,
-          nestedQueryRelation: z
-        }), Si = l`(${$e.sql})`.as(b);
+          table: e[ge],
+          tableConfig: t[ge],
+          queryConfig: p(J, pe) ? D === !0 ? { limit: 1 } : { ...D, limit: 1 } : D,
+          tableAlias: W,
+          joinOn: Z,
+          nestedQueryRelation: J
+        }), Si = l`(${Ie.sql})`.as(I);
         d.push({
-          dbKey: b,
-          tsKey: b,
+          dbKey: I,
+          tsKey: I,
           field: Si,
-          relationTableTsKey: we,
+          relationTableTsKey: ge,
           isJson: !0,
-          selection: $e.selection
+          selection: Ie.selection
         });
       }
     }
@@ -2085,16 +2085,16 @@ class je {
       throw new Je({
         message: `No fields selected for table "${i.tsName}" ("${a}"). You need to have at least one item in "columns", "with" or "extras". If you need to select all columns, omit the "columns" key or set it to undefined.`
       });
-    let $;
-    if (_ = U(g, _), u) {
+    let B;
+    if (N = k(y, N), u) {
       let Q = l`json_array(${l.join(
         d.map(
-          ({ field: B }) => m(B, K) ? l.identifier(this.casing.getColumnCasing(B)) : m(B, L.Aliased) ? B.sql : B
+          ({ field: E }) => p(E, V) ? l.identifier(this.casing.getColumnCasing(E)) : p(E, v.Aliased) ? E.sql : E
         ),
         l`, `
       )})`;
-      m(u, De) && (Q = l`coalesce(json_group_array(${Q}), json_array())`);
-      const j = [{
+      p(u, qe) && (Q = l`coalesce(json_group_array(${Q}), json_array())`);
+      const P = [{
         dbKey: "data",
         tsKey: "data",
         field: Q.as("data"),
@@ -2102,8 +2102,8 @@ class je {
         relationTableTsKey: i.tsName,
         selection: d
       }];
-      C !== void 0 || N !== void 0 || A.length > 0 ? ($ = this.buildSelectQuery({
-        table: et(s, a),
+      L !== void 0 || g !== void 0 || A.length > 0 ? (B = this.buildSelectQuery({
+        table: Ze(s, a),
         fields: {},
         fieldsFlat: [
           {
@@ -2111,50 +2111,50 @@ class je {
             field: l.raw("*")
           }
         ],
-        where: _,
-        limit: C,
-        offset: N,
+        where: N,
+        limit: L,
+        offset: g,
         orderBy: A,
         setOperators: []
-      }), _ = void 0, C = void 0, N = void 0, A = void 0) : $ = et(s, a), $ = this.buildSelectQuery({
-        table: m($, X) ? $ : new J($, {}, a),
+      }), N = void 0, L = void 0, g = void 0, A = void 0) : B = Ze(s, a), B = this.buildSelectQuery({
+        table: p(B, Y) ? B : new G(B, {}, a),
         fields: {},
-        fieldsFlat: j.map(({ field: B }) => ({
+        fieldsFlat: P.map(({ field: E }) => ({
           path: [],
-          field: m(B, D) ? re(B, a) : B
+          field: p(E, j) ? re(E, a) : E
         })),
-        joins: T,
-        where: _,
-        limit: C,
-        offset: N,
+        joins: S,
+        where: N,
+        limit: L,
+        offset: g,
         orderBy: A,
         setOperators: []
       });
     } else
-      $ = this.buildSelectQuery({
-        table: et(s, a),
+      B = this.buildSelectQuery({
+        table: Ze(s, a),
         fields: {},
         fieldsFlat: d.map(({ field: Q }) => ({
           path: [],
-          field: m(Q, D) ? re(Q, a) : Q
+          field: p(Q, j) ? re(Q, a) : Q
         })),
-        joins: T,
-        where: _,
-        limit: C,
-        offset: N,
+        joins: S,
+        where: N,
+        limit: L,
+        offset: g,
         orderBy: A,
         setOperators: []
       });
     return {
       tableTsKey: i.tsName,
-      sql: $,
+      sql: B,
       selection: d
     };
   }
 }
-o(je, Dn, "SQLiteDialect");
-var kn, jn;
-class St extends (jn = je, kn = p, jn) {
+c(je, qn, "SQLiteDialect");
+var Dn, jn;
+class wt extends (jn = je, Dn = b, jn) {
   migrate(e, t, r) {
     const s = r === void 0 || typeof r == "string" ? "__drizzle_migrations" : r.migrationsTable ?? "__drizzle_migrations", i = l`
 			CREATE TABLE IF NOT EXISTS ${l.identifier(s)} (
@@ -2171,8 +2171,8 @@ class St extends (jn = je, kn = p, jn) {
     try {
       for (const u of e)
         if (!a || Number(a[2]) < u.folderMillis) {
-          for (const g of u.sql)
-            t.run(l.raw(g));
+          for (const y of u.sql)
+            t.run(l.raw(y));
           t.run(
             l`INSERT INTO ${l.identifier(s)} ("hash", "created_at") VALUES(${u.hash}, ${u.folderMillis})`
           );
@@ -2183,33 +2183,33 @@ class St extends (jn = je, kn = p, jn) {
     }
   }
 }
-o(St, kn, "SQLiteSyncDialect");
+c(wt, Dn, "SQLiteSyncDialect");
 var Pn;
-Pn = p;
-class ci {
+Pn = b;
+class oi {
   /** @internal */
   getSelectedFields() {
     return this._.selectedFields;
   }
 }
-o(ci, Pn, "TypedQueryBuilder");
-var Un;
-Un = p;
+c(oi, Pn, "TypedQueryBuilder");
+var kn;
+kn = b;
 class ne {
   constructor(e) {
-    o(this, "fields");
-    o(this, "session");
-    o(this, "dialect");
-    o(this, "withList");
-    o(this, "distinct");
+    c(this, "fields");
+    c(this, "session");
+    c(this, "dialect");
+    c(this, "withList");
+    c(this, "distinct");
     this.fields = e.fields, this.session = e.session, this.dialect = e.dialect, this.withList = e.withList, this.distinct = e.distinct;
   }
   from(e) {
     const t = !!this.fields;
     let r;
-    return this.fields ? r = this.fields : m(e, J) ? r = Object.fromEntries(
+    return this.fields ? r = this.fields : p(e, G) ? r = Object.fromEntries(
       Object.keys(e._.selectedFields).map((s) => [s, e[s]])
-    ) : m(e, Ge) ? r = e[F].selectedFields : m(e, L) ? r = {} : r = xi(e), new Tt({
+    ) : p(e, Xe) ? r = e[K].selectedFields : p(e, v) ? r = {} : r = Qi(e), new St({
       table: e,
       fields: r,
       isPartialSelect: t,
@@ -2220,19 +2220,19 @@ class ne {
     });
   }
 }
-o(ne, Un, "SQLiteSelectBuilder");
-var Mn, Fn;
-class li extends (Fn = ci, Mn = p, Fn) {
-  constructor({ table: t, fields: r, isPartialSelect: s, session: i, dialect: c, withList: a, distinct: u }) {
+c(ne, kn, "SQLiteSelectBuilder");
+var Un, Mn;
+class ci extends (Mn = oi, Un = b, Mn) {
+  constructor({ table: t, fields: r, isPartialSelect: s, session: i, dialect: o, withList: a, distinct: u }) {
     super();
-    o(this, "_");
+    c(this, "_");
     /** @internal */
-    o(this, "config");
-    o(this, "joinsNotNullableMap");
-    o(this, "tableName");
-    o(this, "isPartialSelect");
-    o(this, "session");
-    o(this, "dialect");
+    c(this, "config");
+    c(this, "joinsNotNullableMap");
+    c(this, "tableName");
+    c(this, "isPartialSelect");
+    c(this, "session");
+    c(this, "dialect");
     /**
      * Executes a `left join` operation by adding another table to the current query.
      *
@@ -2260,7 +2260,7 @@ class li extends (Fn = ci, Mn = p, Fn) {
      *   .leftJoin(pets, eq(users.id, pets.ownerId))
      * ```
      */
-    o(this, "leftJoin", this.createJoin("left"));
+    c(this, "leftJoin", this.createJoin("left"));
     /**
      * Executes a `right join` operation by adding another table to the current query.
      *
@@ -2288,7 +2288,7 @@ class li extends (Fn = ci, Mn = p, Fn) {
      *   .rightJoin(pets, eq(users.id, pets.ownerId))
      * ```
      */
-    o(this, "rightJoin", this.createJoin("right"));
+    c(this, "rightJoin", this.createJoin("right"));
     /**
      * Executes an `inner join` operation, creating a new table by combining rows from two tables that have matching values.
      *
@@ -2316,7 +2316,7 @@ class li extends (Fn = ci, Mn = p, Fn) {
      *   .innerJoin(pets, eq(users.id, pets.ownerId))
      * ```
      */
-    o(this, "innerJoin", this.createJoin("inner"));
+    c(this, "innerJoin", this.createJoin("inner"));
     /**
      * Executes a `full join` operation by combining rows from two tables into a new table.
      *
@@ -2344,7 +2344,7 @@ class li extends (Fn = ci, Mn = p, Fn) {
      *   .fullJoin(pets, eq(users.id, pets.ownerId))
      * ```
      */
-    o(this, "fullJoin", this.createJoin("full"));
+    c(this, "fullJoin", this.createJoin("full"));
     /**
      * Adds `union` set operator to the query.
      *
@@ -2370,7 +2370,7 @@ class li extends (Fn = ci, Mn = p, Fn) {
      * );
      * ```
      */
-    o(this, "union", this.createSetOperator("union", !1));
+    c(this, "union", this.createSetOperator("union", !1));
     /**
      * Adds `union all` set operator to the query.
      *
@@ -2396,7 +2396,7 @@ class li extends (Fn = ci, Mn = p, Fn) {
      * );
      * ```
      */
-    o(this, "unionAll", this.createSetOperator("union", !0));
+    c(this, "unionAll", this.createSetOperator("union", !0));
     /**
      * Adds `intersect` set operator to the query.
      *
@@ -2422,7 +2422,7 @@ class li extends (Fn = ci, Mn = p, Fn) {
      * );
      * ```
      */
-    o(this, "intersect", this.createSetOperator("intersect", !1));
+    c(this, "intersect", this.createSetOperator("intersect", !1));
     /**
      * Adds `except` set operator to the query.
      *
@@ -2448,54 +2448,54 @@ class li extends (Fn = ci, Mn = p, Fn) {
      * );
      * ```
      */
-    o(this, "except", this.createSetOperator("except", !1));
+    c(this, "except", this.createSetOperator("except", !1));
     this.config = {
       withList: a,
       table: t,
       fields: { ...r },
       distinct: u,
       setOperators: []
-    }, this.isPartialSelect = s, this.session = i, this.dialect = c, this._ = {
+    }, this.isPartialSelect = s, this.session = i, this.dialect = o, this._ = {
       selectedFields: r
-    }, this.tableName = st(t), this.joinsNotNullableMap = typeof this.tableName == "string" ? { [this.tableName]: !0 } : {};
+    }, this.tableName = nt(t), this.joinsNotNullableMap = typeof this.tableName == "string" ? { [this.tableName]: !0 } : {};
   }
   createJoin(t) {
     return (r, s) => {
       var a;
-      const i = this.tableName, c = st(r);
-      if (typeof c == "string" && ((a = this.config.joins) != null && a.some((u) => u.alias === c)))
-        throw new Error(`Alias "${c}" is already used in this query`);
+      const i = this.tableName, o = nt(r);
+      if (typeof o == "string" && ((a = this.config.joins) != null && a.some((u) => u.alias === o)))
+        throw new Error(`Alias "${o}" is already used in this query`);
       if (!this.isPartialSelect && (Object.keys(this.joinsNotNullableMap).length === 1 && typeof i == "string" && (this.config.fields = {
         [i]: this.config.fields
-      }), typeof c == "string" && !m(r, L))) {
-        const u = m(r, J) ? r._.selectedFields : m(r, be) ? r[F].selectedFields : r[S.Symbol.Columns];
-        this.config.fields[c] = u;
+      }), typeof o == "string" && !p(r, v))) {
+        const u = p(r, G) ? r._.selectedFields : p(r, be) ? r[K].selectedFields : r[w.Symbol.Columns];
+        this.config.fields[o] = u;
       }
       if (typeof s == "function" && (s = s(
         new Proxy(
           this.config.fields,
-          new M({ sqlAliasedBehavior: "sql", sqlBehavior: "sql" })
+          new R({ sqlAliasedBehavior: "sql", sqlBehavior: "sql" })
         )
-      )), this.config.joins || (this.config.joins = []), this.config.joins.push({ on: s, table: r, joinType: t, alias: c }), typeof c == "string")
+      )), this.config.joins || (this.config.joins = []), this.config.joins.push({ on: s, table: r, joinType: t, alias: o }), typeof o == "string")
         switch (t) {
           case "left": {
-            this.joinsNotNullableMap[c] = !1;
+            this.joinsNotNullableMap[o] = !1;
             break;
           }
           case "right": {
             this.joinsNotNullableMap = Object.fromEntries(
               Object.entries(this.joinsNotNullableMap).map(([u]) => [u, !1])
-            ), this.joinsNotNullableMap[c] = !0;
+            ), this.joinsNotNullableMap[o] = !0;
             break;
           }
           case "inner": {
-            this.joinsNotNullableMap[c] = !0;
+            this.joinsNotNullableMap[o] = !0;
             break;
           }
           case "full": {
             this.joinsNotNullableMap = Object.fromEntries(
               Object.entries(this.joinsNotNullableMap).map(([u]) => [u, !1])
-            ), this.joinsNotNullableMap[c] = !1;
+            ), this.joinsNotNullableMap[o] = !1;
             break;
           }
         }
@@ -2504,7 +2504,7 @@ class li extends (Fn = ci, Mn = p, Fn) {
   }
   createSetOperator(t, r) {
     return (s) => {
-      const i = typeof s == "function" ? s(ga()) : s;
+      const i = typeof s == "function" ? s(ba()) : s;
       if (!bt(this.getSelectedFields(), i.getSelectedFields()))
         throw new Error(
           "Set operator error (union / intersect / except): selected fields are not the same or are in a different order"
@@ -2549,7 +2549,7 @@ class li extends (Fn = ci, Mn = p, Fn) {
     return typeof t == "function" && (t = t(
       new Proxy(
         this.config.fields,
-        new M({ sqlAliasedBehavior: "sql", sqlBehavior: "sql" })
+        new R({ sqlAliasedBehavior: "sql", sqlBehavior: "sql" })
       )
     )), this.config.where = t, this;
   }
@@ -2579,7 +2579,7 @@ class li extends (Fn = ci, Mn = p, Fn) {
     return typeof t == "function" && (t = t(
       new Proxy(
         this.config.fields,
-        new M({ sqlAliasedBehavior: "sql", sqlBehavior: "sql" })
+        new R({ sqlAliasedBehavior: "sql", sqlBehavior: "sql" })
       )
     )), this.config.having = t, this;
   }
@@ -2588,7 +2588,7 @@ class li extends (Fn = ci, Mn = p, Fn) {
       const r = t[0](
         new Proxy(
           this.config.fields,
-          new M({ sqlAliasedBehavior: "alias", sqlBehavior: "sql" })
+          new R({ sqlAliasedBehavior: "alias", sqlBehavior: "sql" })
         )
       );
       this.config.groupBy = Array.isArray(r) ? r : [r];
@@ -2601,7 +2601,7 @@ class li extends (Fn = ci, Mn = p, Fn) {
       const r = t[0](
         new Proxy(
           this.config.fields,
-          new M({ sqlAliasedBehavior: "alias", sqlBehavior: "sql" })
+          new R({ sqlAliasedBehavior: "alias", sqlBehavior: "sql" })
         )
       ), s = Array.isArray(r) ? r : [r];
       this.config.setOperators.length > 0 ? this.config.setOperators.at(-1).orderBy = s : this.config.orderBy = s;
@@ -2659,30 +2659,30 @@ class li extends (Fn = ci, Mn = p, Fn) {
   }
   as(t) {
     return new Proxy(
-      new J(this.getSQL(), this.config.fields, t),
-      new M({ alias: t, sqlAliasedBehavior: "alias", sqlBehavior: "error" })
+      new G(this.getSQL(), this.config.fields, t),
+      new R({ alias: t, sqlAliasedBehavior: "alias", sqlBehavior: "error" })
     );
   }
   /** @internal */
   getSelectedFields() {
     return new Proxy(
       this.config.fields,
-      new M({ alias: this.tableName, sqlAliasedBehavior: "alias", sqlBehavior: "error" })
+      new R({ alias: this.tableName, sqlAliasedBehavior: "alias", sqlBehavior: "error" })
     );
   }
   $dynamic() {
     return this;
   }
 }
-o(li, Mn, "SQLiteSelectQueryBuilder");
-var Rn, Kn;
-class Tt extends (Kn = li, Rn = p, Kn) {
+c(ci, Un, "SQLiteSelectQueryBuilder");
+var Fn, Rn;
+class St extends (Rn = ci, Fn = b, Rn) {
   constructor() {
     super(...arguments);
-    o(this, "run", (t) => this._prepare().run(t));
-    o(this, "all", (t) => this._prepare().all(t));
-    o(this, "get", (t) => this._prepare().get(t));
-    o(this, "values", (t) => this._prepare().values(t));
+    c(this, "run", (t) => this._prepare().run(t));
+    c(this, "all", (t) => this._prepare().all(t));
+    c(this, "get", (t) => this._prepare().get(t));
+    c(this, "values", (t) => this._prepare().values(t));
   }
   /** @internal */
   _prepare(t = !0) {
@@ -2703,44 +2703,44 @@ class Tt extends (Kn = li, Rn = p, Kn) {
     return this.all();
   }
 }
-o(Tt, Rn, "SQLiteSelect");
-Bi(Tt, [le]);
+c(St, Fn, "SQLiteSelect");
+Bi(St, [le]);
 function Ye(n, e) {
   return (t, r, ...s) => {
-    const i = [r, ...s].map((c) => ({
+    const i = [r, ...s].map((o) => ({
       type: n,
       isAll: e,
-      rightSelect: c
+      rightSelect: o
     }));
-    for (const c of i)
-      if (!bt(t.getSelectedFields(), c.rightSelect.getSelectedFields()))
+    for (const o of i)
+      if (!bt(t.getSelectedFields(), o.rightSelect.getSelectedFields()))
         throw new Error(
           "Set operator error (union / intersect / except): selected fields are not the same or are in a different order"
         );
     return t.addSetOperators(i);
   };
 }
-const ga = () => ({
-  union: ba,
+const ba = () => ({
+  union: ga,
   unionAll: wa,
   intersect: Sa,
   except: Ta
-}), ba = Ye("union", !1), wa = Ye("union", !0), Sa = Ye("intersect", !1), Ta = Ye("except", !1);
-var zn;
-zn = p;
-class Nt {
+}), ga = Ye("union", !1), wa = Ye("union", !0), Sa = Ye("intersect", !1), Ta = Ye("except", !1);
+var Kn;
+Kn = b;
+class Tt {
   constructor(e) {
-    o(this, "dialect");
-    o(this, "dialectConfig");
-    this.dialect = m(e, je) ? e : void 0, this.dialectConfig = m(e, je) ? void 0 : e;
+    c(this, "dialect");
+    c(this, "dialectConfig");
+    this.dialect = p(e, je) ? e : void 0, this.dialectConfig = p(e, je) ? void 0 : e;
   }
   $with(e) {
     const t = this;
     return {
       as(r) {
         return typeof r == "function" && (r = r(t)), new Proxy(
-          new gt(r.getSQL(), r.getSelectedFields(), e, !0),
-          new M({ alias: e, sqlAliasedBehavior: "alias", sqlBehavior: "error" })
+          new yt(r.getSQL(), r.getSelectedFields(), e, !0),
+          new R({ alias: e, sqlAliasedBehavior: "alias", sqlBehavior: "error" })
         );
       }
     };
@@ -2779,13 +2779,13 @@ class Nt {
   }
   // Lazy load dialect to avoid circular dependency
   getDialect() {
-    return this.dialect || (this.dialect = new St(this.dialectConfig)), this.dialect;
+    return this.dialect || (this.dialect = new wt(this.dialectConfig)), this.dialect;
   }
 }
-o(Nt, zn, "SQLiteQueryBuilder");
-var Vn;
-Vn = p;
-class lt {
+c(Tt, Kn, "SQLiteQueryBuilder");
+var zn;
+zn = b;
+class ct {
   constructor(e, t, r, s) {
     this.table = e, this.session = t, this.dialect = r, this.withList = s;
   }
@@ -2793,38 +2793,38 @@ class lt {
     if (e = Array.isArray(e) ? e : [e], e.length === 0)
       throw new Error("values() must be called with at least one value");
     const t = e.map((r) => {
-      const s = {}, i = this.table[S.Symbol.Columns];
-      for (const c of Object.keys(r)) {
-        const a = r[c];
-        s[c] = m(a, L) ? a : new se(a, i[c]);
+      const s = {}, i = this.table[w.Symbol.Columns];
+      for (const o of Object.keys(r)) {
+        const a = r[o];
+        s[o] = p(a, v) ? a : new se(a, i[o]);
       }
       return s;
     });
-    return new ut(this.table, t, this.session, this.dialect, this.withList);
+    return new lt(this.table, t, this.session, this.dialect, this.withList);
   }
   select(e) {
-    const t = typeof e == "function" ? e(new Nt()) : e;
-    if (!m(t, L) && !bt(this.table[rt], t._.selectedFields))
+    const t = typeof e == "function" ? e(new Tt()) : e;
+    if (!p(t, v) && !bt(this.table[tt], t._.selectedFields))
       throw new Error(
         "Insert select error: selected fields are not the same or are in a different order compared to the table definition"
       );
-    return new ut(this.table, t, this.session, this.dialect, this.withList, !0);
+    return new lt(this.table, t, this.session, this.dialect, this.withList, !0);
   }
 }
-o(lt, Vn, "SQLiteInsertBuilder");
-var Xn, Jn;
-class ut extends (Jn = le, Xn = p, Jn) {
-  constructor(t, r, s, i, c, a) {
+c(ct, zn, "SQLiteInsertBuilder");
+var Vn, Jn;
+class lt extends (Jn = le, Vn = b, Jn) {
+  constructor(t, r, s, i, o, a) {
     super();
     /** @internal */
-    o(this, "config");
-    o(this, "run", (t) => this._prepare().run(t));
-    o(this, "all", (t) => this._prepare().all(t));
-    o(this, "get", (t) => this._prepare().get(t));
-    o(this, "values", (t) => this._prepare().values(t));
-    this.session = s, this.dialect = i, this.config = { table: t, values: r, withList: c, select: a };
+    c(this, "config");
+    c(this, "run", (t) => this._prepare().run(t));
+    c(this, "all", (t) => this._prepare().all(t));
+    c(this, "get", (t) => this._prepare().get(t));
+    c(this, "values", (t) => this._prepare().values(t));
+    this.session = s, this.dialect = i, this.config = { table: t, values: r, withList: o, select: a };
   }
-  returning(t = this.config.table[X.Symbol.Columns]) {
+  returning(t = this.config.table[Y.Symbol.Columns]) {
     return this.config.returning = fe(t), this;
   }
   /**
@@ -2892,8 +2892,8 @@ class ut extends (Jn = le, Xn = p, Jn) {
       throw new Error(
         'You cannot use both "where" and "targetWhere"/"setWhere" at the same time - "where" is deprecated, use "targetWhere" or "setWhere" instead.'
       );
-    const r = t.where ? l` where ${t.where}` : void 0, s = t.targetWhere ? l` where ${t.targetWhere}` : void 0, i = t.setWhere ? l` where ${t.setWhere}` : void 0, c = Array.isArray(t.target) ? l`${t.target}` : l`${[t.target]}`, a = this.dialect.buildUpdateSet(this.config.table, Os(this.config.table, t.set));
-    return this.config.onConflict = l`${c}${s} do update set ${a}${r}${i}`, this;
+    const r = t.where ? l` where ${t.where}` : void 0, s = t.targetWhere ? l` where ${t.targetWhere}` : void 0, i = t.setWhere ? l` where ${t.setWhere}` : void 0, o = Array.isArray(t.target) ? l`${t.target}` : l`${[t.target]}`, a = this.dialect.buildUpdateSet(this.config.table, $s(this.config.table, t.set));
+    return this.config.onConflict = l`${o}${s} do update set ${a}${r}${i}`, this;
   }
   /** @internal */
   getSQL() {
@@ -2922,58 +2922,58 @@ class ut extends (Jn = le, Xn = p, Jn) {
     return this;
   }
 }
-o(ut, Xn, "SQLiteInsert");
-var Gn;
-Gn = p;
-class dt {
+c(lt, Vn, "SQLiteInsert");
+var Xn;
+Xn = b;
+class ut {
   constructor(e, t, r, s) {
     this.table = e, this.session = t, this.dialect = r, this.withList = s;
   }
   set(e) {
-    return new ui(
+    return new li(
       this.table,
-      Os(this.table, e),
+      $s(this.table, e),
       this.session,
       this.dialect,
       this.withList
     );
   }
 }
-o(dt, Gn, "SQLiteUpdateBuilder");
-var Yn, Wn;
-class ui extends (Wn = le, Yn = p, Wn) {
-  constructor(t, r, s, i, c) {
+c(ut, Xn, "SQLiteUpdateBuilder");
+var Yn, Gn;
+class li extends (Gn = le, Yn = b, Gn) {
+  constructor(t, r, s, i, o) {
     super();
     /** @internal */
-    o(this, "config");
-    o(this, "leftJoin", this.createJoin("left"));
-    o(this, "rightJoin", this.createJoin("right"));
-    o(this, "innerJoin", this.createJoin("inner"));
-    o(this, "fullJoin", this.createJoin("full"));
-    o(this, "run", (t) => this._prepare().run(t));
-    o(this, "all", (t) => this._prepare().all(t));
-    o(this, "get", (t) => this._prepare().get(t));
-    o(this, "values", (t) => this._prepare().values(t));
-    this.session = s, this.dialect = i, this.config = { set: r, table: t, withList: c, joins: [] };
+    c(this, "config");
+    c(this, "leftJoin", this.createJoin("left"));
+    c(this, "rightJoin", this.createJoin("right"));
+    c(this, "innerJoin", this.createJoin("inner"));
+    c(this, "fullJoin", this.createJoin("full"));
+    c(this, "run", (t) => this._prepare().run(t));
+    c(this, "all", (t) => this._prepare().all(t));
+    c(this, "get", (t) => this._prepare().get(t));
+    c(this, "values", (t) => this._prepare().values(t));
+    this.session = s, this.dialect = i, this.config = { set: r, table: t, withList: o, joins: [] };
   }
   from(t) {
     return this.config.from = t, this;
   }
   createJoin(t) {
     return (r, s) => {
-      const i = st(r);
-      if (typeof i == "string" && this.config.joins.some((c) => c.alias === i))
+      const i = nt(r);
+      if (typeof i == "string" && this.config.joins.some((o) => o.alias === i))
         throw new Error(`Alias "${i}" is already used in this query`);
       if (typeof s == "function") {
-        const c = this.config.from ? m(r, X) ? r[S.Symbol.Columns] : m(r, J) ? r._.selectedFields : m(r, Ge) ? r[F].selectedFields : void 0 : void 0;
+        const o = this.config.from ? p(r, Y) ? r[w.Symbol.Columns] : p(r, G) ? r._.selectedFields : p(r, Xe) ? r[K].selectedFields : void 0 : void 0;
         s = s(
           new Proxy(
-            this.config.table[S.Symbol.Columns],
-            new M({ sqlAliasedBehavior: "sql", sqlBehavior: "sql" })
+            this.config.table[w.Symbol.Columns],
+            new R({ sqlAliasedBehavior: "sql", sqlBehavior: "sql" })
           ),
-          c && new Proxy(
-            c,
-            new M({ sqlAliasedBehavior: "sql", sqlBehavior: "sql" })
+          o && new Proxy(
+            o,
+            new R({ sqlAliasedBehavior: "sql", sqlBehavior: "sql" })
           )
         );
       }
@@ -3020,8 +3020,8 @@ class ui extends (Wn = le, Yn = p, Wn) {
     if (typeof t[0] == "function") {
       const r = t[0](
         new Proxy(
-          this.config.table[S.Symbol.Columns],
-          new M({ sqlAliasedBehavior: "alias", sqlBehavior: "sql" })
+          this.config.table[w.Symbol.Columns],
+          new R({ sqlAliasedBehavior: "alias", sqlBehavior: "sql" })
         )
       ), s = Array.isArray(r) ? r : [r];
       this.config.orderBy = s;
@@ -3034,7 +3034,7 @@ class ui extends (Wn = le, Yn = p, Wn) {
   limit(t) {
     return this.config.limit = t, this;
   }
-  returning(t = this.config.table[X.Symbol.Columns]) {
+  returning(t = this.config.table[Y.Symbol.Columns]) {
     return this.config.returning = fe(t), this;
   }
   /** @internal */
@@ -3064,15 +3064,15 @@ class ui extends (Wn = le, Yn = p, Wn) {
     return this;
   }
 }
-o(ui, Yn, "SQLiteUpdate");
-var Hn, Zn, es;
-const Ae = class Ae extends (es = L, Zn = p, Hn = Symbol.toStringTag, es) {
+c(li, Yn, "SQLiteUpdate");
+var Wn, Hn, Zn;
+const Le = class Le extends (Zn = v, Hn = b, Wn = Symbol.toStringTag, Zn) {
   constructor(t) {
-    super(Ae.buildEmbeddedCount(t.source, t.filters).queryChunks);
-    o(this, "sql");
-    o(this, Hn, "SQLiteCountBuilderAsync");
-    o(this, "session");
-    this.params = t, this.session = t.session, this.sql = Ae.buildCount(
+    super(Le.buildEmbeddedCount(t.source, t.filters).queryChunks);
+    c(this, "sql");
+    c(this, Wn, "SQLiteCountBuilderAsync");
+    c(this, "session");
+    this.params = t, this.session = t.session, this.sql = Le.buildCount(
       t.source,
       t.filters
     );
@@ -3101,16 +3101,16 @@ const Ae = class Ae extends (es = L, Zn = p, Hn = Symbol.toStringTag, es) {
     );
   }
 };
-o(Ae, Zn, "SQLiteCountBuilderAsync");
-let ht = Ae;
-var ts;
-ts = p;
-class di {
-  constructor(e, t, r, s, i, c, a, u) {
-    this.mode = e, this.fullSchema = t, this.schema = r, this.tableNamesMap = s, this.table = i, this.tableConfig = c, this.dialect = a, this.session = u;
+c(Le, Hn, "SQLiteCountBuilderAsync");
+let dt = Le;
+var es;
+es = b;
+class ui {
+  constructor(e, t, r, s, i, o, a, u) {
+    this.mode = e, this.fullSchema = t, this.schema = r, this.tableNamesMap = s, this.table = i, this.tableConfig = o, this.dialect = a, this.session = u;
   }
   findMany(e) {
-    return this.mode === "sync" ? new mt(
+    return this.mode === "sync" ? new ht(
       this.fullSchema,
       this.schema,
       this.tableNamesMap,
@@ -3133,7 +3133,7 @@ class di {
     );
   }
   findFirst(e) {
-    return this.mode === "sync" ? new mt(
+    return this.mode === "sync" ? new ht(
       this.fullSchema,
       this.schema,
       this.tableNamesMap,
@@ -3156,14 +3156,14 @@ class di {
     );
   }
 }
-o(di, ts, "SQLiteAsyncRelationalQueryBuilder");
-var rs, ns;
-class Pe extends (ns = le, rs = p, ns) {
-  constructor(t, r, s, i, c, a, u, g, d) {
+c(ui, es, "SQLiteAsyncRelationalQueryBuilder");
+var ts, rs;
+class Pe extends (rs = le, ts = b, rs) {
+  constructor(t, r, s, i, o, a, u, y, d) {
     super();
     /** @internal */
-    o(this, "mode");
-    this.fullSchema = t, this.schema = r, this.tableNamesMap = s, this.table = i, this.tableConfig = c, this.dialect = a, this.session = u, this.config = g, this.mode = d;
+    c(this, "mode");
+    this.fullSchema = t, this.schema = r, this.tableNamesMap = s, this.table = i, this.tableConfig = o, this.dialect = a, this.session = u, this.config = y, this.mode = d;
   }
   /** @internal */
   getSQL() {
@@ -3185,9 +3185,9 @@ class Pe extends (ns = le, rs = p, ns) {
       void 0,
       this.mode === "first" ? "get" : "all",
       !0,
-      (i, c) => {
+      (i, o) => {
         const a = i.map(
-          (u) => at(this.schema, this.tableConfig, u, r.selection, c)
+          (u) => it(this.schema, this.tableConfig, u, r.selection, o)
         );
         return this.mode === "first" ? a[0] : a;
       }
@@ -3219,21 +3219,21 @@ class Pe extends (ns = le, rs = p, ns) {
     return this.executeRaw();
   }
 }
-o(Pe, rs, "SQLiteAsyncRelationalQuery");
-var ss, is;
-class mt extends (is = Pe, ss = p, is) {
+c(Pe, ts, "SQLiteAsyncRelationalQuery");
+var ns, ss;
+class ht extends (ss = Pe, ns = b, ss) {
   sync() {
     return this.executeRaw();
   }
 }
-o(mt, ss, "SQLiteSyncRelationalQuery");
-var as, os;
-class Le extends (os = le, as = p, os) {
-  constructor(t, r, s, i, c) {
+c(ht, ns, "SQLiteSyncRelationalQuery");
+var is, as;
+class _e extends (as = le, is = b, as) {
+  constructor(t, r, s, i, o) {
     super();
     /** @internal */
-    o(this, "config");
-    this.execute = t, this.getSQL = r, this.dialect = i, this.mapBatchResult = c, this.config = { action: s };
+    c(this, "config");
+    this.execute = t, this.getSQL = r, this.dialect = i, this.mapBatchResult = o, this.config = { action: s };
   }
   getQuery() {
     return { ...this.dialect.sqlToQuery(this.getSQL()), method: this.config.action };
@@ -3249,12 +3249,12 @@ class Le extends (os = le, as = p, os) {
     return !1;
   }
 }
-o(Le, as, "SQLiteRaw");
-var cs;
-cs = p;
-class Et {
+c(_e, is, "SQLiteRaw");
+var os;
+os = b;
+class Nt {
   constructor(e, t, r, s) {
-    o(this, "query");
+    c(this, "query");
     this.resultKind = e, this.dialect = t, this.session = r, this._ = s ? {
       schema: s.schema,
       fullSchema: s.fullSchema,
@@ -3266,13 +3266,13 @@ class Et {
     }, this.query = {};
     const i = this.query;
     if (this._.schema)
-      for (const [c, a] of Object.entries(this._.schema))
-        i[c] = new di(
+      for (const [o, a] of Object.entries(this._.schema))
+        i[o] = new ui(
           e,
           s.fullSchema,
           this._.schema,
           this._.tableNamesMap,
-          s.fullSchema[c],
+          s.fullSchema[o],
           a,
           t,
           r
@@ -3314,15 +3314,15 @@ class Et {
     const t = this;
     return {
       as(r) {
-        return typeof r == "function" && (r = r(new Nt(t.dialect))), new Proxy(
-          new gt(r.getSQL(), r.getSelectedFields(), e, !0),
-          new M({ alias: e, sqlAliasedBehavior: "alias", sqlBehavior: "error" })
+        return typeof r == "function" && (r = r(new Tt(t.dialect))), new Proxy(
+          new yt(r.getSQL(), r.getSelectedFields(), e, !0),
+          new R({ alias: e, sqlAliasedBehavior: "alias", sqlBehavior: "error" })
         );
       }
     };
   }
   $count(e, t) {
-    return new ht({ source: e, filters: t, session: this.session });
+    return new dt({ source: e, filters: t, session: this.session });
   }
   /**
    * Incorporates a previously defined CTE (using `$with`) into the main query.
@@ -3363,15 +3363,15 @@ class Et {
       });
     }
     function i(u) {
-      return new dt(u, t.session, t.dialect, e);
+      return new ut(u, t.session, t.dialect, e);
     }
-    function c(u) {
-      return new lt(u, t.session, t.dialect, e);
-    }
-    function a(u) {
+    function o(u) {
       return new ct(u, t.session, t.dialect, e);
     }
-    return { select: r, selectDistinct: s, update: i, insert: c, delete: a };
+    function a(u) {
+      return new ot(u, t.session, t.dialect, e);
+    }
+    return { select: r, selectDistinct: s, update: i, insert: o, delete: a };
   }
   select(e) {
     return new ne({ fields: e ?? void 0, session: this.session, dialect: this.dialect });
@@ -3412,7 +3412,7 @@ class Et {
    * ```
    */
   update(e) {
-    return new dt(e, this.session, this.dialect);
+    return new ut(e, this.session, this.dialect);
   }
   /**
    * Creates an insert query.
@@ -3439,7 +3439,7 @@ class Et {
    * ```
    */
   insert(e) {
-    return new lt(e, this.session, this.dialect);
+    return new ct(e, this.session, this.dialect);
   }
   /**
    * Creates a delete query.
@@ -3466,11 +3466,11 @@ class Et {
    * ```
    */
   delete(e) {
-    return new ct(e, this.session, this.dialect);
+    return new ot(e, this.session, this.dialect);
   }
   run(e) {
     const t = typeof e == "string" ? l.raw(e) : e.getSQL();
-    return this.resultKind === "async" ? new Le(
+    return this.resultKind === "async" ? new _e(
       async () => this.session.run(t),
       () => t,
       "run",
@@ -3480,7 +3480,7 @@ class Et {
   }
   all(e) {
     const t = typeof e == "string" ? l.raw(e) : e.getSQL();
-    return this.resultKind === "async" ? new Le(
+    return this.resultKind === "async" ? new _e(
       async () => this.session.all(t),
       () => t,
       "all",
@@ -3490,7 +3490,7 @@ class Et {
   }
   get(e) {
     const t = typeof e == "string" ? l.raw(e) : e.getSQL();
-    return this.resultKind === "async" ? new Le(
+    return this.resultKind === "async" ? new _e(
       async () => this.session.get(t),
       () => t,
       "get",
@@ -3500,7 +3500,7 @@ class Et {
   }
   values(e) {
     const t = typeof e == "string" ? l.raw(e) : e.getSQL();
-    return this.resultKind === "async" ? new Le(
+    return this.resultKind === "async" ? new _e(
       async () => this.session.values(t),
       () => t,
       "values",
@@ -3512,9 +3512,9 @@ class Et {
     return this.session.transaction(e, t);
   }
 }
-o(Et, cs, "BaseSQLiteDatabase");
-var ls, us;
-class hi extends (us = le, ls = p, us) {
+c(Nt, os, "BaseSQLiteDatabase");
+var cs, ls;
+class di extends (ls = le, cs = b, ls) {
   constructor(e) {
     super(), this.resultCb = e;
   }
@@ -3525,13 +3525,13 @@ class hi extends (us = le, ls = p, us) {
     return this.resultCb();
   }
 }
-o(hi, ls, "ExecuteResultSync");
-var ds;
-ds = p;
-class mi {
+c(di, cs, "ExecuteResultSync");
+var us;
+us = b;
+class hi {
   constructor(e, t, r) {
     /** @internal */
-    o(this, "joinsNotNullableMap");
+    c(this, "joinsNotNullableMap");
     this.mode = e, this.executeMethod = t, this.query = r;
   }
   getQuery() {
@@ -3547,7 +3547,7 @@ class mi {
     throw new Error("Not implemented");
   }
   execute(e) {
-    return this.mode === "async" ? this[this.executeMethod](e) : new hi(() => this[this.executeMethod](e));
+    return this.mode === "async" ? this[this.executeMethod](e) : new di(() => this[this.executeMethod](e));
   }
   mapResult(e, t) {
     switch (this.executeMethod) {
@@ -3560,10 +3560,10 @@ class mi {
     }
   }
 }
-o(mi, ds, "PreparedQuery");
-var hs;
-hs = p;
-class fi {
+c(hi, us, "PreparedQuery");
+var ds;
+ds = b;
+class mi {
   constructor(e) {
     this.dialect = e;
   }
@@ -3607,46 +3607,46 @@ class fi {
     throw new Error("Not implemented");
   }
 }
-o(fi, hs, "SQLiteSession");
-var ms, fs;
-class pi extends (fs = Et, ms = p, fs) {
+c(mi, ds, "SQLiteSession");
+var hs, ms;
+class fi extends (ms = Nt, hs = b, ms) {
   constructor(e, t, r, s, i = 0) {
     super(e, t, r, s), this.schema = s, this.nestedIndex = i;
   }
   rollback() {
-    throw new oi();
+    throw new ai();
   }
 }
-o(pi, ms, "SQLiteTransaction");
-var ps, ys;
-class yi extends (ys = fi, ps = p, ys) {
+c(fi, hs, "SQLiteTransaction");
+var fs, ps;
+class pi extends (ps = mi, fs = b, ps) {
   constructor(t, r, s, i = {}) {
     super(r);
-    o(this, "logger");
-    this.client = t, this.schema = s, this.logger = i.logger ?? new As();
+    c(this, "logger");
+    this.client = t, this.schema = s, this.logger = i.logger ?? new Ls();
   }
-  prepareQuery(t, r, s, i, c) {
+  prepareQuery(t, r, s, i, o) {
     const a = this.client.prepare(t.sql);
-    return new gi(
+    return new yi(
       a,
       t,
       this.logger,
       r,
       s,
       i,
-      c
+      o
     );
   }
   transaction(t, r = {}) {
-    const s = new ft("sync", this.dialect, this, this.schema);
+    const s = new mt("sync", this.dialect, this, this.schema);
     return this.client.transaction(t)[r.behavior ?? "deferred"](s);
   }
 }
-o(yi, ps, "BetterSQLiteSession");
-var gs, bs;
-const Re = class Re extends (bs = pi, gs = p, bs) {
+c(pi, fs, "BetterSQLiteSession");
+var ys, bs;
+const Fe = class Fe extends (bs = fi, ys = b, bs) {
   transaction(e) {
-    const t = `sp${this.nestedIndex}`, r = new Re("sync", this.dialect, this.session, this.schema, this.nestedIndex + 1);
+    const t = `sp${this.nestedIndex}`, r = new Fe("sync", this.dialect, this.session, this.schema, this.nestedIndex + 1);
     this.session.run(l.raw(`savepoint ${t}`));
     try {
       const s = e(r);
@@ -3656,38 +3656,38 @@ const Re = class Re extends (bs = pi, gs = p, bs) {
     }
   }
 };
-o(Re, gs, "BetterSQLiteTransaction");
-let ft = Re;
-var ws, Ss;
-class gi extends (Ss = mi, ws = p, Ss) {
-  constructor(e, t, r, s, i, c, a) {
-    super("sync", i, t), this.stmt = e, this.logger = r, this.fields = s, this._isResponseInArrayMode = c, this.customResultMapper = a;
+c(Fe, ys, "BetterSQLiteTransaction");
+let mt = Fe;
+var gs, ws;
+class yi extends (ws = hi, gs = b, ws) {
+  constructor(e, t, r, s, i, o, a) {
+    super("sync", i, t), this.stmt = e, this.logger = r, this.fields = s, this._isResponseInArrayMode = o, this.customResultMapper = a;
   }
   run(e) {
-    const t = Oe(this.query.params, e ?? {});
+    const t = $e(this.query.params, e ?? {});
     return this.logger.logQuery(this.query.sql, t), this.stmt.run(...t);
   }
   all(e) {
-    const { fields: t, joinsNotNullableMap: r, query: s, logger: i, stmt: c, customResultMapper: a } = this;
+    const { fields: t, joinsNotNullableMap: r, query: s, logger: i, stmt: o, customResultMapper: a } = this;
     if (!t && !a) {
-      const g = Oe(s.params, e ?? {});
-      return i.logQuery(s.sql, g), c.all(...g);
+      const y = $e(s.params, e ?? {});
+      return i.logQuery(s.sql, y), o.all(...y);
     }
     const u = this.values(e);
-    return a ? a(u) : u.map((g) => Ct(t, g, r));
+    return a ? a(u) : u.map((y) => vt(t, y, r));
   }
   get(e) {
-    const t = Oe(this.query.params, e ?? {});
+    const t = $e(this.query.params, e ?? {});
     this.logger.logQuery(this.query.sql, t);
-    const { fields: r, stmt: s, joinsNotNullableMap: i, customResultMapper: c } = this;
-    if (!r && !c)
+    const { fields: r, stmt: s, joinsNotNullableMap: i, customResultMapper: o } = this;
+    if (!r && !o)
       return s.get(...t);
     const a = s.raw().get(...t);
     if (a)
-      return c ? c([a]) : Ct(r, a, i);
+      return o ? o([a]) : vt(r, a, i);
   }
   values(e) {
-    const t = Oe(this.query.params, e ?? {});
+    const t = $e(this.query.params, e ?? {});
     return this.logger.logQuery(this.query.sql, t), this.stmt.raw().all(...t);
   }
   /** @internal */
@@ -3695,15 +3695,15 @@ class gi extends (Ss = mi, ws = p, Ss) {
     return this._isResponseInArrayMode;
   }
 }
-o(gi, ws, "BetterSQLitePreparedQuery");
-var Ts, Ns;
-class bi extends (Ns = Et, Ts = p, Ns) {
+c(yi, gs, "BetterSQLitePreparedQuery");
+var Ss, Ts;
+class bi extends (Ts = Nt, Ss = b, Ts) {
 }
-o(bi, Ts, "BetterSQLite3Database");
-function Se(n, e = {}) {
-  const t = new St({ casing: e.casing });
+c(bi, Ss, "BetterSQLite3Database");
+function we(n, e = {}) {
+  const t = new wt({ casing: e.casing });
   let r;
-  e.logger === !0 ? r = new Ls() : e.logger !== !1 && (r = e.logger);
+  e.logger === !0 ? r = new _s() : e.logger !== !1 && (r = e.logger);
   let s;
   if (e.schema) {
     const a = na(
@@ -3716,72 +3716,72 @@ function Se(n, e = {}) {
       tableNamesMap: a.tableNamesMap
     };
   }
-  const i = new yi(n, t, s, { logger: r }), c = new bi("sync", t, i, s);
-  return c.$client = n, c;
+  const i = new pi(n, t, s, { logger: r }), o = new bi("sync", t, i, s);
+  return o.$client = n, o;
 }
-function pt(...n) {
+function ft(...n) {
   if (n[0] === void 0 || typeof n[0] == "string") {
-    const e = n[0] === void 0 ? new _e() : new _e(n[0]);
-    return Se(e, n[1]);
+    const e = n[0] === void 0 ? new Ee() : new Ee(n[0]);
+    return we(e, n[1]);
   }
-  if (Qi(n[0])) {
+  if (xi(n[0])) {
     const { connection: e, client: t, ...r } = n[0];
     if (t)
-      return Se(t, r);
+      return we(t, r);
     if (typeof e == "object") {
-      const { source: i, ...c } = e, a = new _e(i, c);
-      return Se(a, r);
+      const { source: i, ...o } = e, a = new Ee(i, o);
+      return we(a, r);
     }
-    const s = new _e(e);
-    return Se(s, r);
+    const s = new Ee(e);
+    return we(s, r);
   }
-  return Se(n[0], n[1]);
+  return we(n[0], n[1]);
 }
 ((n) => {
   function e(t) {
-    return Se({}, t);
+    return we({}, t);
   }
   n.mock = e;
-})(pt || (pt = {}));
-const ee = ie("accounts", {
-  id: E("id").primaryKey(),
-  code: E("code").notNull().unique(),
+})(ft || (ft = {}));
+const x = ae("accounts", {
+  id: _("id").primaryKey(),
+  code: _("code").notNull().unique(),
   // e.g. "100", "100.001", "120.001", "600.001"
-  name: E("name").notNull(),
+  name: _("name").notNull(),
   // e.g. "Merkez Kasa", "ABC Mobilya"
-  type: E("type", {
+  type: _("type", {
     enum: ["asset", "liability", "equity", "revenue", "expense"]
   }).notNull(),
-  parentCode: E("parent_code"),
+  parentCode: _("parent_code"),
   // e.g. "100" for "100.001"
-  isActive: ge("is_active", { mode: "boolean" }).default(!0).notNull(),
-  createdAt: E("created_at").notNull()
-}), w = ie("entities", {
-  id: E("id").primaryKey(),
-  name: E("name").notNull(),
-  type: E("type", {
+  isActive: ye("is_active", { mode: "boolean" }).default(!0).notNull(),
+  createdAt: _("created_at").notNull()
+}), T = ae("entities", {
+  id: _("id").primaryKey(),
+  name: _("name").notNull(),
+  type: _("type", {
     enum: ["customer", "supplier", "bank", "cash", "partner"]
   }).notNull(),
-  accountId: E("account_id").notNull(),
+  accountId: _("account_id").notNull(),
   // Link to 120.xxx, 320.xxx, 102.xxx, 100.xxx, 500.xxx
-  phone: E("phone"),
-  taxNumber: E("tax_number"),
-  address: E("address"),
-  notes: E("notes"),
-  isActive: ge("is_active", { mode: "boolean" }).default(!0).notNull(),
-  createdAt: E("created_at").notNull()
-}), ae = ie("categories", {
-  id: E("id").primaryKey(),
-  name: E("name").notNull(),
-  type: E("type", { enum: ["income", "expense"] }).notNull(),
-  accountId: E("account_id").notNull(),
+  phone: _("phone"),
+  taxNumber: _("tax_number"),
+  address: _("address"),
+  notes: _("notes"),
+  isActive: ye("is_active", { mode: "boolean" }).default(!0).notNull(),
+  createdAt: _("created_at").notNull()
+}), gi = ae("categories", {
+  id: _("id").primaryKey(),
+  name: _("name").notNull(),
+  type: _("type", { enum: ["income", "expense"] }).notNull(),
+  accountId: _("account_id").notNull(),
   // Link to revenue/expense account
-  isActive: ge("is_active", { mode: "boolean" }).default(!0).notNull()
-}), I = ie("documents", {
-  id: E("id").primaryKey(),
-  docNumber: E("doc_number").notNull().unique(),
+  isActive: ye("is_active", { mode: "boolean" }).default(!0).notNull()
+}), C = ae("documents", {
+  id: _("id").primaryKey(),
+  docNumber: _("doc_number").notNull().unique(),
   // e.g. SAT-2026-00001
-  type: E("type", {
+  type: _("type", {
     enum: [
       "sale",
       // Satış Belgesi
@@ -3801,81 +3801,81 @@ const ee = ie("accounts", {
       // Gider Belgesi
     ]
   }).notNull(),
-  date: E("date").notNull(),
+  date: _("date").notNull(),
   // ISO YYYY-MM-DD
-  description: E("description"),
-  totalAmount: W("total_amount").notNull(),
-  createdAt: E("created_at").notNull()
-}), f = ie("journal_entries", {
-  id: E("id").primaryKey(),
-  entryNumber: E("entry_number").notNull().unique(),
+  description: _("description"),
+  totalAmount: H("total_amount").notNull(),
+  createdAt: _("created_at").notNull()
+}), m = ae("journal_entries", {
+  id: _("id").primaryKey(),
+  entryNumber: _("entry_number").notNull().unique(),
   // Fiş No e.g. YEV-2026-00001
-  documentId: E("document_id"),
-  date: E("date").notNull(),
-  description: E("description").notNull(),
-  status: E("status", { enum: ["active", "cancelled"] }).default("active").notNull(),
-  createdAt: E("created_at").notNull()
-}), y = ie("journal_items", {
-  id: E("id").primaryKey(),
-  journalEntryId: E("journal_entry_id").notNull().references(() => f.id, { onDelete: "cascade" }),
-  accountId: E("account_id").notNull(),
-  entityId: E("entity_id"),
+  documentId: _("document_id"),
+  date: _("date").notNull(),
+  description: _("description").notNull(),
+  status: _("status", { enum: ["active", "cancelled"] }).default("active").notNull(),
+  createdAt: _("created_at").notNull()
+}), h = ae("journal_items", {
+  id: _("id").primaryKey(),
+  journalEntryId: _("journal_entry_id").notNull().references(() => m.id, { onDelete: "cascade" }),
+  accountId: _("account_id").notNull(),
+  entityId: _("entity_id"),
   // Optional link to specific customer/supplier/bank/cash/partner entity
-  debit: W("debit").default(0).notNull(),
+  debit: H("debit").default(0).notNull(),
   // Borç tutarı
-  credit: W("credit").default(0).notNull(),
+  credit: H("credit").default(0).notNull(),
   // Alacak tutarı
-  description: E("description")
-}), Z = ie("settings", {
-  id: E("id").primaryKey(),
+  description: _("description")
+}), ee = ae("settings", {
+  id: _("id").primaryKey(),
   // 'app_settings'
-  companyName: E("company_name").default("ABC Mobilya İmalat A.Ş.").notNull(),
-  taxNumber: E("tax_number"),
-  address: E("address"),
-  phone: E("phone"),
-  pinCode: E("pin_code"),
+  companyName: _("company_name").default("ABC Mobilya İmalat A.Ş.").notNull(),
+  taxNumber: _("tax_number"),
+  address: _("address"),
+  phone: _("phone"),
+  pinCode: _("pin_code"),
   // App lock pin code (e.g. '1234' or null)
-  autoBackupEnabled: ge("auto_backup_enabled", { mode: "boolean" }).default(!0).notNull(),
-  backupIntervalDays: ge("backup_interval_days").default(7).notNull(),
-  lastBackupAt: E("last_backup_at"),
-  updatedAt: E("updated_at").notNull()
-}), V = ie("products", {
-  id: E("id").primaryKey(),
-  code: E("code").notNull().unique(),
-  name: E("name").notNull(),
-  category: E("category").default("Genel").notNull(),
-  unit: E("unit").default("Adet").notNull(),
-  purchasePrice: W("purchase_price").default(0).notNull(),
-  salePrice: W("sale_price").default(0).notNull(),
-  stockQuantity: W("stock_quantity").default(0).notNull(),
-  minStockLevel: W("min_stock_level").default(5).notNull(),
-  isActive: ge("is_active", { mode: "boolean" }).default(!0).notNull(),
-  createdAt: E("created_at").notNull()
-}), Te = ie("stock_movements", {
-  id: E("id").primaryKey(),
-  productId: E("product_id").notNull().references(() => V.id, { onDelete: "cascade" }),
-  documentId: E("document_id"),
-  type: E("type", { enum: ["in", "out"] }).notNull(),
-  quantity: W("quantity").notNull(),
-  unitPrice: W("unit_price").default(0).notNull(),
-  totalPrice: W("total_price").default(0).notNull(),
-  description: E("description"),
-  date: E("date").notNull(),
-  createdAt: E("created_at").notNull()
+  autoBackupEnabled: ye("auto_backup_enabled", { mode: "boolean" }).default(!0).notNull(),
+  backupIntervalDays: ye("backup_interval_days").default(7).notNull(),
+  lastBackupAt: _("last_backup_at"),
+  updatedAt: _("updated_at").notNull()
+}), X = ae("products", {
+  id: _("id").primaryKey(),
+  code: _("code").notNull().unique(),
+  name: _("name").notNull(),
+  category: _("category").default("Genel").notNull(),
+  unit: _("unit").default("Adet").notNull(),
+  purchasePrice: H("purchase_price").default(0).notNull(),
+  salePrice: H("sale_price").default(0).notNull(),
+  stockQuantity: H("stock_quantity").default(0).notNull(),
+  minStockLevel: H("min_stock_level").default(5).notNull(),
+  isActive: ye("is_active", { mode: "boolean" }).default(!0).notNull(),
+  createdAt: _("created_at").notNull()
+}), Se = ae("stock_movements", {
+  id: _("id").primaryKey(),
+  productId: _("product_id").notNull().references(() => X.id, { onDelete: "cascade" }),
+  documentId: _("document_id"),
+  type: _("type", { enum: ["in", "out"] }).notNull(),
+  quantity: H("quantity").notNull(),
+  unitPrice: H("unit_price").default(0).notNull(),
+  totalPrice: H("total_price").default(0).notNull(),
+  description: _("description"),
+  date: _("date").notNull(),
+  createdAt: _("created_at").notNull()
 }), Na = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
   __proto__: null,
-  accounts: ee,
-  categories: ae,
-  documents: I,
-  entities: w,
-  journalEntries: f,
-  journalItems: y,
-  products: V,
-  settings: Z,
-  stockMovements: Te
+  accounts: x,
+  categories: gi,
+  documents: C,
+  entities: T,
+  journalEntries: m,
+  journalItems: h,
+  products: X,
+  settings: ee,
+  stockMovements: Se
 }, Symbol.toStringTag, { value: "Module" }));
 async function Ea(n) {
-  if (n.select().from(ee).all().length > 0)
+  if (n.select().from(x).all().length > 0)
     return;
   const t = (/* @__PURE__ */ new Date()).toISOString(), r = [
     // 1 DÖNEN VARLIKLAR
@@ -3921,7 +3921,7 @@ async function Ea(n) {
     { id: "acc_500_002", code: "500.002", name: "Ortak Mehmet Kaya", type: "equity", parentCode: "500", createdAt: t },
     { id: "acc_500_003", code: "500.003", name: "Ortak Mustafa Demir", type: "equity", parentCode: "500", createdAt: t }
   ];
-  n.insert(ee).values(r).run();
+  n.insert(x).values(r).run();
   const s = [
     {
       id: "ent_cash_001",
@@ -4044,7 +4044,7 @@ async function Ea(n) {
       createdAt: t
     }
   ];
-  n.insert(w).values(s).run();
+  n.insert(T).values(s).run();
   const i = [
     { id: "cat_001", name: "Mobilya Satışı", type: "income", accountId: "acc_600", isActive: !0 },
     { id: "cat_002", name: "Montaj Geliri", type: "income", accountId: "acc_601", isActive: !0 },
@@ -4055,7 +4055,7 @@ async function Ea(n) {
     { id: "cat_007", name: "Nakliye & Benzin Gideri", type: "expense", accountId: "acc_760", isActive: !0 },
     { id: "cat_008", name: "Ofis & Yemek Gideri", type: "expense", accountId: "acc_770", isActive: !0 }
   ];
-  n.insert(ae).values(i).run(), n.insert(Z).values({
+  n.insert(gi).values(i).run(), n.insert(ee).values({
     id: "app_settings",
     companyName: "ABC Mobilya İmalat & Dekorasyon",
     taxNumber: "1234567890",
@@ -4068,14 +4068,14 @@ async function Ea(n) {
     updatedAt: t
   }).run();
 }
-let Ne = null, oe = null;
+let Te = null, oe = null;
 function O() {
-  if (Ne)
-    return Ne;
-  const n = he.getPath("userData"), e = tt.join(n, "cari_finance.db");
-  return console.log("[SQLite DB Path]:", e), oe = new _e(e), oe.pragma("journal_mode = WAL"), oe.pragma("foreign_keys = ON"), Ne = pt(oe, { schema: Na }), _a(oe), Ea(Ne).catch((t) => {
+  if (Te)
+    return Te;
+  const n = he.getPath("userData"), e = et.join(n, "cari_finance.db");
+  return console.log("[SQLite DB Path]:", e), oe = new Ee(e), oe.pragma("journal_mode = WAL"), oe.pragma("foreign_keys = ON"), Te = ft(oe, { schema: Na }), _a(oe), Ea(Te).catch((t) => {
     console.error("[Database Seed Error]:", t);
-  }), Ne;
+  }), Te;
 }
 function _a(n) {
   n.exec(`
@@ -4184,14 +4184,14 @@ function _a(n) {
   `);
 }
 function wi() {
-  oe && (oe.close(), oe = null, Ne = null);
+  oe && (oe.close(), oe = null, Te = null);
 }
 function La() {
-  x.handle("transactions:create", async (n, e) => {
+  q.handle("transactions:create", async (n, e) => {
     const t = O();
     if (e.amount <= 0)
       throw new Error("İşlem tutarı 0 veya negatif olamaz.");
-    const r = (/* @__PURE__ */ new Date()).toISOString(), s = "doc_" + Date.now() + "_" + Math.random().toString(36).substring(2, 7), i = "yev_" + Date.now() + "_" + Math.random().toString(36).substring(2, 7), c = {
+    const r = (/* @__PURE__ */ new Date()).toISOString(), s = "doc_" + Date.now() + "_" + Math.random().toString(36).substring(2, 7), i = "yev_" + Date.now() + "_" + Math.random().toString(36).substring(2, 7), o = {
       sale: "SAT",
       customer_payment: "TAH",
       purchase: "ALIM",
@@ -4200,63 +4200,69 @@ function La() {
       partner_deposit: "ORT-YAT",
       transfer: "VIR",
       expense: "GID"
-    }, a = t.select({ count: l`count(*)` }).from(I).get(), u = (((a == null ? void 0 : a.count) || 0) + 1).toString().padStart(5, "0"), g = new Date(e.date || Date.now()).getFullYear(), d = `${c[e.type] || "ISL"}-${g}-${u}`, C = `YEV-${g}-${u}`;
-    let N = "", A = "", _, T;
+    }, a = t.select({ count: l`count(*)` }).from(C).get(), u = (((a == null ? void 0 : a.count) || 0) + 1).toString().padStart(5, "0"), y = new Date(e.date || Date.now()).getFullYear(), d = `${o[e.type] || "ISL"}-${y}-${u}`, L = `YEV-${y}-${u}`;
+    let g = "", A = "", N, S;
     if (e.type === "sale") {
       if (!e.entityId) throw new Error("Satış işlemi için müşteri seçilmelidir.");
-      const v = t.select().from(w).where(h(w.id, e.entityId)).get();
-      if (!v) throw new Error("Müşteri bulunamadı.");
-      N = v.accountId, _ = v.id;
-      let b = e.categoryId ? t.select().from(ae).where(h(ae.id, e.categoryId)).get() : null;
-      A = b ? b.accountId : "acc_600";
+      const E = t.select().from(T).where(f(T.id, e.entityId)).get();
+      if (!E) throw new Error("Müşteri bulunamadı.");
+      g = E.accountId, N = E.id;
+      const $ = t.select().from(x).where(f(x.code, "600")).get();
+      if (!$) throw new Error("600 Satış Gelirleri hesabı bulunamadı.");
+      A = $.id;
     } else if (e.type === "customer_payment") {
       if (!e.entityId) throw new Error("Tahsilat için müşteri seçilmelidir.");
-      if (!e.targetEntityId) throw new Error("Tahsilatın aktarılacağı Kasa/Banka seçilmelidir.");
-      const v = t.select().from(w).where(h(w.id, e.entityId)).get(), b = t.select().from(w).where(h(w.id, e.targetEntityId)).get();
-      if (!v || !b) throw new Error("Müşteri veya Kasa/Banka kaydı bulunamadı.");
-      N = b.accountId, _ = b.id, A = v.accountId, T = v.id;
+      const E = t.select().from(T).where(f(T.id, e.entityId)).get();
+      if (!E) throw new Error("Müşteri bulunamadı.");
+      const $ = t.select().from(x).where(f(x.code, "100")).get();
+      if (!$) throw new Error("100 Kasa hesabı bulunamadı.");
+      if (g = $.id, e.targetEntityId) {
+        const F = t.select().from(T).where(f(T.id, e.targetEntityId)).get();
+        F && (N = F.id);
+      }
+      A = E.accountId, S = E.id;
     } else if (e.type === "purchase") {
-      if (!e.entityId) throw new Error("Satınalma için satıcı/tedarikçi seçilmelidir.");
-      const v = t.select().from(w).where(h(w.id, e.entityId)).get();
-      if (!v) throw new Error("Tedarikçi bulunamadı.");
-      let b = e.categoryId ? t.select().from(ae).where(h(ae.id, e.categoryId)).get() : null;
-      N = b ? b.accountId : "acc_153", A = v.accountId, T = v.id;
+      if (!e.entityId) throw new Error("Alım için tedarikçi seçilmelidir.");
+      const E = t.select().from(T).where(f(T.id, e.entityId)).get();
+      if (!E) throw new Error("Tedarikçi bulunamadı.");
+      const $ = t.select().from(x).where(f(x.code, "153")).get();
+      if (!$) throw new Error("153 Ticari Mallar hesabı bulunamadı.");
+      g = $.id, A = E.accountId, S = E.id;
     } else if (e.type === "supplier_payment") {
-      if (!e.entityId) throw new Error("Ödeme yapılan satıcı seçilmelidir.");
-      if (!e.targetEntityId) throw new Error("Ödemenin yapıldığı Kasa/Banka seçilmelidir.");
-      const v = t.select().from(w).where(h(w.id, e.entityId)).get(), b = t.select().from(w).where(h(w.id, e.targetEntityId)).get();
-      if (!v || !b) throw new Error("Satıcı veya Kasa/Banka kaydı bulunamadı.");
-      N = v.accountId, _ = v.id, A = b.accountId, T = b.id;
+      if (!e.entityId) throw new Error("Ödeme için tedarikçi seçilmelidir.");
+      const E = t.select().from(T).where(f(T.id, e.entityId)).get();
+      if (!E) throw new Error("Tedarikçi bulunamadı.");
+      const $ = t.select().from(x).where(f(x.code, "100")).get();
+      if (!$) throw new Error("100 Kasa hesabı bulunamadı.");
+      g = E.accountId, N = E.id, A = $.id;
     } else if (e.type === "partner_draw") {
-      if (!e.entityId) throw new Error("Para çeken ortak seçilmelidir.");
-      if (!e.targetEntityId) throw new Error("Paranın çekildiği Kasa/Banka seçilmelidir.");
-      const v = t.select().from(w).where(h(w.id, e.entityId)).get(), b = t.select().from(w).where(h(w.id, e.targetEntityId)).get();
-      if (!v || !b) throw new Error("Ortak veya Kasa/Banka kaydı bulunamadı.");
-      N = v.accountId, _ = v.id, A = b.accountId, T = b.id;
+      if (!e.entityId) throw new Error("Ortak seçilmelidir.");
+      const E = t.select().from(T).where(f(T.id, e.entityId)).get();
+      if (!E) throw new Error("Ortak bulunamadı.");
+      const $ = t.select().from(x).where(f(x.code, "100")).get();
+      if (!$) throw new Error("100 Kasa hesabı bulunamadı.");
+      g = E.accountId, N = E.id, A = $.id;
     } else if (e.type === "partner_deposit") {
-      if (!e.entityId) throw new Error("Para yatıran ortak seçilmelidir.");
-      if (!e.targetEntityId) throw new Error("Paranın yatırıldığı Kasa/Banka seçilmelidir.");
-      const v = t.select().from(w).where(h(w.id, e.entityId)).get(), b = t.select().from(w).where(h(w.id, e.targetEntityId)).get();
-      if (!v || !b) throw new Error("Ortak veya Kasa/Banka kaydı bulunamadı.");
-      N = b.accountId, _ = b.id, A = v.accountId, T = v.id;
+      if (!e.entityId) throw new Error("Ortak seçilmelidir.");
+      const E = t.select().from(T).where(f(T.id, e.entityId)).get();
+      if (!E) throw new Error("Ortak bulunamadı.");
+      const $ = t.select().from(x).where(f(x.code, "100")).get();
+      if (!$) throw new Error("100 Kasa hesabı bulunamadı.");
+      g = $.id, A = E.accountId, S = E.id;
     } else if (e.type === "transfer") {
-      if (!e.entityId) throw new Error("Kaynak Kasa/Banka seçilmelidir.");
-      if (!e.targetEntityId) throw new Error("Hedef Kasa/Banka seçilmelidir.");
-      const v = t.select().from(w).where(h(w.id, e.entityId)).get(), b = t.select().from(w).where(h(w.id, e.targetEntityId)).get();
-      if (!v || !b) throw new Error("Virman hesapları bulunamadı.");
-      N = b.accountId, _ = b.id, A = v.accountId, T = v.id;
+      if (!e.entityId || !e.targetEntityId)
+        throw new Error("Virman için kaynak ve hedef hesap seçilmelidir.");
+      const E = t.select().from(T).where(f(T.id, e.entityId)).get(), $ = t.select().from(T).where(f(T.id, e.targetEntityId)).get();
+      if (!E || !$) throw new Error("Kaynak veya hedef hesap bulunamadı.");
+      g = $.accountId, N = $.id, A = E.accountId, S = E.id;
     } else if (e.type === "expense") {
-      if (!e.targetEntityId) throw new Error("Giderin ödendiği Kasa/Banka seçilmelidir.");
-      let v = e.categoryId ? t.select().from(ae).where(h(ae.id, e.categoryId)).get() : null;
-      N = v ? v.accountId : "acc_770";
-      const b = t.select().from(w).where(h(w.id, e.targetEntityId)).get();
-      if (!b) throw new Error("Ödeme yapılan Kasa/Banka kaydı bulunamadı.");
-      A = b.accountId, T = b.id;
+      const E = t.select().from(x).where(f(x.code, "770")).get();
+      if (!E) throw new Error("770 Gider hesabı bulunamadı.");
+      const $ = t.select().from(x).where(f(x.code, "100")).get();
+      if (!$) throw new Error("100 Kasa hesabı bulunamadı.");
+      g = E.id, A = $.id;
     }
-    const $ = e.amount, Q = e.amount;
-    if (Math.abs($ - Q) > 1e-3)
-      throw new Error(`Muhasebe Kayıt Hatası: Toplam Borç (${$}) !== Toplam Alacak (${Q}). Fiş kaydedilemez.`);
-    const j = {
+    const B = {
       id: s,
       docNumber: d,
       type: e.type,
@@ -4264,109 +4270,142 @@ function La() {
       description: e.description,
       totalAmount: e.amount,
       createdAt: r
-    }, P = {
+    }, Q = {
       id: i,
-      entryNumber: C,
+      entryNumber: L,
       documentId: s,
       date: e.date,
       description: e.description,
       status: "active",
       createdAt: r
-    }, B = {
+    }, P = {
       id: "ji_" + Date.now() + "_1",
       journalEntryId: i,
-      accountId: N,
-      entityId: _ || null,
+      accountId: g,
+      entityId: N || null,
       debit: e.amount,
       credit: 0,
       description: e.description
-    }, G = {
+    }, M = {
       id: "ji_" + Date.now() + "_2",
       journalEntryId: i,
       accountId: A,
-      entityId: T || null,
+      entityId: S || null,
       debit: 0,
       credit: e.amount,
       description: e.description
     };
-    return t.insert(I).values(j).run(), t.insert(f).values(P).run(), t.insert(y).values([B, G]).run(), { success: !0, docNumber: d, entryNumber: C };
-  }), x.handle("transactions:list", async (n, e) => {
+    return t.insert(C).values(B).run(), t.insert(m).values(Q).run(), t.insert(h).values([P, M]).run(), { success: !0, docNumber: d, entryNumber: L };
+  }), q.handle("transactions:list", async (n, e) => {
     const t = O(), r = (e == null ? void 0 : e.limit) || 100;
     return t.select({
-      id: f.id,
-      entryNumber: f.entryNumber,
-      docNumber: I.docNumber,
-      docType: I.type,
-      date: f.date,
-      description: f.description,
-      totalAmount: I.totalAmount,
-      status: f.status
-    }).from(f).leftJoin(I, h(f.documentId, I.id)).where(h(f.status, "active")).orderBy(pe(f.date), pe(f.createdAt)).limit(r).all();
-  }), x.handle("transactions:cancel", async (n, e) => {
-    const t = O(), r = t.select().from(f).where(h(f.id, e)).get();
-    if (!r) throw new Error("İşlem kaydı bulunamadı.");
-    if (r.status === "cancelled")
-      throw new Error("İşlem zaten iptal edilmiş.");
-    return t.update(f).set({ status: "cancelled" }).where(h(f.id, e)).run(), { success: !0 };
+      id: m.id,
+      entryNumber: m.entryNumber,
+      docNumber: C.docNumber,
+      docType: C.type,
+      date: m.date,
+      description: m.description,
+      totalAmount: C.totalAmount,
+      status: m.status
+    }).from(m).leftJoin(C, f(m.documentId, C.id)).orderBy(ie(m.date), ie(m.createdAt)).limit(r).all();
+  }), q.handle("transactions:cancel", async (n, e) => {
+    const t = O(), r = (/* @__PURE__ */ new Date()).toISOString(), s = t.select().from(m).where(f(m.id, e)).get();
+    if (!s) throw new Error("İşlem kaydı bulunamadı.");
+    if (s.status === "cancelled")
+      throw new Error("Bu işlem zaten ters kayıt ile düzeltilmiş.");
+    const i = t.select().from(h).where(f(h.journalEntryId, e)).all();
+    if (i.length === 0)
+      throw new Error("İşlem detay satırları bulunamadı.");
+    t.update(m).set({ status: "cancelled" }).where(f(m.id, e)).run();
+    const o = "doc_rev_" + Date.now(), a = "yev_rev_" + Date.now(), u = t.select({ count: l`count(*)` }).from(C).get(), y = (((u == null ? void 0 : u.count) || 0) + 1).toString().padStart(5, "0"), d = (/* @__PURE__ */ new Date()).getFullYear(), L = `TRS-${d}-${y}`, g = `TRS-YEV-${d}-${y}`, A = s.documentId ? t.select().from(C).where(f(C.id, s.documentId)).get() : null, N = (A == null ? void 0 : A.totalAmount) || 0, S = `TERS DÜZELTME KAYDI (${s.entryNumber} / ${s.description})`;
+    t.insert(C).values({
+      id: o,
+      docNumber: L,
+      type: (A == null ? void 0 : A.type) || "transfer",
+      date: r.split("T")[0],
+      description: S,
+      totalAmount: N,
+      createdAt: r
+    }).run(), t.insert(m).values({
+      id: a,
+      entryNumber: g,
+      documentId: o,
+      date: r.split("T")[0],
+      description: S,
+      status: "active",
+      createdAt: r
+    }).run();
+    const B = i.map((Q, P) => ({
+      id: `ji_rev_${Date.now()}_${P}`,
+      journalEntryId: a,
+      accountId: Q.accountId,
+      entityId: Q.entityId,
+      debit: Q.credit,
+      // FLIPPED
+      credit: Q.debit,
+      // FLIPPED
+      description: `TERS KAYIT: ${Q.description || ""}`
+    }));
+    return t.insert(h).values(B).run(), { success: !0, revDocNumber: L, revEntryNumber: g };
   });
 }
 function Aa() {
-  x.handle("customers:list", async () => {
+  q.handle("customers:list", async () => {
     const n = O();
-    return n.select().from(w).where(h(w.type, "customer")).all().map((r) => {
+    return n.select().from(T).where(f(T.type, "customer")).all().map((r) => {
       const s = n.select({
-        totalDebit: l`COALESCE(SUM(${y.debit}), 0)`,
-        totalCredit: l`COALESCE(SUM(${y.credit}), 0)`
-      }).from(y).innerJoin(f, h(y.journalEntryId, f.id)).where(
-        U(
-          h(y.entityId, r.id),
-          h(f.status, "active")
+        totalDebit: l`COALESCE(SUM(${h.debit}), 0)`,
+        totalCredit: l`COALESCE(SUM(${h.credit}), 0)`
+      }).from(h).innerJoin(m, f(h.journalEntryId, m.id)).where(
+        k(
+          f(h.entityId, r.id),
+          f(m.status, "active")
         )
-      ).get(), i = (s == null ? void 0 : s.totalDebit) || 0, c = (s == null ? void 0 : s.totalCredit) || 0, a = i - c;
+      ).get(), i = (s == null ? void 0 : s.totalDebit) || 0, o = (s == null ? void 0 : s.totalCredit) || 0, a = i - o;
       return {
         ...r,
         totalDebit: i,
-        totalCredit: c,
+        totalCredit: o,
         balance: a
       };
     });
-  }), x.handle("customers:getStatement", async (n, e) => {
-    const t = O(), r = t.select().from(w).where(h(w.id, e)).get();
+  }), q.handle("customers:getStatement", async (n, e) => {
+    const t = O(), r = t.select().from(T).where(f(T.id, e)).get();
     if (!r) throw new Error("Müşteri bulunamadı.");
     const s = t.select({
-      id: y.id,
-      date: f.date,
-      docNumber: I.docNumber,
-      docType: I.type,
-      description: y.description,
-      debit: y.debit,
-      credit: y.credit
-    }).from(y).innerJoin(f, h(y.journalEntryId, f.id)).leftJoin(I, h(f.documentId, I.id)).where(
-      U(
-        h(y.entityId, e),
-        h(f.status, "active")
+      id: h.id,
+      date: m.date,
+      docNumber: C.docNumber,
+      docType: C.type,
+      description: h.description,
+      debit: h.debit,
+      credit: h.credit
+    }).from(h).innerJoin(m, f(h.journalEntryId, m.id)).leftJoin(C, f(m.documentId, C.id)).where(
+      k(
+        f(h.entityId, e),
+        f(m.status, "active")
       )
-    ).orderBy(f.date, f.createdAt).all();
+    ).orderBy(m.date, m.createdAt).all();
     let i = 0;
-    const c = s.map((a) => (i += a.debit - a.credit, {
+    const o = s.map((a) => (i += a.debit - a.credit, {
       ...a,
       runningBalance: i
     }));
     return {
       customer: r,
-      movements: c,
+      movements: o,
       currentBalance: i
     };
-  }), x.handle("customers:create", async (n, e) => {
-    const t = O(), r = (/* @__PURE__ */ new Date()).toISOString(), s = "cust_" + Date.now(), i = t.select({ count: l`count(*)` }).from(w).where(h(w.type, "customer")).get(), c = (((i == null ? void 0 : i.count) || 0) + 1).toString().padStart(3, "0"), a = `120.${c}`, u = `acc_120_${c}`;
-    return t.insert(ee).values({
+  }), q.handle("customers:create", async (n, e) => {
+    const t = O(), r = (/* @__PURE__ */ new Date()).toISOString(), s = "cust_" + Date.now(), i = t.select({ count: l`count(*)` }).from(T).where(f(T.type, "customer")).get(), o = (((i == null ? void 0 : i.count) || 0) + 1).toString().padStart(3, "0"), a = `120.${o}`, u = `acc_120_${o}`;
+    return t.insert(x).values({
       id: u,
       code: a,
       name: e.name,
       type: "asset",
       parentCode: "120",
       createdAt: r
-    }).run(), t.insert(w).values({
+    }).run(), t.insert(T).values({
       id: s,
       name: e.name,
       type: "customer",
@@ -4381,62 +4420,62 @@ function Aa() {
   });
 }
 function va() {
-  x.handle("suppliers:list", async () => {
+  q.handle("suppliers:list", async () => {
     const n = O();
-    return n.select().from(w).where(h(w.type, "supplier")).all().map((r) => {
+    return n.select().from(T).where(f(T.type, "supplier")).all().map((r) => {
       const s = n.select({
-        totalDebit: l`COALESCE(SUM(${y.debit}), 0)`,
-        totalCredit: l`COALESCE(SUM(${y.credit}), 0)`
-      }).from(y).innerJoin(f, h(y.journalEntryId, f.id)).where(
-        U(
-          h(y.entityId, r.id),
-          h(f.status, "active")
+        totalDebit: l`COALESCE(SUM(${h.debit}), 0)`,
+        totalCredit: l`COALESCE(SUM(${h.credit}), 0)`
+      }).from(h).innerJoin(m, f(h.journalEntryId, m.id)).where(
+        k(
+          f(h.entityId, r.id),
+          f(m.status, "active")
         )
-      ).get(), i = (s == null ? void 0 : s.totalDebit) || 0, c = (s == null ? void 0 : s.totalCredit) || 0, a = c - i;
+      ).get(), i = (s == null ? void 0 : s.totalDebit) || 0, o = (s == null ? void 0 : s.totalCredit) || 0, a = o - i;
       return {
         ...r,
         totalDebit: i,
-        totalCredit: c,
+        totalCredit: o,
         balance: a
       };
     });
-  }), x.handle("suppliers:getStatement", async (n, e) => {
-    const t = O(), r = t.select().from(w).where(h(w.id, e)).get();
+  }), q.handle("suppliers:getStatement", async (n, e) => {
+    const t = O(), r = t.select().from(T).where(f(T.id, e)).get();
     if (!r) throw new Error("Tedarikçi bulunamadı.");
     const s = t.select({
-      id: y.id,
-      date: f.date,
-      docNumber: I.docNumber,
-      docType: I.type,
-      description: y.description,
-      debit: y.debit,
-      credit: y.credit
-    }).from(y).innerJoin(f, h(y.journalEntryId, f.id)).leftJoin(I, h(f.documentId, I.id)).where(
-      U(
-        h(y.entityId, e),
-        h(f.status, "active")
+      id: h.id,
+      date: m.date,
+      docNumber: C.docNumber,
+      docType: C.type,
+      description: h.description,
+      debit: h.debit,
+      credit: h.credit
+    }).from(h).innerJoin(m, f(h.journalEntryId, m.id)).leftJoin(C, f(m.documentId, C.id)).where(
+      k(
+        f(h.entityId, e),
+        f(m.status, "active")
       )
-    ).orderBy(f.date, f.createdAt).all();
+    ).orderBy(m.date, m.createdAt).all();
     let i = 0;
-    const c = s.map((a) => (i += a.credit - a.debit, {
+    const o = s.map((a) => (i += a.credit - a.debit, {
       ...a,
       runningBalance: i
     }));
     return {
       supplier: r,
-      movements: c,
+      movements: o,
       currentBalance: i
     };
-  }), x.handle("suppliers:create", async (n, e) => {
-    const t = O(), r = (/* @__PURE__ */ new Date()).toISOString(), s = "supp_" + Date.now(), i = t.select({ count: l`count(*)` }).from(w).where(h(w.type, "supplier")).get(), c = (((i == null ? void 0 : i.count) || 0) + 1).toString().padStart(3, "0"), a = `320.${c}`, u = `acc_320_${c}`;
-    return t.insert(ee).values({
+  }), q.handle("suppliers:create", async (n, e) => {
+    const t = O(), r = (/* @__PURE__ */ new Date()).toISOString(), s = "supp_" + Date.now(), i = t.select({ count: l`count(*)` }).from(T).where(f(T.type, "supplier")).get(), o = (((i == null ? void 0 : i.count) || 0) + 1).toString().padStart(3, "0"), a = `320.${o}`, u = `acc_320_${o}`;
+    return t.insert(x).values({
       id: u,
       code: a,
       name: e.name,
       type: "liability",
       parentCode: "320",
       createdAt: r
-    }).run(), t.insert(w).values({
+    }).run(), t.insert(T).values({
       id: s,
       name: e.name,
       type: "supplier",
@@ -4451,62 +4490,62 @@ function va() {
   });
 }
 function Ca() {
-  x.handle("cash:list", async () => {
+  q.handle("cash:list", async () => {
     const n = O();
-    return n.select().from(w).where(h(w.type, "cash")).all().map((r) => {
+    return n.select().from(T).where(f(T.type, "cash")).all().map((r) => {
       const s = n.select({
-        totalIncome: l`COALESCE(SUM(${y.debit}), 0)`,
-        totalExpense: l`COALESCE(SUM(${y.credit}), 0)`
-      }).from(y).innerJoin(f, h(y.journalEntryId, f.id)).where(
-        U(
-          h(y.entityId, r.id),
-          h(f.status, "active")
+        totalIncome: l`COALESCE(SUM(${h.debit}), 0)`,
+        totalExpense: l`COALESCE(SUM(${h.credit}), 0)`
+      }).from(h).innerJoin(m, f(h.journalEntryId, m.id)).where(
+        k(
+          f(h.entityId, r.id),
+          f(m.status, "active")
         )
-      ).get(), i = (s == null ? void 0 : s.totalIncome) || 0, c = (s == null ? void 0 : s.totalExpense) || 0, a = i - c;
+      ).get(), i = (s == null ? void 0 : s.totalIncome) || 0, o = (s == null ? void 0 : s.totalExpense) || 0, a = i - o;
       return {
         ...r,
         totalIncome: i,
-        totalExpense: c,
+        totalExpense: o,
         balance: a
       };
     });
-  }), x.handle("cash:getMovements", async (n, e) => {
-    const t = O(), r = t.select().from(w).where(h(w.id, e)).get();
+  }), q.handle("cash:getMovements", async (n, e) => {
+    const t = O(), r = t.select().from(T).where(f(T.id, e)).get();
     if (!r) throw new Error("Kasa bulunamadı.");
     const s = t.select({
-      id: y.id,
-      date: f.date,
-      docNumber: I.docNumber,
-      docType: I.type,
-      description: y.description,
-      income: y.debit,
-      expense: y.credit
-    }).from(y).innerJoin(f, h(y.journalEntryId, f.id)).leftJoin(I, h(f.documentId, I.id)).where(
-      U(
-        h(y.entityId, e),
-        h(f.status, "active")
+      id: h.id,
+      date: m.date,
+      docNumber: C.docNumber,
+      docType: C.type,
+      description: h.description,
+      income: h.debit,
+      expense: h.credit
+    }).from(h).innerJoin(m, f(h.journalEntryId, m.id)).leftJoin(C, f(m.documentId, C.id)).where(
+      k(
+        f(h.entityId, e),
+        f(m.status, "active")
       )
-    ).orderBy(f.date, f.createdAt).all();
+    ).orderBy(m.date, m.createdAt).all();
     let i = 0;
-    const c = s.map((a) => (i += a.income - a.expense, {
+    const o = s.map((a) => (i += a.income - a.expense, {
       ...a,
       runningBalance: i
     }));
     return {
       cashDesk: r,
-      movements: c,
+      movements: o,
       currentBalance: i
     };
-  }), x.handle("cash:create", async (n, e) => {
-    const t = O(), r = (/* @__PURE__ */ new Date()).toISOString(), s = t.select({ count: l`count(*)` }).from(w).where(h(w.type, "cash")).get(), i = (((s == null ? void 0 : s.count) || 0) + 1).toString().padStart(3, "0"), c = `100.${i}`, a = `acc_100_${i}`;
-    return t.insert(ee).values({
+  }), q.handle("cash:create", async (n, e) => {
+    const t = O(), r = (/* @__PURE__ */ new Date()).toISOString(), s = t.select({ count: l`count(*)` }).from(T).where(f(T.type, "cash")).get(), i = (((s == null ? void 0 : s.count) || 0) + 1).toString().padStart(3, "0"), o = `100.${i}`, a = `acc_100_${i}`;
+    return t.insert(x).values({
       id: a,
-      code: c,
+      code: o,
       name: e,
       type: "asset",
       parentCode: "100",
       createdAt: r
-    }).run(), t.insert(w).values({
+    }).run(), t.insert(T).values({
       id: "cash_" + Date.now(),
       name: e,
       type: "cash",
@@ -4517,62 +4556,62 @@ function Ca() {
   });
 }
 function Ia() {
-  x.handle("banks:list", async () => {
+  q.handle("banks:list", async () => {
     const n = O();
-    return n.select().from(w).where(h(w.type, "bank")).all().map((r) => {
+    return n.select().from(T).where(f(T.type, "bank")).all().map((r) => {
       const s = n.select({
-        totalIncoming: l`COALESCE(SUM(${y.debit}), 0)`,
-        totalOutgoing: l`COALESCE(SUM(${y.credit}), 0)`
-      }).from(y).innerJoin(f, h(y.journalEntryId, f.id)).where(
-        U(
-          h(y.entityId, r.id),
-          h(f.status, "active")
+        totalIncoming: l`COALESCE(SUM(${h.debit}), 0)`,
+        totalOutgoing: l`COALESCE(SUM(${h.credit}), 0)`
+      }).from(h).innerJoin(m, f(h.journalEntryId, m.id)).where(
+        k(
+          f(h.entityId, r.id),
+          f(m.status, "active")
         )
-      ).get(), i = (s == null ? void 0 : s.totalIncoming) || 0, c = (s == null ? void 0 : s.totalOutgoing) || 0, a = i - c;
+      ).get(), i = (s == null ? void 0 : s.totalIncoming) || 0, o = (s == null ? void 0 : s.totalOutgoing) || 0, a = i - o;
       return {
         ...r,
         totalIncoming: i,
-        totalOutgoing: c,
+        totalOutgoing: o,
         balance: a
       };
     });
-  }), x.handle("banks:getMovements", async (n, e) => {
-    const t = O(), r = t.select().from(w).where(h(w.id, e)).get();
+  }), q.handle("banks:getMovements", async (n, e) => {
+    const t = O(), r = t.select().from(T).where(f(T.id, e)).get();
     if (!r) throw new Error("Banka kaydı bulunamadı.");
     const s = t.select({
-      id: y.id,
-      date: f.date,
-      docNumber: I.docNumber,
-      docType: I.type,
-      description: y.description,
-      incoming: y.debit,
-      outgoing: y.credit
-    }).from(y).innerJoin(f, h(y.journalEntryId, f.id)).leftJoin(I, h(f.documentId, I.id)).where(
-      U(
-        h(y.entityId, e),
-        h(f.status, "active")
+      id: h.id,
+      date: m.date,
+      docNumber: C.docNumber,
+      docType: C.type,
+      description: h.description,
+      incoming: h.debit,
+      outgoing: h.credit
+    }).from(h).innerJoin(m, f(h.journalEntryId, m.id)).leftJoin(C, f(m.documentId, C.id)).where(
+      k(
+        f(h.entityId, e),
+        f(m.status, "active")
       )
-    ).orderBy(f.date, f.createdAt).all();
+    ).orderBy(m.date, m.createdAt).all();
     let i = 0;
-    const c = s.map((a) => (i += a.incoming - a.outgoing, {
+    const o = s.map((a) => (i += a.incoming - a.outgoing, {
       ...a,
       runningBalance: i
     }));
     return {
       bank: r,
-      movements: c,
+      movements: o,
       currentBalance: i
     };
-  }), x.handle("banks:create", async (n, e) => {
-    const t = O(), r = (/* @__PURE__ */ new Date()).toISOString(), s = t.select({ count: l`count(*)` }).from(w).where(h(w.type, "bank")).get(), i = (((s == null ? void 0 : s.count) || 0) + 1).toString().padStart(3, "0"), c = `102.${i}`, a = `acc_102_${i}`;
-    return t.insert(ee).values({
+  }), q.handle("banks:create", async (n, e) => {
+    const t = O(), r = (/* @__PURE__ */ new Date()).toISOString(), s = t.select({ count: l`count(*)` }).from(T).where(f(T.type, "bank")).get(), i = (((s == null ? void 0 : s.count) || 0) + 1).toString().padStart(3, "0"), o = `102.${i}`, a = `acc_102_${i}`;
+    return t.insert(x).values({
       id: a,
-      code: c,
+      code: o,
       name: e.name,
       type: "asset",
       parentCode: "102",
       createdAt: r
-    }).run(), t.insert(w).values({
+    }).run(), t.insert(T).values({
       id: "bank_" + Date.now(),
       name: e.name,
       type: "bank",
@@ -4586,186 +4625,265 @@ function Ia() {
   });
 }
 function $a() {
-  x.handle("partners:list", async () => {
+  q.handle("partners:list", async () => {
     const n = O();
-    return n.select().from(w).where(h(w.type, "partner")).all().map((r) => {
+    return n.select().from(T).where(f(T.type, "partner")).all().map((r) => {
       const s = n.select({
-        totalDraws: l`COALESCE(SUM(${y.debit}), 0)`,
+        totalDraws: l`COALESCE(SUM(${h.debit}), 0)`,
         // Para Çekme (Borç)
-        totalDeposits: l`COALESCE(SUM(${y.credit}), 0)`
+        totalDeposits: l`COALESCE(SUM(${h.credit}), 0)`
         // Para Yatırma (Alacak)
-      }).from(y).innerJoin(f, h(y.journalEntryId, f.id)).where(
-        U(
-          h(y.entityId, r.id),
-          h(f.status, "active")
+      }).from(h).innerJoin(m, f(h.journalEntryId, m.id)).where(
+        k(
+          f(h.entityId, r.id),
+          f(m.status, "active")
         )
-      ).get(), i = (s == null ? void 0 : s.totalDraws) || 0, c = (s == null ? void 0 : s.totalDeposits) || 0, a = c - i;
+      ).get(), i = (s == null ? void 0 : s.totalDraws) || 0, o = (s == null ? void 0 : s.totalDeposits) || 0, a = o - i;
       return {
         ...r,
         totalDraws: i,
-        totalDeposits: c,
+        totalDeposits: o,
         balance: a
       };
     });
-  }), x.handle("partners:getStatement", async (n, e) => {
-    const t = O(), r = t.select().from(w).where(h(w.id, e)).get();
+  }), q.handle("partners:getStatement", async (n, e) => {
+    const t = O(), r = t.select().from(T).where(f(T.id, e)).get();
     if (!r) throw new Error("Ortak kaydı bulunamadı.");
     const s = t.select({
-      id: y.id,
-      date: f.date,
-      docNumber: I.docNumber,
-      docType: I.type,
-      description: y.description,
-      drawAmount: y.debit,
+      id: h.id,
+      date: m.date,
+      docNumber: C.docNumber,
+      docType: C.type,
+      description: h.description,
+      drawAmount: h.debit,
       // Çekilen
-      depositAmount: y.credit
+      depositAmount: h.credit
       // Yatırılan
-    }).from(y).innerJoin(f, h(y.journalEntryId, f.id)).leftJoin(I, h(f.documentId, I.id)).where(
-      U(
-        h(y.entityId, e),
-        h(f.status, "active")
+    }).from(h).innerJoin(m, f(h.journalEntryId, m.id)).leftJoin(C, f(m.documentId, C.id)).where(
+      k(
+        f(h.entityId, e),
+        f(m.status, "active")
       )
-    ).orderBy(f.date, f.createdAt).all();
+    ).orderBy(m.date, m.createdAt).all();
     let i = 0;
-    const c = s.map((a) => (i += a.depositAmount - a.drawAmount, {
+    const o = s.map((a) => (i += a.depositAmount - a.drawAmount, {
       ...a,
       runningBalance: i
     }));
     return {
       partner: r,
-      movements: c,
+      movements: o,
       currentBalance: i
     };
   });
 }
 function Oa() {
-  x.handle("accounts:list", async () => {
+  q.handle("accounts:list", async () => {
     const n = O();
-    return n.select().from(ee).all().map((r) => {
+    return n.select().from(x).all().map((r) => {
       const s = n.select({
-        totalDebit: l`COALESCE(SUM(${y.debit}), 0)`,
-        totalCredit: l`COALESCE(SUM(${y.credit}), 0)`
-      }).from(y).innerJoin(f, h(y.journalEntryId, f.id)).where(
-        h(y.accountId, r.id)
-      ).get(), i = (s == null ? void 0 : s.totalDebit) || 0, c = (s == null ? void 0 : s.totalCredit) || 0;
+        totalDebit: l`COALESCE(SUM(${h.debit}), 0)`,
+        totalCredit: l`COALESCE(SUM(${h.credit}), 0)`
+      }).from(h).innerJoin(m, f(h.journalEntryId, m.id)).where(
+        f(h.accountId, r.id)
+      ).get(), i = (s == null ? void 0 : s.totalDebit) || 0, o = (s == null ? void 0 : s.totalCredit) || 0;
       let a = 0;
-      return r.type === "asset" || r.type === "expense" ? a = i - c : a = c - i, {
+      return r.type === "asset" || r.type === "expense" ? a = i - o : a = o - i, {
         ...r,
         totalDebit: i,
-        totalCredit: c,
+        totalCredit: o,
         balance: a
+      };
+    });
+  }), q.handle("accounts:getJournalEntries", async () => {
+    const n = O();
+    return n.select({
+      id: m.id,
+      entryNumber: m.entryNumber,
+      date: m.date,
+      description: m.description,
+      status: m.status
+    }).from(m).orderBy(ie(m.date), ie(m.createdAt)).limit(200).all().map((r) => {
+      const s = n.select({
+        id: h.id,
+        debit: h.debit,
+        credit: h.credit,
+        description: h.description,
+        accountCode: x.code,
+        accountName: x.name
+      }).from(h).innerJoin(x, f(h.accountId, x.id)).where(f(h.journalEntryId, r.id)).all();
+      return {
+        ...r,
+        items: s
       };
     });
   });
 }
 function Ba() {
-  x.handle("reports:getDashboard", async () => {
-    const n = O(), e = (/* @__PURE__ */ new Date()).toISOString().split("T")[0], t = n.select().from(w).where(l`${w.type} IN ('cash', 'bank')`).all();
+  q.handle("reports:getDashboard", async () => {
+    const n = O(), e = (/* @__PURE__ */ new Date()).toISOString().split("T")[0], t = n.select().from(T).where(l`${T.type} IN ('cash', 'bank')`).all();
     let r = 0;
-    for (const _ of t) {
-      const T = n.select({
-        debit: l`COALESCE(SUM(${y.debit}), 0)`,
-        credit: l`COALESCE(SUM(${y.credit}), 0)`
-      }).from(y).innerJoin(f, h(y.journalEntryId, f.id)).where(
-        U(
-          h(y.entityId, _.id),
-          h(f.status, "active")
+    for (const N of t) {
+      const S = n.select({
+        debit: l`COALESCE(SUM(${h.debit}), 0)`,
+        credit: l`COALESCE(SUM(${h.credit}), 0)`
+      }).from(h).innerJoin(m, f(h.journalEntryId, m.id)).where(
+        k(
+          f(h.entityId, N.id),
+          f(m.status, "active")
         )
       ).get();
-      r += ((T == null ? void 0 : T.debit) || 0) - ((T == null ? void 0 : T.credit) || 0);
+      r += ((S == null ? void 0 : S.debit) || 0) - ((S == null ? void 0 : S.credit) || 0);
     }
-    const s = n.select().from(w).where(h(w.type, "customer")).all();
+    const s = n.select().from(T).where(f(T.type, "customer")).all();
     let i = 0;
-    const c = [];
-    for (const _ of s) {
-      const T = n.select({
-        debit: l`COALESCE(SUM(${y.debit}), 0)`,
-        credit: l`COALESCE(SUM(${y.credit}), 0)`
-      }).from(y).innerJoin(f, h(y.journalEntryId, f.id)).where(
-        U(
-          h(y.entityId, _.id),
-          h(f.status, "active")
+    const o = [];
+    for (const N of s) {
+      const S = n.select({
+        debit: l`COALESCE(SUM(${h.debit}), 0)`,
+        credit: l`COALESCE(SUM(${h.credit}), 0)`
+      }).from(h).innerJoin(m, f(h.journalEntryId, m.id)).where(
+        k(
+          f(h.entityId, N.id),
+          f(m.status, "active")
         )
-      ).get(), $ = ((T == null ? void 0 : T.debit) || 0) - ((T == null ? void 0 : T.credit) || 0);
-      $ > 0 && (i += $), c.push({
-        id: _.id,
-        name: _.name,
-        phone: _.phone,
-        balance: $
+      ).get(), B = ((S == null ? void 0 : S.debit) || 0) - ((S == null ? void 0 : S.credit) || 0);
+      B > 0 && (i += B), o.push({
+        id: N.id,
+        name: N.name,
+        phone: N.phone,
+        balance: B
       });
     }
-    const a = c.filter((_) => _.balance > 0).sort((_, T) => T.balance - _.balance).slice(0, 5), u = n.select({
-      docType: I.type,
-      amount: I.totalAmount
-    }).from(I).where(h(I.date, e)).all();
-    let g = 0, d = 0;
-    for (const _ of u)
-      _.docType === "sale" || _.docType === "customer_payment" || _.docType === "partner_deposit" ? g += _.amount : (_.docType === "purchase" || _.docType === "supplier_payment" || _.docType === "expense" || _.docType === "partner_draw") && (d += _.amount);
-    const N = n.select().from(w).where(h(w.type, "partner")).all().map((_) => {
-      const T = n.select({
-        draws: l`COALESCE(SUM(${y.debit}), 0)`,
-        deposits: l`COALESCE(SUM(${y.credit}), 0)`
-      }).from(y).innerJoin(f, h(y.journalEntryId, f.id)).where(
-        U(
-          h(y.entityId, _.id),
-          h(f.status, "active")
+    const a = o.filter((N) => N.balance > 0).sort((N, S) => S.balance - N.balance).slice(0, 5), u = n.select({
+      docType: C.type,
+      amount: C.totalAmount
+    }).from(C).where(f(C.date, e)).all();
+    let y = 0, d = 0;
+    for (const N of u)
+      N.docType === "sale" || N.docType === "customer_payment" || N.docType === "partner_deposit" ? y += N.amount : (N.docType === "purchase" || N.docType === "supplier_payment" || N.docType === "expense" || N.docType === "partner_draw") && (d += N.amount);
+    const g = n.select().from(T).where(f(T.type, "partner")).all().map((N) => {
+      const S = n.select({
+        draws: l`COALESCE(SUM(${h.debit}), 0)`,
+        deposits: l`COALESCE(SUM(${h.credit}), 0)`
+      }).from(h).innerJoin(m, f(h.journalEntryId, m.id)).where(
+        k(
+          f(h.entityId, N.id),
+          f(m.status, "active")
         )
-      ).get(), $ = (T == null ? void 0 : T.draws) || 0, Q = (T == null ? void 0 : T.deposits) || 0, j = Q - $;
+      ).get(), B = (S == null ? void 0 : S.draws) || 0, Q = (S == null ? void 0 : S.deposits) || 0, P = Q - B;
       return {
-        id: _.id,
-        name: _.name,
-        draws: $,
+        id: N.id,
+        name: N.name,
+        draws: B,
         deposits: Q,
-        balance: j
+        balance: P
       };
     }), A = n.select({
-      id: f.id,
-      entryNumber: f.entryNumber,
-      docNumber: I.docNumber,
-      docType: I.type,
-      date: f.date,
-      description: f.description,
-      totalAmount: I.totalAmount
-    }).from(f).leftJoin(I, h(f.documentId, I.id)).where(h(f.status, "active")).orderBy(pe(f.date), pe(f.createdAt)).limit(6).all();
+      id: m.id,
+      entryNumber: m.entryNumber,
+      docNumber: C.docNumber,
+      docType: C.type,
+      date: m.date,
+      description: m.description,
+      totalAmount: C.totalAmount
+    }).from(m).leftJoin(C, f(m.documentId, C.id)).where(f(m.status, "active")).orderBy(ie(m.date), ie(m.createdAt)).limit(6).all();
     return {
       totalCashBalance: r,
       totalCustomerReceivables: i,
-      todayIncome: g,
+      todayIncome: y,
       todayExpense: d,
       topDebtors: a,
-      partnerBalances: N,
+      partnerBalances: g,
       recentTransactions: A
     };
-  }), x.handle("reports:getTrialBalance", async () => {
-    const n = O();
-    return n.select().from(ee).orderBy(ee.code).all().map((r) => {
-      const s = n.select({
-        totalDebit: l`COALESCE(SUM(${y.debit}), 0)`,
-        totalCredit: l`COALESCE(SUM(${y.credit}), 0)`
-      }).from(y).innerJoin(f, h(y.journalEntryId, f.id)).where(
-        U(
-          h(y.accountId, r.id),
-          h(f.status, "active")
+  }), q.handle("reports:getTrialBalance", async (n, e) => {
+    const t = O(), r = (e == null ? void 0 : e.type) || "gecici";
+    return t.select().from(x).orderBy(x.code).all().map((o) => {
+      const a = t.select({
+        totalDebit: l`COALESCE(SUM(${h.debit}), 0)`,
+        totalCredit: l`COALESCE(SUM(${h.credit}), 0)`
+      }).from(h).innerJoin(m, f(h.journalEntryId, m.id)).where(
+        k(
+          f(h.accountId, o.id),
+          f(m.status, "active")
         )
-      ).get(), i = (s == null ? void 0 : s.totalDebit) || 0, c = (s == null ? void 0 : s.totalCredit) || 0, a = i > c ? i - c : 0, u = c > i ? c - i : 0;
+      ).get(), u = (a == null ? void 0 : a.totalDebit) || 0, y = (a == null ? void 0 : a.totalCredit) || 0, d = u > y ? u - y : 0, L = y > u ? y - u : 0;
       return {
+        code: o.code,
+        name: o.name,
+        type: o.type,
+        totalDebit: u,
+        totalCredit: y,
+        debitBalance: d,
+        creditBalance: L,
+        isClosed: r === "kesin" && o.code.startsWith("6")
+        // 600 Gelir hesapları kesin mizanda sıfırlanır
+      };
+    }).filter((o) => o.totalDebit > 0 || o.totalCredit > 0);
+  }), q.handle("reports:getKebir", async () => {
+    const n = O();
+    return n.select().from(x).orderBy(x.code).all().map((r) => {
+      const s = n.select({
+        id: h.id,
+        date: m.date,
+        docNumber: C.docNumber,
+        description: h.description,
+        debit: h.debit,
+        credit: h.credit
+      }).from(h).innerJoin(m, f(h.journalEntryId, m.id)).leftJoin(C, f(m.documentId, C.id)).where(
+        k(
+          f(h.accountId, r.id),
+          f(m.status, "active")
+        )
+      ).orderBy(m.date).all(), i = s.reduce((a, u) => a + u.debit, 0), o = s.reduce((a, u) => a + u.credit, 0);
+      return {
+        accountId: r.id,
         code: r.code,
         name: r.name,
         type: r.type,
         totalDebit: i,
-        totalCredit: c,
-        debitBalance: a,
-        creditBalance: u
+        totalCredit: o,
+        balance: i - o,
+        items: s
       };
-    }).filter((r) => r.totalDebit > 0 || r.totalCredit > 0);
+    }).filter((r) => r.items.length > 0);
+  }), q.handle("reports:getMuavin", async (n, e) => {
+    const t = O();
+    return t.select().from(T).orderBy(T.name).all().map((i) => {
+      const o = t.select({
+        id: h.id,
+        date: m.date,
+        docNumber: C.docNumber,
+        description: h.description,
+        debit: h.debit,
+        credit: h.credit
+      }).from(h).innerJoin(m, f(h.journalEntryId, m.id)).leftJoin(C, f(m.documentId, C.id)).where(
+        k(
+          f(h.entityId, i.id),
+          f(m.status, "active")
+        )
+      ).orderBy(m.date).all();
+      let a = 0;
+      const u = o.map((L) => (a += L.debit - L.credit, { ...L, runningBalance: a })), y = o.reduce((L, g) => L + g.debit, 0), d = o.reduce((L, g) => L + g.credit, 0);
+      return {
+        entityId: i.id,
+        name: i.name,
+        type: i.type,
+        totalDebit: y,
+        totalCredit: d,
+        balance: a,
+        items: u
+      };
+    }).filter((i) => i.items.length > 0);
   });
 }
-function xa() {
-  x.handle("backup:export", async () => {
-    const n = he.getPath("userData"), e = tt.join(n, "cari_finance.db");
+function Qa() {
+  q.handle("backup:export", async () => {
+    const n = he.getPath("userData"), e = et.join(n, "cari_finance.db");
     if (!ue.existsSync(e))
       throw new Error("Veritabanı dosyası bulunamadı.");
-    const r = `abc_mobilya_${(/* @__PURE__ */ new Date()).toISOString().split("T")[0]}.cari`, { filePath: s } = await _t.showSaveDialog({
+    const r = `abc_mobilya_${(/* @__PURE__ */ new Date()).toISOString().split("T")[0]}.cari`, { filePath: s } = await Et.showSaveDialog({
       title: "Cari Finance Şirket Dosyasını (.cari) Kaydet",
       defaultPath: r,
       filters: [
@@ -4773,9 +4891,9 @@ function xa() {
         { name: "SQLite Veritabanı (*.db)", extensions: ["db", "sqlite"] }
       ]
     });
-    return s ? (ue.copyFileSync(e, s), O().update(Z).set({ lastBackupAt: (/* @__PURE__ */ new Date()).toISOString() }).where(h(Z.id, "app_settings")).run(), { success: !0, filePath: s }) : { success: !1, cancelled: !0 };
-  }), x.handle("backup:import", async () => {
-    const { filePaths: n } = await _t.showOpenDialog({
+    return s ? (ue.copyFileSync(e, s), O().update(ee).set({ lastBackupAt: (/* @__PURE__ */ new Date()).toISOString() }).where(f(ee.id, "app_settings")).run(), { success: !0, filePath: s }) : { success: !1, cancelled: !0 };
+  }), q.handle("backup:import", async () => {
+    const { filePaths: n } = await Et.showOpenDialog({
       title: "Cari Finance Şirket Dosyası (.cari) Aç",
       properties: ["openFile"],
       filters: [
@@ -4784,7 +4902,7 @@ function xa() {
     });
     if (!n || n.length === 0)
       return { success: !1, cancelled: !0 };
-    const e = n[0], t = he.getPath("userData"), r = tt.join(t, "cari_finance.db");
+    const e = n[0], t = he.getPath("userData"), r = et.join(t, "cari_finance.db");
     wi();
     const s = r + ".bak";
     ue.existsSync(r) && ue.copyFileSync(r, s);
@@ -4795,27 +4913,27 @@ function xa() {
     }
   });
 }
-function Qa() {
-  x.handle("settings:get", async () => O().select().from(Z).where(h(Z.id, "app_settings")).get() || null), x.handle("settings:update", async (n, e) => {
+function xa() {
+  q.handle("settings:get", async () => O().select().from(ee).where(f(ee.id, "app_settings")).get() || null), q.handle("settings:update", async (n, e) => {
     const t = O(), r = (/* @__PURE__ */ new Date()).toISOString();
-    return t.update(Z).set({
+    return t.update(ee).set({
       ...e,
       updatedAt: r
-    }).where(h(Z.id, "app_settings")).run(), { success: !0 };
-  }), x.handle("auth:verifyPin", async (n, e) => {
-    const r = O().select().from(Z).where(h(Z.id, "app_settings")).get();
+    }).where(f(ee.id, "app_settings")).run(), { success: !0 };
+  }), q.handle("auth:verifyPin", async (n, e) => {
+    const r = O().select().from(ee).where(f(ee.id, "app_settings")).get();
     return r != null && r.pinCode ? r.pinCode === e ? { success: !0 } : { success: !1, message: "Hatalı PIN Kodu." } : { success: !0 };
   });
 }
 function qa() {
-  x.handle("inventory:list", async () => O().select().from(V).orderBy(pe(V.createdAt)).all().map((t) => ({
+  q.handle("inventory:list", async () => O().select().from(X).orderBy(ie(X.createdAt)).all().map((t) => ({
     ...t,
     totalStockValue: t.stockQuantity * t.purchasePrice
-  }))), x.handle("inventory:create", async (n, e) => {
-    const t = O(), r = (/* @__PURE__ */ new Date()).toISOString(), s = t.select({ count: l`count(*)` }).from(V).get(), c = `STK-${(((s == null ? void 0 : s.count) || 0) + 1).toString().padStart(4, "0")}`, a = `prod_${Date.now()}`;
-    return t.insert(V).values({
+  }))), q.handle("inventory:create", async (n, e) => {
+    const t = O(), r = (/* @__PURE__ */ new Date()).toISOString(), s = t.select({ count: l`count(*)` }).from(X).get(), o = `STK-${(((s == null ? void 0 : s.count) || 0) + 1).toString().padStart(4, "0")}`, a = `prod_${Date.now()}`;
+    return t.insert(X).values({
       id: a,
-      code: c,
+      code: o,
       name: e.name,
       category: e.category || "Genel",
       unit: e.unit || "Adet",
@@ -4825,7 +4943,7 @@ function qa() {
       minStockLevel: e.minStockLevel ?? 5,
       isActive: !0,
       createdAt: r
-    }).run(), e.stockQuantity && e.stockQuantity > 0 && t.insert(Te).values({
+    }).run(), e.stockQuantity && e.stockQuantity > 0 && t.insert(Se).values({
       id: `stk_mov_${Date.now()}`,
       productId: a,
       type: "in",
@@ -4835,17 +4953,17 @@ function qa() {
       description: "Açılış / Devir Stok Miktarı",
       date: r.split("T")[0],
       createdAt: r
-    }).run(), { success: !0, productId: a, code: c };
-  }), x.handle("inventory:updateStock", async (n, e) => {
-    const t = O(), r = (/* @__PURE__ */ new Date()).toISOString(), s = t.select().from(V).where(h(V.id, e.productId)).get();
+    }).run(), { success: !0, productId: a, code: o };
+  }), q.handle("inventory:updateStock", async (n, e) => {
+    const t = O(), r = (/* @__PURE__ */ new Date()).toISOString(), s = t.select().from(X).where(f(X.id, e.productId)).get();
     if (!s) throw new Error("Ürün bulunamadı.");
     if (e.quantity <= 0)
       throw new Error("Stok hareket miktarı 0'dan büyük olmalıdır.");
-    const i = s.stockQuantity, c = e.type === "in" ? i + e.quantity : i - e.quantity;
-    if (e.type === "out" && c < 0)
+    const i = s.stockQuantity, o = e.type === "in" ? i + e.quantity : i - e.quantity;
+    if (e.type === "out" && o < 0)
       throw new Error(`Yetersiz stok! Mevcut stok: ${i} ${s.unit}`);
     const a = e.unitPrice ?? (e.type === "in" ? s.purchasePrice : s.salePrice), u = e.quantity * a;
-    return t.update(V).set({ stockQuantity: c }).where(h(V.id, e.productId)).run(), t.insert(Te).values({
+    return t.update(X).set({ stockQuantity: o }).where(f(X.id, e.productId)).run(), t.insert(Se).values({
       id: `stk_mov_${Date.now()}`,
       productId: e.productId,
       type: e.type,
@@ -4855,11 +4973,11 @@ function qa() {
       description: e.description || (e.type === "in" ? "Stok Girişi" : "Stok Çıkışı"),
       date: r.split("T")[0],
       createdAt: r
-    }).run(), { success: !0, newStockQuantity: c };
-  }), x.handle("inventory:getMovements", async (n, e) => {
-    const t = O(), r = t.select().from(V).where(h(V.id, e)).get();
+    }).run(), { success: !0, newStockQuantity: o };
+  }), q.handle("inventory:getMovements", async (n, e) => {
+    const t = O(), r = t.select().from(X).where(f(X.id, e)).get();
     if (!r) throw new Error("Ürün bulunamadı.");
-    const s = t.select().from(Te).where(h(Te.productId, e)).orderBy(pe(Te.createdAt)).all();
+    const s = t.select().from(Se).where(f(Se.productId, e)).orderBy(ie(Se.createdAt)).all();
     return {
       product: r,
       movements: s
@@ -4867,16 +4985,16 @@ function qa() {
   });
 }
 function Da() {
-  La(), Aa(), va(), Ca(), Ia(), $a(), Oa(), Ba(), xa(), Qa(), qa();
+  La(), Aa(), va(), Ca(), Ia(), $a(), Oa(), Ba(), Qa(), xa(), qa();
 }
-const ka = Ai(import.meta.url), yt = Qe.dirname(ka);
-let Be = null;
-function ja() {
-  const n = Qe.join(yt, "preload.mjs");
-  return Li.existsSync(n) ? n : Qe.join(yt, "preload.js");
+const ja = Ai(import.meta.url), pt = Qe.dirname(ja);
+let Oe = null;
+function Pa() {
+  const n = Qe.join(pt, "preload.mjs");
+  return Li.existsSync(n) ? n : Qe.join(pt, "preload.js");
 }
-function Ot() {
-  Be = new Es({
+function $t() {
+  Oe = new Ns({
     width: 1360,
     height: 860,
     minWidth: 1024,
@@ -4884,15 +5002,15 @@ function Ot() {
     title: "Cari & Kasa Finance Desktop - Mobilya İmalat Takip",
     backgroundColor: "#090d16",
     webPreferences: {
-      preload: ja(),
+      preload: Pa(),
       contextIsolation: !0,
       nodeIntegration: !1
     }
-  }), Be.setMenu(null), process.env.VITE_DEV_SERVER_URL ? Be.loadURL(process.env.VITE_DEV_SERVER_URL) : Be.loadFile(Qe.join(yt, "../dist/index.html"));
+  }), Oe.setMenu(null), process.env.VITE_DEV_SERVER_URL ? Oe.loadURL(process.env.VITE_DEV_SERVER_URL) : Oe.loadFile(Qe.join(pt, "../dist/index.html"));
 }
 he.whenReady().then(() => {
-  O(), Da(), Ot(), he.on("activate", () => {
-    Es.getAllWindows().length === 0 && Ot();
+  O(), Da(), $t(), he.on("activate", () => {
+    Ns.getAllWindows().length === 0 && $t();
   });
 });
 he.on("window-all-closed", () => {

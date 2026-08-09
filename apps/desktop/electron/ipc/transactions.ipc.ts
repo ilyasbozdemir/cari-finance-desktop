@@ -1,7 +1,7 @@
 import { ipcMain } from 'electron';
 import { getDatabase } from '../database/client';
 import * as schema from '../database/schema';
-import { eq, desc, sql, and } from 'drizzle-orm';
+import { eq, desc, sql } from 'drizzle-orm';
 
 export interface CreateTransactionPayload {
   type: 'sale' | 'customer_payment' | 'purchase' | 'supplier_payment' | 'partner_draw' | 'partner_deposit' | 'transfer' | 'expense';
@@ -51,7 +51,6 @@ export function registerTransactionsIPC() {
 
     // Resolve entities & accounts based on transaction type
     if (payload.type === 'sale') {
-      // 120 Müşteri (BORÇ) / 600 Mobilya Satış Geliri (ALACAK)
       if (!payload.entityId) throw new Error('Satış işlemi için müşteri seçilmelidir.');
       const customer = db.select().from(schema.entities).where(eq(schema.entities.id, payload.entityId)).get();
       if (!customer) throw new Error('Müşteri bulunamadı.');
@@ -59,121 +58,102 @@ export function registerTransactionsIPC() {
       debitAccountId = customer.accountId;
       debitEntityId = customer.id;
 
-      // Revenue account
-      let revenueCategory = payload.categoryId
-        ? db.select().from(schema.categories).where(eq(schema.categories.id, payload.categoryId)).get()
-        : null;
-      creditAccountId = revenueCategory ? revenueCategory.accountId : 'acc_600';
+      const salesAccount = db.select().from(schema.accounts).where(eq(schema.accounts.code, '600')).get();
+      if (!salesAccount) throw new Error('600 Satış Gelirleri hesabı bulunamadı.');
+      creditAccountId = salesAccount.id;
+
     } else if (payload.type === 'customer_payment') {
-      // Kasa/Banka (BORÇ) / 120 Müşteri (ALACAK)
       if (!payload.entityId) throw new Error('Tahsilat için müşteri seçilmelidir.');
-      if (!payload.targetEntityId) throw new Error('Tahsilatın aktarılacağı Kasa/Banka seçilmelidir.');
-
       const customer = db.select().from(schema.entities).where(eq(schema.entities.id, payload.entityId)).get();
-      const cashOrBank = db.select().from(schema.entities).where(eq(schema.entities.id, payload.targetEntityId)).get();
-      if (!customer || !cashOrBank) throw new Error('Müşteri veya Kasa/Banka kaydı bulunamadı.');
+      if (!customer) throw new Error('Müşteri bulunamadı.');
 
-      debitAccountId = cashOrBank.accountId;
-      debitEntityId = cashOrBank.id;
+      const cashAccount = db.select().from(schema.accounts).where(eq(schema.accounts.code, '100')).get();
+      if (!cashAccount) throw new Error('100 Kasa hesabı bulunamadı.');
+
+      debitAccountId = cashAccount.id;
+      if (payload.targetEntityId) {
+        const cashEntity = db.select().from(schema.entities).where(eq(schema.entities.id, payload.targetEntityId)).get();
+        if (cashEntity) debitEntityId = cashEntity.id;
+      }
 
       creditAccountId = customer.accountId;
       creditEntityId = customer.id;
+
     } else if (payload.type === 'purchase') {
-      // 153/710 Stok (BORÇ) / 320 Satıcı (ALACAK)
-      if (!payload.entityId) throw new Error('Satınalma için satıcı/tedarikçi seçilmelidir.');
+      if (!payload.entityId) throw new Error('Alım için tedarikçi seçilmelidir.');
       const supplier = db.select().from(schema.entities).where(eq(schema.entities.id, payload.entityId)).get();
       if (!supplier) throw new Error('Tedarikçi bulunamadı.');
 
-      let expenseCat = payload.categoryId
-        ? db.select().from(schema.categories).where(eq(schema.categories.id, payload.categoryId)).get()
-        : null;
-      debitAccountId = expenseCat ? expenseCat.accountId : 'acc_153';
+      const goodsAccount = db.select().from(schema.accounts).where(eq(schema.accounts.code, '153')).get();
+      if (!goodsAccount) throw new Error('153 Ticari Mallar hesabı bulunamadı.');
 
+      debitAccountId = goodsAccount.id;
       creditAccountId = supplier.accountId;
       creditEntityId = supplier.id;
-    } else if (payload.type === 'supplier_payment') {
-      // 320 Satıcı (BORÇ) / Kasa veya Banka (ALACAK)
-      if (!payload.entityId) throw new Error('Ödeme yapılan satıcı seçilmelidir.');
-      if (!payload.targetEntityId) throw new Error('Ödemenin yapıldığı Kasa/Banka seçilmelidir.');
 
+    } else if (payload.type === 'supplier_payment') {
+      if (!payload.entityId) throw new Error('Ödeme için tedarikçi seçilmelidir.');
       const supplier = db.select().from(schema.entities).where(eq(schema.entities.id, payload.entityId)).get();
-      const cashOrBank = db.select().from(schema.entities).where(eq(schema.entities.id, payload.targetEntityId)).get();
-      if (!supplier || !cashOrBank) throw new Error('Satıcı veya Kasa/Banka kaydı bulunamadı.');
+      if (!supplier) throw new Error('Tedarikçi bulunamadı.');
+
+      const cashAccount = db.select().from(schema.accounts).where(eq(schema.accounts.code, '100')).get();
+      if (!cashAccount) throw new Error('100 Kasa hesabı bulunamadı.');
 
       debitAccountId = supplier.accountId;
       debitEntityId = supplier.id;
+      creditAccountId = cashAccount.id;
 
-      creditAccountId = cashOrBank.accountId;
-      creditEntityId = cashOrBank.id;
     } else if (payload.type === 'partner_draw') {
-      // 500 Ortak (BORÇ) / Kasa veya Banka (ALACAK)
-      if (!payload.entityId) throw new Error('Para çeken ortak seçilmelidir.');
-      if (!payload.targetEntityId) throw new Error('Paranın çekildiği Kasa/Banka seçilmelidir.');
-
+      if (!payload.entityId) throw new Error('Ortak seçilmelidir.');
       const partner = db.select().from(schema.entities).where(eq(schema.entities.id, payload.entityId)).get();
-      const cashOrBank = db.select().from(schema.entities).where(eq(schema.entities.id, payload.targetEntityId)).get();
-      if (!partner || !cashOrBank) throw new Error('Ortak veya Kasa/Banka kaydı bulunamadı.');
+      if (!partner) throw new Error('Ortak bulunamadı.');
+
+      const cashAccount = db.select().from(schema.accounts).where(eq(schema.accounts.code, '100')).get();
+      if (!cashAccount) throw new Error('100 Kasa hesabı bulunamadı.');
 
       debitAccountId = partner.accountId;
       debitEntityId = partner.id;
+      creditAccountId = cashAccount.id;
 
-      creditAccountId = cashOrBank.accountId;
-      creditEntityId = cashOrBank.id;
     } else if (payload.type === 'partner_deposit') {
-      // Kasa veya Banka (BORÇ) / 500 Ortak (ALACAK)
-      if (!payload.entityId) throw new Error('Para yatıran ortak seçilmelidir.');
-      if (!payload.targetEntityId) throw new Error('Paranın yatırıldığı Kasa/Banka seçilmelidir.');
-
+      if (!payload.entityId) throw new Error('Ortak seçilmelidir.');
       const partner = db.select().from(schema.entities).where(eq(schema.entities.id, payload.entityId)).get();
-      const cashOrBank = db.select().from(schema.entities).where(eq(schema.entities.id, payload.targetEntityId)).get();
-      if (!partner || !cashOrBank) throw new Error('Ortak veya Kasa/Banka kaydı bulunamadı.');
+      if (!partner) throw new Error('Ortak bulunamadı.');
 
-      debitAccountId = cashOrBank.accountId;
-      debitEntityId = cashOrBank.id;
+      const cashAccount = db.select().from(schema.accounts).where(eq(schema.accounts.code, '100')).get();
+      if (!cashAccount) throw new Error('100 Kasa hesabı bulunamadı.');
 
+      debitAccountId = cashAccount.id;
       creditAccountId = partner.accountId;
       creditEntityId = partner.id;
+
     } else if (payload.type === 'transfer') {
-      // Hedef Kasa/Banka (BORÇ) / Kaynak Kasa/Banka (ALACAK)
-      if (!payload.entityId) throw new Error('Kaynak Kasa/Banka seçilmelidir.');
-      if (!payload.targetEntityId) throw new Error('Hedef Kasa/Banka seçilmelidir.');
+      if (!payload.entityId || !payload.targetEntityId) {
+        throw new Error('Virman için kaynak ve hedef hesap seçilmelidir.');
+      }
+      const source = db.select().from(schema.entities).where(eq(schema.entities.id, payload.entityId)).get();
+      const target = db.select().from(schema.entities).where(eq(schema.entities.id, payload.targetEntityId)).get();
+      if (!source || !target) throw new Error('Kaynak veya hedef hesap bulunamadı.');
 
-      const sourceAcc = db.select().from(schema.entities).where(eq(schema.entities.id, payload.entityId)).get();
-      const targetAcc = db.select().from(schema.entities).where(eq(schema.entities.id, payload.targetEntityId)).get();
-      if (!sourceAcc || !targetAcc) throw new Error('Virman hesapları bulunamadı.');
+      debitAccountId = target.accountId;
+      debitEntityId = target.id;
+      creditAccountId = source.accountId;
+      creditEntityId = source.id;
 
-      debitAccountId = targetAcc.accountId;
-      debitEntityId = targetAcc.id;
-
-      creditAccountId = sourceAcc.accountId;
-      creditEntityId = sourceAcc.id;
     } else if (payload.type === 'expense') {
-      // Gider Hesabı (BORÇ) / Kasa veya Banka (ALACAK)
-      if (!payload.targetEntityId) throw new Error('Giderin ödendiği Kasa/Banka seçilmelidir.');
+      const expenseAccount = db.select().from(schema.accounts).where(eq(schema.accounts.code, '770')).get();
+      if (!expenseAccount) throw new Error('770 Gider hesabı bulunamadı.');
 
-      let expenseCat = payload.categoryId
-        ? db.select().from(schema.categories).where(eq(schema.categories.id, payload.categoryId)).get()
-        : null;
-      debitAccountId = expenseCat ? expenseCat.accountId : 'acc_770';
+      const cashAccount = db.select().from(schema.accounts).where(eq(schema.accounts.code, '100')).get();
+      if (!cashAccount) throw new Error('100 Kasa hesabı bulunamadı.');
 
-      const cashOrBank = db.select().from(schema.entities).where(eq(schema.entities.id, payload.targetEntityId)).get();
-      if (!cashOrBank) throw new Error('Ödeme yapılan Kasa/Banka kaydı bulunamadı.');
-
-      creditAccountId = cashOrBank.accountId;
-      creditEntityId = cashOrBank.id;
+      debitAccountId = expenseAccount.id;
+      creditAccountId = cashAccount.id;
     }
 
-    // Dynamic Invariant Check: SUM(debit) MUST EQUAL SUM(credit)
-    const totalDebit = payload.amount;
-    const totalCredit = payload.amount;
-    if (Math.abs(totalDebit - totalCredit) > 0.001) {
-      throw new Error(`Muhasebe Kayıt Hatası: Toplam Borç (${totalDebit}) !== Toplam Alacak (${totalCredit}). Fiş kaydedilemez.`);
-    }
-
-    // Execute atomic transaction in SQLite
     const documentRecord = {
       id: docId,
-      docNumber: docNumber,
+      docNumber,
       type: payload.type,
       date: payload.date,
       description: payload.description,
@@ -183,7 +163,7 @@ export function registerTransactionsIPC() {
 
     const journalEntryRecord = {
       id: entryId,
-      entryNumber: entryNumber,
+      entryNumber,
       documentId: docId,
       date: payload.date,
       description: payload.description,
@@ -218,12 +198,12 @@ export function registerTransactionsIPC() {
     return { success: true, docNumber, entryNumber };
   });
 
-  // List recent transactions with filters
+  // List recent transactions
   ipcMain.handle('transactions:list', async (_, options?: { entityId?: string; limit?: number }) => {
     const db = getDatabase();
     const limit = options?.limit || 100;
 
-    let query = db
+    const result = db
       .select({
         id: schema.journalEntries.id,
         entryNumber: schema.journalEntries.entryNumber,
@@ -236,29 +216,98 @@ export function registerTransactionsIPC() {
       })
       .from(schema.journalEntries)
       .leftJoin(schema.documents, eq(schema.journalEntries.documentId, schema.documents.id))
-      .where(eq(schema.journalEntries.status, 'active'))
       .orderBy(desc(schema.journalEntries.date), desc(schema.journalEntries.createdAt))
-      .limit(limit);
+      .limit(limit)
+      .all();
 
-    return query.all();
+    return result;
   });
 
-  // Cancel transaction (Soft cancellation - Reversal entry to preserve audit log)
+  // Strict Accounting Reversing Entry (Ters Düzeltme Kaydı - No Silme, Full Audit Trail)
   ipcMain.handle('transactions:cancel', async (_, entryId: string) => {
     const db = getDatabase();
+    const now = new Date().toISOString();
 
     const entry = db.select().from(schema.journalEntries).where(eq(schema.journalEntries.id, entryId)).get();
     if (!entry) throw new Error('İşlem kaydı bulunamadı.');
 
     if (entry.status === 'cancelled') {
-      throw new Error('İşlem zaten iptal edilmiş.');
+      throw new Error('Bu işlem zaten ters kayıt ile düzeltilmiş.');
     }
 
+    // Get original journal items to flip debit & credit
+    const originalItems = db
+      .select()
+      .from(schema.journalItems)
+      .where(eq(schema.journalItems.journalEntryId, entryId))
+      .all();
+
+    if (originalItems.length === 0) {
+      throw new Error('İşlem detay satırları bulunamadı.');
+    }
+
+    // 1. Mark original entry as 'cancelled' (Ters Kaydı Oluşturuldu)
     db.update(schema.journalEntries)
       .set({ status: 'cancelled' })
       .where(eq(schema.journalEntries.id, entryId))
       .run();
 
-    return { success: true };
+    // 2. Create Reversing Document & Reversing Journal Entry
+    const revDocId = 'doc_rev_' + Date.now();
+    const revEntryId = 'yev_rev_' + Date.now();
+    const countRes = db.select({ count: sql<number>`count(*)` }).from(schema.documents).get();
+    const docSeq = ((countRes?.count || 0) + 1).toString().padStart(5, '0');
+    const year = new Date().getFullYear();
+
+    const revDocNumber = `TRS-${year}-${docSeq}`;
+    const revEntryNumber = `TRS-YEV-${year}-${docSeq}`;
+
+    const originalDoc = entry.documentId
+      ? db.select().from(schema.documents).where(eq(schema.documents.id, entry.documentId)).get()
+      : null;
+
+    const totalAmount = originalDoc?.totalAmount || 0;
+    const revDesc = `TERS DÜZELTME KAYDI (${entry.entryNumber} / ${entry.description})`;
+
+    // Insert Reversing Document
+    db.insert(schema.documents)
+      .values({
+        id: revDocId,
+        docNumber: revDocNumber,
+        type: originalDoc?.type || 'transfer',
+        date: now.split('T')[0],
+        description: revDesc,
+        totalAmount,
+        createdAt: now,
+      })
+      .run();
+
+    // Insert Reversing Journal Entry
+    db.insert(schema.journalEntries)
+      .values({
+        id: revEntryId,
+        entryNumber: revEntryNumber,
+        documentId: revDocId,
+        date: now.split('T')[0],
+        description: revDesc,
+        status: 'active',
+        createdAt: now,
+      })
+      .run();
+
+    // Insert Reversed Journal Items (FLIP Debit <-> Credit)
+    const reversedItems = originalItems.map((item, idx) => ({
+      id: `ji_rev_${Date.now()}_${idx}`,
+      journalEntryId: revEntryId,
+      accountId: item.accountId,
+      entityId: item.entityId,
+      debit: item.credit, // FLIPPED
+      credit: item.debit, // FLIPPED
+      description: `TERS KAYIT: ${item.description || ''}`,
+    }));
+
+    db.insert(schema.journalItems).values(reversedItems).run();
+
+    return { success: true, revDocNumber, revEntryNumber };
   });
 }
