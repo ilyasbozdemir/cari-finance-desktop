@@ -9,7 +9,20 @@
 
 **Cari & Kasa Finance**, işletmeler, imalathaneler, perakende ve hizmet sektörleri için tasarlanmış; karmaşık muhasebe terimlerinden arındırılmış **Pratik Cari, Kasa, Banka ve İşletme Finans Takip Sistemi**dir.
 
-> 💡 **Arka Plan Mimarisi**: Kullanıcı arayüzünde sadece *Satış*, *Tahsilat*, *Alış*, *Ödeme*, *Gider*, *Ortak İşlemi* gibi doğal iş dili kullanılır. İşlemlerinizin tam bakiye tutarlılığı ve güvenilirliği için sistem arka planda **çift taraflı bakiye doğrulama motoru** ile hareketleri otomatik işler.
+> 💡 **Arka Plan Mimarisi**: Kullanıcı arayüzünde sadece *Satış*, *Tahsilat*, *Alış*, *Ödeme*, *Gider*, *Ortak İşlemi*, *Transfer* gibi doğal iş dili kullanılır. İşlemlerinizin güvenilirliği ve tam bakiye tutarlılığı için sistem arka planda **çift taraflı muhasebe kayıt motoru** ile otomatik çalışır.
+
+---
+
+## ⚙️ Çift Taraflı Kayıt Motoru İşlem Akışı
+
+Sisteme girilen her iş eylemi arka planda şu mimari sırayla kaydedilir:
+
+$$\text{İşlem} \longrightarrow \text{Belge (Document)} \longrightarrow \text{Borç Hesabı (+) \& Alacak Hesabı (-)} \longrightarrow \text{Muhasebe Hareketi} \longrightarrow \text{Cari / Kasa / Banka Bakiyesi}$$
+
+1. **İşlem Girişi**: Kullanıcı *"ABC Mobilya'ya 10.000 TL Satış Yap"* der.
+2. **Belge Kaydı**: `documents` tablosunda `SAT-2026-00001` evrak numaralı belge oluşur.
+3. **Çift Taraflı Fiş**: `journal_entries` ve `journal_items` tablolarında `120.001` (Borç: 10.000 TL) ve `600.01` (Alacak: 10.000 TL) satırları yazılır.
+4. **Canlı Bakiye**: Müşteri cari bakiyesi `SUM(Borç) - SUM(Alacak)` SQL toplamıyla canlı güncellenir.
 
 ---
 
@@ -26,19 +39,17 @@
 
 ---
 
-## 🚀 MVP Modül Öncelik Sıralaması
+## 📊 Raporlama & Defter Hiyerarşisi
 
-Proje temel işletme ihtiyaçlarına göre önceliklendirilmiştir:
-
-1. 👥 **Cari Hesap Yönetimi** (Müşteriler & Tedarikçiler)
-2. 💵 **Kasa Takibi** (Nakit Kasalar)
-3. 🏦 **Banka Hesapları & Transfer**
-4. 👤 **Şirket Ortakları Hesabı**
-5. ⚡ **Hızlı Gelir / Gider & Harcama Kaydı**
-6. 📊 **Ana Ekran & İşlem Fişleri**
-7. 📄 **Raporlar & Antetli Ekstreler**
-8. 💾 **Yedekleme (`.cari` Dosya Formatı)**
-9. 📦 **Stok & Ürün Takibi (Opsiyonel Destek)**
+- **İşletme Raporları**:
+  - 👥 Müşteri Cari Ekstresi
+  - 🚚 Tedarikçi Cari Ekstresi
+  - 💵 Kasa & Banka Raporu
+  - ⚡ Gelir - Gider Özeti
+- **Gelişmiş & Yönetici Alanı**:
+  - 📊 Mizan (Geçici & Kesin)
+  - 📖 Defter-i Kebir & Muavin
+  - 📜 Yevmiye Fiş Listesi
 
 ---
 

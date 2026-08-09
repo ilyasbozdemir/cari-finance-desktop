@@ -8,13 +8,11 @@ import {
   ChevronRight,
   FileSpreadsheet,
   LayoutDashboard,
-  Moon,
   Package,
   PieChart,
   Plus,
   Settings,
   ShieldCheck,
-  Sun,
   Truck,
   Users,
   Wallet,
@@ -30,7 +28,6 @@ export const Sidebar: React.FC = () => {
     toggleSidebar,
     openQuickTransaction,
     theme,
-    toggleTheme,
     companyName,
     companyLogoIcon,
   } = useUIStore();
@@ -44,8 +41,8 @@ export const Sidebar: React.FC = () => {
     { to: '/banks', label: 'Banka Hesapları', icon: Building2 },
     { to: '/partners', label: 'Ortak Hesapları', icon: PieChart },
     { to: '/transactions', label: 'Tüm İşlemler', icon: ArrowRightLeft },
-    { to: '/accounting', label: 'Muhasebe Defteri', icon: BookOpen },
-    { to: '/reports', label: 'Raporlar & Ekstre', icon: FileSpreadsheet },
+    { to: '/reports', label: 'Finansal Raporlar', icon: FileSpreadsheet },
+    { to: '/accounting', label: 'Gelişmiş & Defterler', icon: BookOpen },
     { to: '/settings', label: 'Sistem Ayarları', icon: Settings },
   ];
 
@@ -78,7 +75,7 @@ export const Sidebar: React.FC = () => {
                   {companyName || 'Genel Cari & Kasa'}
                 </span>
                 <span className="text-[10px] font-semibold text-sky-500 dark:text-sky-400">
-                  Cari & Finans Motoru
+                  Cari & Finans Takip
                 </span>
               </div>
             </div>
@@ -119,13 +116,13 @@ export const Sidebar: React.FC = () => {
             className="w-full h-9 gap-2 shadow-sm font-semibold text-xs bg-gradient-to-r from-sky-600 to-sky-500 hover:from-sky-500 hover:to-sky-400 transition-all text-white"
           >
             <Plus className="h-4 w-4 shrink-0" />
-            <span className="truncate">+ Yeni İşlem Ekle</span>
+            <span className="truncate">+ Hızlı İşlem Yap</span>
           </Button>
         ) : (
           <button
             onClick={() => openQuickTransaction('sale')}
             className="h-10 w-10 mx-auto flex items-center justify-center rounded-xl bg-sky-500 text-white shadow-sm hover:bg-sky-400 transition-colors"
-            title="Hızlı Yeni İşlem Ekle"
+            title="+ Hızlı İşlem Yap"
           >
             <Plus className="h-5 w-5" />
           </button>
@@ -160,10 +157,10 @@ export const Sidebar: React.FC = () => {
         {sidebarOpen ? (
           <div className="flex items-center gap-2 text-[10px] font-medium text-slate-500 dark:text-slate-400 px-1">
             <ShieldCheck className="h-3.5 w-3.5 text-emerald-500 shrink-0" />
-            <span className="truncate">Çift Taraflı Yevmiye Motoru</span>
+            <span className="truncate">Çift Taraflı Kayıt Motoru</span>
           </div>
         ) : (
-          <div className="flex justify-center" title="Çift Taraflı Yevmiye Motoru">
+          <div className="flex justify-center" title="Çift Taraflı Kayıt Motoru">
             <ShieldCheck className="h-4 w-4 text-emerald-500" />
           </div>
         )}
