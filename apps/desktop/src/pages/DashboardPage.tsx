@@ -19,11 +19,11 @@ import { useUIStore } from '@/stores/ui.store';
 import { Link } from 'react-router-dom';
 
 export const DashboardPage: React.FC = () => {
-  const { openQuickTransaction } = useUIStore();
+  const { openQuickTransaction, selectedFiscalYear } = useUIStore();
 
   const { data: dashboardData, isLoading } = useQuery({
-    queryKey: ['dashboard'],
-    queryFn: () => window.api.reports.getDashboard(),
+    queryKey: ['dashboard', selectedFiscalYear],
+    queryFn: () => window.api.reports.getDashboard({ fiscalYear: selectedFiscalYear }),
   });
 
   if (isLoading) {
@@ -51,7 +51,7 @@ export const DashboardPage: React.FC = () => {
         <div>
           <h1 className="text-2xl font-bold tracking-tight text-slate-900 dark:text-white">Ana Ekran & Genel Bakış</h1>
           <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
-            Çift taraflı muhasebe fişlerinden anlık hesaplanan cari, kasa ve ortak durumu.
+            Seçilen <span className="font-bold text-sky-500 font-mono">{selectedFiscalYear === 'all' ? 'Tüm Yıllar' : `${selectedFiscalYear} Dönemi`}</span> çift taraflı muhasebe fişlerinden anlık hesaplanan finans durumu.
           </p>
         </div>
 
@@ -89,7 +89,7 @@ export const DashboardPage: React.FC = () => {
             <div className="text-2xl font-black tracking-tight text-slate-900 dark:text-white">
               {formatCurrency(totalCashBalance)}
             </div>
-            <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-1">Nakit + Banka Toplam Mevcut</p>
+            <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-1">Nakit + Banka Mevcudu ({selectedFiscalYear})</p>
           </CardContent>
         </Card>
 
@@ -195,9 +195,9 @@ export const DashboardPage: React.FC = () => {
               <div>
                 <CardTitle className="text-base font-bold flex items-center gap-2">
                   <Clock className="w-4 h-4 text-sky-500" />
-                  Son Yapılan İşlemler
+                  Son Yapılan İşlemler ({selectedFiscalYear})
                 </CardTitle>
-                <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">Sisteme girilen son 6 hareket</p>
+                <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">Seçilen döneme ait son 6 hareket</p>
               </div>
               <Link to="/transactions">
                 <Button variant="ghost" size="sm" className="gap-1 text-sky-500 hover:text-sky-600 dark:hover:text-sky-300">
@@ -240,7 +240,7 @@ export const DashboardPage: React.FC = () => {
             <CardHeader>
               <CardTitle className="text-base font-bold flex items-center gap-2">
                 <PieChart className="w-4 h-4 text-purple-500" />
-                Ortak Hesapları (Cari)
+                Ortak Hesapları ({selectedFiscalYear})
               </CardTitle>
               <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">Şirket ortaklarının para çekme & yatırma durumu</p>
             </CardHeader>

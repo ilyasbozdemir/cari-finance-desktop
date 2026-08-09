@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { ArrowRightLeft, Search, Plus, RotateCcw, AlertTriangle, ShieldCheck } from 'lucide-react';
+import { ArrowRightLeft, Search, Plus, RotateCcw, ShieldCheck } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -11,12 +11,12 @@ import { useUIStore } from '@/stores/ui.store';
 
 export const TransactionsPage: React.FC = () => {
   const queryClient = useQueryClient();
-  const { openQuickTransaction } = useUIStore();
+  const { openQuickTransaction, selectedFiscalYear } = useUIStore();
   const [searchTerm, setSearchTerm] = useState('');
 
   const { data: transactions = [], isLoading } = useQuery({
-    queryKey: ['transactions'],
-    queryFn: () => window.api.transactions.list({ limit: 200 }),
+    queryKey: ['transactions', selectedFiscalYear],
+    queryFn: () => window.api.transactions.list({ limit: 200, fiscalYear: selectedFiscalYear }),
   });
 
   const cancelTransactionMutation = useMutation({
@@ -59,10 +59,10 @@ export const TransactionsPage: React.FC = () => {
         <div>
           <h1 className="text-2xl font-bold tracking-tight text-slate-900 dark:text-white flex items-center gap-2.5">
             <ArrowRightLeft className="w-6 h-6 text-sky-500" />
-            Tüm Finansal İşlemler & Ters Düzeltme Fişleri
+            Tüm Finansal İşlemler & Fiş Listesi
           </h1>
           <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
-            Çift taraflı yevmiye kayıtları, resmi evrak numaraları ve kanuni ters kayıt geçmişi.
+            Seçilen <span className="font-bold text-sky-500 font-mono">{selectedFiscalYear === 'all' ? 'Tüm Yıllar' : `${selectedFiscalYear} Mali Dönemi`}</span> resmi evrak numaraları ve çift taraflı kayıt geçmişi.
           </p>
         </div>
 
@@ -80,7 +80,7 @@ export const TransactionsPage: React.FC = () => {
           <div className="flex items-center gap-3 text-xs text-slate-700 dark:text-slate-300">
             <ShieldCheck className="w-5 h-5 text-emerald-500 shrink-0" />
             <span>
-              <strong>VUK & TTK Muhasebe Kuralı:</strong> Yanlış veya hatalı işlemlerde fiziksel veri silinmez; geriye dönük izlenebilirlik için <strong>Ters Düzeltme Fişi (Reversing Entry)</strong> oluşturulur.
+              <strong>Çift Taraflı Kayıt Motoru:</strong> Yanlış veya hatalı işlemlerde fiziksel veri silinmez; geriye dönük izlenebilirlik için <strong>Ters Düzeltme Fişi (Reversing Entry)</strong> oluşturulur.
             </span>
           </div>
         </CardContent>
@@ -99,14 +99,14 @@ export const TransactionsPage: React.FC = () => {
         </div>
 
         <div className="text-xs font-semibold text-slate-600 dark:text-slate-400">
-          Toplam İşlem Adedi: <span className="text-sky-500 font-bold">{transactions.length}</span>
+          Toplam İşlem Adedi ({selectedFiscalYear}): <span className="text-sky-500 font-bold">{transactions.length}</span>
         </div>
       </div>
 
       {/* Transactions Table */}
       <Card>
         <CardHeader>
-          <CardTitle className="text-base font-bold">Yevmiye Kayıtları & Fiş Listesi</CardTitle>
+          <CardTitle className="text-base font-bold">İşlem Fiş Kayıtları</CardTitle>
         </CardHeader>
         <CardContent>
           <Table>
@@ -124,7 +124,7 @@ export const TransactionsPage: React.FC = () => {
               {filteredTransactions.length === 0 ? (
                 <TableRow>
                   <TableCell colSpan={6} className="text-center py-8 text-slate-500">
-                    Henüz işlem kaydı bulunmuyor.
+                    Seçilen mali yılda henüz işlem kaydı bulunmuyor.
                   </TableCell>
                 </TableRow>
               ) : (
@@ -150,7 +150,7 @@ export const TransactionsPage: React.FC = () => {
                       </TableCell>
                       <TableCell className="text-center">
                         <Badge variant={isReversalDoc ? 'warning' : isCancelled ? 'danger' : 'success'} className="text-[10px]">
-                          {isReversalDoc ? 'Ters Düzeltme Kaydı' : isCancelled ? 'Ters Kaydı Oluşturuldu' : 'Aktif Yevmiye Fişi'}
+                          {isReversalDoc ? 'Ters Düzeltme Kaydı' : isCancelled ? 'Ters Kaydı Oluşturuldu' : 'Aktif İşlem Fişi'}
                         </Badge>
                       </TableCell>
                       <TableCell className="text-right">

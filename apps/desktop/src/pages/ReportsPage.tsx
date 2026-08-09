@@ -1,19 +1,21 @@
 import React, { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { FileSpreadsheet, Download, RefreshCw, ShieldCheck, CheckCircle2, AlertTriangle, Layers } from 'lucide-react';
+import { FileSpreadsheet, Download, RefreshCw, ShieldCheck, Layers } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
 import { formatCurrency } from '@cari-finance/domain';
 import { exportToPDF, exportToExcel } from '@/lib/export';
+import { useUIStore } from '@/stores/ui.store';
 
 export const ReportsPage: React.FC = () => {
+  const { selectedFiscalYear } = useUIStore();
   const [mizanType, setMizanType] = useState<'gecici' | 'kesin'>('gecici');
 
   const { data: mizan = [], isLoading, refetch } = useQuery({
-    queryKey: ['trialBalance', mizanType],
-    queryFn: () => window.api.reports.getTrialBalance({ type: mizanType }),
+    queryKey: ['trialBalance', mizanType, selectedFiscalYear],
+    queryFn: () => window.api.reports.getTrialBalance({ type: mizanType, fiscalYear: selectedFiscalYear }),
   });
 
   const totalDebitSum = mizan.reduce((acc: number, item: any) => acc + item.totalDebit, 0);
@@ -34,11 +36,11 @@ export const ReportsPage: React.FC = () => {
     ]);
 
     exportToPDF({
-      title: titleText,
-      subtitle: 'Çift taraflı yevmiye kayıtları bazlı resmi mizan cetveli.',
+      title: `${titleText} (${selectedFiscalYear})`,
+      subtitle: 'Çift taraflı yevmiye kayıtları bazlı mizan cetveli.',
       headers,
       rows,
-      filename: `mizan_${mizanType}_${new Date().toISOString().split('T')[0]}`,
+      filename: `mizan_${mizanType}_${selectedFiscalYear}_${new Date().toISOString().split('T')[0]}`,
       summaryRows: [
         { label: 'Genel Borç Toplamı', value: formatCurrency(totalDebitSum) },
         { label: 'Genel Alacak Toplamı', value: formatCurrency(totalCreditSum) },
@@ -57,7 +59,7 @@ export const ReportsPage: React.FC = () => {
       'Borç Bakiye (TL)': item.debitBalance,
       'Alacak Bakiye (TL)': item.creditBalance,
     }));
-    exportToExcel(`mizan_${mizanType}_${new Date().toISOString().split('T')[0]}`, data, 'Mizan Raporu');
+    exportToExcel(`mizan_${mizanType}_${selectedFiscalYear}_${new Date().toISOString().split('T')[0]}`, data, 'Mizan Raporu');
   };
 
   return (
@@ -67,10 +69,10 @@ export const ReportsPage: React.FC = () => {
         <div>
           <h1 className="text-2xl font-bold tracking-tight text-slate-900 dark:text-white flex items-center gap-2.5">
             <FileSpreadsheet className="w-6 h-6 text-sky-500" />
-            Geçici & Kesin Mizan Cetvelleri
+            Finansal Mizan Raporları ({selectedFiscalYear})
           </h1>
           <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
-            Çift taraflı yevmiye kayıt motorundan hesaplanan resmi Geçici Mizan ve Kesin Mizan raporları.
+            Seçilen <span className="font-bold text-sky-500 font-mono">{selectedFiscalYear === 'all' ? 'Tüm Yıllar' : `${selectedFiscalYear} Dönemi`}</span> resmi Geçici Mizan ve Kesin Mizan cetvelleri.
           </p>
         </div>
 
@@ -130,7 +132,7 @@ export const ReportsPage: React.FC = () => {
                 </Badge>
               </div>
               <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
-                SUM(Borç) === SUM(Alacak) muhasebe denkliği sistem tarafından otomatik doğrulanır.
+                SUM(Borç) === SUM(Alacak) denkliği otomatik doğrulanır.
               </p>
             </div>
           </div>
@@ -178,7 +180,7 @@ export const ReportsPage: React.FC = () => {
               ) : mizan.length === 0 ? (
                 <TableRow>
                   <TableCell colSpan={6} className="text-center py-8 text-slate-500">
-                    Henüz muhasebe kaydı bulunmuyor.
+                    Seçilen dönemde henüz muhasebe kaydı bulunmuyor.
                   </TableCell>
                 </TableRow>
               ) : (

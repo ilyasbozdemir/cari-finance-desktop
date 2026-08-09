@@ -1,13 +1,20 @@
 import { ipcMain } from 'electron';
 import { getDatabase } from '../database/client';
 import * as schema from '../database/schema';
-import { eq, desc, sql, and } from 'drizzle-orm';
+import { eq, desc, sql, and, gte, lte } from 'drizzle-orm';
 
 export function registerReportsIPC() {
-  // Get Dashboard Summary Data
-  ipcMain.handle('reports:getDashboard', async () => {
+  // Get Dashboard Summary Data with Fiscal Year filter support
+  ipcMain.handle('reports:getDashboard', async (_, options?: { fiscalYear?: number | 'all' }) => {
     const db = getDatabase();
     const today = new Date().toISOString().split('T')[0];
+    const year = options?.fiscalYear;
+
+    let dateConditions: any[] = [eq(schema.journalEntries.status, 'active')];
+    if (typeof year === 'number') {
+      dateConditions.push(gte(schema.journalEntries.date, `${year}-01-01`));
+      dateConditions.push(lte(schema.journalEntries.date, `${year}-12-31`));
+    }
 
     // 1. Total Cash & Bank Balance
     const cashAndBankEntities = db
@@ -25,12 +32,7 @@ export function registerReportsIPC() {
         })
         .from(schema.journalItems)
         .innerJoin(schema.journalEntries, eq(schema.journalItems.journalEntryId, schema.journalEntries.id))
-        .where(
-          and(
-            eq(schema.journalItems.entityId, ent.id),
-            eq(schema.journalEntries.status, 'active')
-          )
-        )
+        .where(and(eq(schema.journalItems.entityId, ent.id), ...dateConditions))
         .get();
       totalCashBalance += (bRes?.debit || 0) - (bRes?.credit || 0);
     }
@@ -53,12 +55,7 @@ export function registerReportsIPC() {
         })
         .from(schema.journalItems)
         .innerJoin(schema.journalEntries, eq(schema.journalItems.journalEntryId, schema.journalEntries.id))
-        .where(
-          and(
-            eq(schema.journalItems.entityId, cust.id),
-            eq(schema.journalEntries.status, 'active')
-          )
-        )
+        .where(and(eq(schema.journalItems.entityId, cust.id), ...dateConditions))
         .get();
 
       const bal = (bRes?.debit || 0) - (bRes?.credit || 0);
@@ -114,12 +111,7 @@ export function registerReportsIPC() {
         })
         .from(schema.journalItems)
         .innerJoin(schema.journalEntries, eq(schema.journalItems.journalEntryId, schema.journalEntries.id))
-        .where(
-          and(
-            eq(schema.journalItems.entityId, p.id),
-            eq(schema.journalEntries.status, 'active')
-          )
-        )
+        .where(and(eq(schema.journalItems.entityId, p.id), ...dateConditions))
         .get();
 
       const draws = bRes?.draws || 0;
@@ -148,7 +140,7 @@ export function registerReportsIPC() {
       })
       .from(schema.journalEntries)
       .leftJoin(schema.documents, eq(schema.journalEntries.documentId, schema.documents.id))
-      .where(eq(schema.journalEntries.status, 'active'))
+      .where(and(...dateConditions))
       .orderBy(desc(schema.journalEntries.date), desc(schema.journalEntries.createdAt))
       .limit(6)
       .all();
@@ -164,10 +156,17 @@ export function registerReportsIPC() {
     };
   });
 
-  // Get Trial Balance (Geçici ve Kesin Mizan Cetveli)
-  ipcMain.handle('reports:getTrialBalance', async (_, options?: { type?: 'gecici' | 'kesin' }) => {
+  // Get Trial Balance (Geçici ve Kesin Mizan Cetveli - Fiscal Year Filtered)
+  ipcMain.handle('reports:getTrialBalance', async (_, options?: { type?: 'gecici' | 'kesin'; fiscalYear?: number | 'all' }) => {
     const db = getDatabase();
     const type = options?.type || 'gecici';
+    const year = options?.fiscalYear;
+
+    let dateConditions: any[] = [eq(schema.journalEntries.status, 'active')];
+    if (typeof year === 'number') {
+      dateConditions.push(gte(schema.journalEntries.date, `${year}-01-01`));
+      dateConditions.push(lte(schema.journalEntries.date, `${year}-12-31`));
+    }
 
     const accountsList = db.select().from(schema.accounts).orderBy(schema.accounts.code).all();
 
@@ -179,12 +178,7 @@ export function registerReportsIPC() {
         })
         .from(schema.journalItems)
         .innerJoin(schema.journalEntries, eq(schema.journalItems.journalEntryId, schema.journalEntries.id))
-        .where(
-          and(
-            eq(schema.journalItems.accountId, acc.id),
-            eq(schema.journalEntries.status, 'active')
-          )
-        )
+        .where(and(eq(schema.journalItems.accountId, acc.id), ...dateConditions))
         .get();
 
       const totalDebit = bRes?.totalDebit || 0;
@@ -200,16 +194,24 @@ export function registerReportsIPC() {
         totalCredit,
         debitBalance,
         creditBalance,
-        isClosed: type === 'kesin' && acc.code.startsWith('6'), // 600 Gelir hesapları kesin mizanda sıfırlanır
+        isClosed: type === 'kesin' && acc.code.startsWith('6'),
       };
     });
 
     return result.filter((a) => a.totalDebit > 0 || a.totalCredit > 0);
   });
 
-  // Defter-i Kebir (Büyük Defter) - Ana Hesap Grupları
-  ipcMain.handle('reports:getKebir', async () => {
+  // Defter-i Kebir (Büyük Defter) - Fiscal Year Filtered
+  ipcMain.handle('reports:getKebir', async (_, options?: { fiscalYear?: number | 'all' }) => {
     const db = getDatabase();
+    const year = options?.fiscalYear;
+
+    let dateConditions: any[] = [eq(schema.journalEntries.status, 'active')];
+    if (typeof year === 'number') {
+      dateConditions.push(gte(schema.journalEntries.date, `${year}-01-01`));
+      dateConditions.push(lte(schema.journalEntries.date, `${year}-12-31`));
+    }
+
     const accountsList = db.select().from(schema.accounts).orderBy(schema.accounts.code).all();
 
     const kebirList = accountsList.map((acc) => {
@@ -225,12 +227,7 @@ export function registerReportsIPC() {
         .from(schema.journalItems)
         .innerJoin(schema.journalEntries, eq(schema.journalItems.journalEntryId, schema.journalEntries.id))
         .leftJoin(schema.documents, eq(schema.journalEntries.documentId, schema.documents.id))
-        .where(
-          and(
-            eq(schema.journalItems.accountId, acc.id),
-            eq(schema.journalEntries.status, 'active')
-          )
-        )
+        .where(and(eq(schema.journalItems.accountId, acc.id), ...dateConditions))
         .orderBy(schema.journalEntries.date)
         .all();
 
@@ -252,9 +249,16 @@ export function registerReportsIPC() {
     return kebirList.filter((k) => k.items.length > 0);
   });
 
-  // Muavin Defteri (Yardımcı Defter - Cari / Kasa Detaylı)
-  ipcMain.handle('reports:getMuavin', async (_, options?: { entityId?: string }) => {
+  // Muavin Defteri (Yardımcı Defter - Fiscal Year Filtered)
+  ipcMain.handle('reports:getMuavin', async (_, options?: { entityId?: string; fiscalYear?: number | 'all' }) => {
     const db = getDatabase();
+    const year = options?.fiscalYear;
+
+    let dateConditions: any[] = [eq(schema.journalEntries.status, 'active')];
+    if (typeof year === 'number') {
+      dateConditions.push(gte(schema.journalEntries.date, `${year}-01-01`));
+      dateConditions.push(lte(schema.journalEntries.date, `${year}-12-31`));
+    }
 
     const entitiesList = db.select().from(schema.entities).orderBy(schema.entities.name).all();
 
@@ -271,12 +275,7 @@ export function registerReportsIPC() {
         .from(schema.journalItems)
         .innerJoin(schema.journalEntries, eq(schema.journalItems.journalEntryId, schema.journalEntries.id))
         .leftJoin(schema.documents, eq(schema.journalEntries.documentId, schema.documents.id))
-        .where(
-          and(
-            eq(schema.journalItems.entityId, ent.id),
-            eq(schema.journalEntries.status, 'active')
-          )
-        )
+        .where(and(eq(schema.journalItems.entityId, ent.id), ...dateConditions))
         .orderBy(schema.journalEntries.date)
         .all();
 
