@@ -1,6 +1,6 @@
 {
   "name": "@cari-finance/desktop",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "type": "module",
   "description": "Mutfak Dolabı & Mobilya İmalatı Cari Hesap ve Kasa Takip Masaüstü Uygulaması",
   "main": "dist-electron/main.js",
@@ -14,7 +14,7 @@
   },
   "build": {
     "appId": "com.carifinance.desktop",
-    "productName": "Cari & Kasa Finance Desktop",
+    "productName": "Cari-Finance-Desktop",
     "directories": {
       "output": "release"
     },
@@ -34,7 +34,8 @@
     },
     "nsis": {
       "oneClick": false,
-      "allowToChangeInstallationDirectory": true
+      "allowToChangeInstallationDirectory": true,
+      "artifactName": "${productName}-Setup-${version}.${ext}"
     }
   },
   "dependencies": {
