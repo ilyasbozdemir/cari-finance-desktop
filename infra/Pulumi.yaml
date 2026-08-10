@@ -1,0 +1,3 @@
+name: cari-finance-infrastructure
+runtime: nodejs
+description: Pulumi Infrastructure as Code stack for Cari & Kasa Finance Docker containers

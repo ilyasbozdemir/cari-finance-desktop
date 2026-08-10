@@ -9,7 +9,16 @@
     "build": "pnpm --filter \"@cari-finance/*\" build",
     "package": "pnpm --filter @cari-finance/desktop package",
     "docker:build": "docker compose build",
-    "docker:up": "docker compose up -d"
+    "docker:up": "docker compose up -d --build",
+    "docker:down": "docker compose down",
+    "docker:logs": "docker compose logs -f",
+    "docker:ps": "docker compose ps",
+    "docker:restart": "docker compose restart",
+    "docker:backup": "docker exec cari_finance_backup /app/docker-backup.sh",
+    "docker:clean": "docker compose down -v --remove-orphans",
+    "pulumi:up": "pnpm --filter @cari-finance/infra pulumi:up",
+    "pulumi:preview": "pnpm --filter @cari-finance/infra pulumi:preview",
+    "pulumi:destroy": "pnpm --filter @cari-finance/infra pulumi:destroy"
   },
   "pnpm": {
     "onlyBuiltDependencies": [

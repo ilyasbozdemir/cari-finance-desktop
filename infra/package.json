@@ -1,0 +1,20 @@
+{
+  "name": "@cari-finance/infra",
+  "version": "1.0.0-beta.1",
+  "private": true,
+  "description": "Pulumi Infrastructure as Code stack for Cari & Kasa Finance Docker containers",
+  "main": "index.ts",
+  "scripts": {
+    "pulumi:up": "pulumi up",
+    "pulumi:preview": "pulumi preview",
+    "pulumi:destroy": "pulumi destroy"
+  },
+  "dependencies": {
+    "@pulumi/docker": "^4.5.7",
+    "@pulumi/pulumi": "^3.136.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.7.5",
+    "typescript": "^5.6.3"
+  }
+}

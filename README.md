@@ -2,7 +2,7 @@
 
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.6-blue.svg)](https://www.typescriptlang.org/)
 [![Electron](https://img.shields.io/badge/Electron-33.0-47848F.svg)](https://www.electronjs.org/)
-[![Next.js](https://img.shields.io/badge/Next.js-14.2-black.svg)](https://nextjs.org/)
+[![Pulumi](https://img.shields.io/badge/Pulumi-IaC-8A3391.svg)](https://www.pulumi.com/)
 [![Docker](https://img.shields.io/badge/Docker-Compose-2496ED.svg)](https://www.docker.com/)
 [![Drizzle ORM](https://img.shields.io/badge/Drizzle_ORM-SQLite-C5F74F.svg)](https://orm.drizzle.team/)
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-3.4-38BDF8.svg)](https://tailwindcss.com/)
@@ -10,29 +10,34 @@
 
 **Cari & Kasa Finance**, işletmeler, imalathaneler, perakende ve hizmet sektörleri için tasarlanmış; karmaşık muhasebe terimlerinden arındırılmış **Pratik Cari, Kasa, Banka ve İşletme Finans Takip Sistemi**dir.
 
-> 💡 **Arka Plan Mimarisi**: Kullanıcı arayüzünde sadece *Satış*, *Tahsilat*, *Alış*, *Ödeme*, *Gider*, *Ortak İşlemi*, *Transfer* gibi doğal iş dili kullanılır. İşlemlerinizin güvenilirliği ve tam bakiye tutarlılığı için sistem arka planda **çift taraflı muhasebe kayıt motoru** ile otomatik çalışır.
-
 ---
 
-## ⚙️ Çift Taraflı Kayıt Motoru İşlem Akışı
+## 🏗️ Pulumi (Infrastructure as Code - IaC) Mimarisi (`infra/`)
 
-Sisteme girilen her iş eylemi arka planda şu mimari sırayla kaydedilir:
+**Pulumi**, sunucu, konteyner ve veritabanı altyapılarını TypeScript ile kod olarak yönetmeye yarayan modern **Infrastructure as Code (IaC)** aracıdır.
 
-$$\text{İşlem} \longrightarrow \text{Belge (Document)} \longrightarrow \text{Borç Hesabı (+) \& Alacak Hesabı (-)} \longrightarrow \text{Muhasebe Hareketi} \longrightarrow \text{Cari / Kasa / Banka Bakiyesi}$$
-
----
-
-## 🐳 Docker ile Otomatik Yedekleme Servisi (`docker-compose.yml`)
-
-Masaüstü yerel yedeklemeye ek olarak, web/sunucu ortamında **Docker tabanlı otomatik günlük `.cari` yedekleme servisi** sunulmuştur:
-
-- `cari-finance-web`: Next.js web / API sunucusu (`:3000`)
-- `cari-finance-backup`: Her gün gece 00:00'da veritabanının `.cari` formatında yedeğini alan ve 30 günden eski yedekleri otomatik temizleyen Docker hacim konteyneri.
+Projeye eklenen `infra/index.ts` ve `infra/Pulumi.yaml` altyapı kodları sayesinde Docker konteynerleri ve persistent SQLite hacimleri Pulumi üzerinden otomatik canlıya alınabilir:
 
 ```bash
-# Docker konteynerlerini başlatma (Web + Otomatik Otomatik Yedekleme)
-docker-compose up -d --build
+# Pulumi Altyapısını Canlıya Alma
+cd infra
+pulumi up
 ```
+
+---
+
+## 🛠️ Makefile & Terminal Kısayol Komutları (`Makefile`)
+
+Terminalde uzun komutlar yazmak yerine `make` veya `pnpm` kısayolları kullanılabilir:
+
+| Kısayol Komut | İşlev |
+| :--- | :--- |
+| `make dev` veya `pnpm dev` | Masaüstü uygulamasını geliştirme modunda açar. |
+| `make build` veya `pnpm build` | Tüm monorepo paketlerini derler. |
+| `make package` veya `pnpm package` | Windows `.exe` kurucu paketini oluşturur. |
+| `make docker-up` veya `pnpm docker:up` | Docker servislerini arka planda başlatır. |
+| `make docker-backup` veya `pnpm docker:backup` | Otomatik `.cari` veritabanı yedeği alır. |
+| `make pulumi-up` | Pulumi IaC altyapısını dağıtır. |
 
 ---
 
@@ -53,10 +58,13 @@ docker-compose up -d --build
 
 ```
 cari-finance-desktop/
-├── pnpm-workspace.yaml               # Monorepo paket tanım dosyası
-├── package.json                      # Kök dizin komutları
+├── Makefile                          # Terminal kısayol görev çalıştırıcısı (Task Runner)
+├── package.json                      # Kök dizin komutları & Docker kısayolları
 ├── Dockerfile                        # Multi-stage Next.js & Web Docker image
 ├── docker-compose.yml                # Web App + Automatic Backup Volume Container
+├── infra/                            # Pulumi Infrastructure as Code (IaC) TypeScript Stack
+│   ├── Pulumi.yaml
+│   └── index.ts                      # Pulumi Docker Container & Volume Tanımları
 ├── scripts/
 │   └── docker-backup.sh              # 24 saatlik otomatik SQLite / .cari yedekleme betiği
 │
