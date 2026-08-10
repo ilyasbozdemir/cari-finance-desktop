@@ -3,6 +3,7 @@
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.6-blue.svg)](https://www.typescriptlang.org/)
 [![Electron](https://img.shields.io/badge/Electron-33.0-47848F.svg)](https://www.electronjs.org/)
 [![Next.js](https://img.shields.io/badge/Next.js-14.2-black.svg)](https://nextjs.org/)
+[![Docker](https://img.shields.io/badge/Docker-Compose-2496ED.svg)](https://www.docker.com/)
 [![Drizzle ORM](https://img.shields.io/badge/Drizzle_ORM-SQLite-C5F74F.svg)](https://orm.drizzle.team/)
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-3.4-38BDF8.svg)](https://tailwindcss.com/)
 [![pnpm Workspace](https://img.shields.io/badge/pnpm-Monorepo-F69220.svg)](https://pnpm.io/)
@@ -19,10 +20,19 @@ Sisteme girilen her iş eylemi arka planda şu mimari sırayla kaydedilir:
 
 $$\text{İşlem} \longrightarrow \text{Belge (Document)} \longrightarrow \text{Borç Hesabı (+) \& Alacak Hesabı (-)} \longrightarrow \text{Muhasebe Hareketi} \longrightarrow \text{Cari / Kasa / Banka Bakiyesi}$$
 
-1. **İşlem Girişi**: Kullanıcı *"ABC Mobilya'ya 10.000 TL Satış Yap"* der.
-2. **Belge Kaydı**: `documents` tablosunda `SAT-2026-00001` evrak numaralı belge oluşur.
-3. **Çift Taraflı Fiş**: `journal_entries` ve `journal_items` tablolarında `120.001` (Borç: 10.000 TL) ve `600.01` (Alacak: 10.000 TL) satırları yazılır.
-4. **Canlı Bakiye**: Müşteri cari bakiyesi `SUM(Borç) - SUM(Alacak)` SQL toplamıyla canlı güncellenir.
+---
+
+## 🐳 Docker ile Otomatik Yedekleme Servisi (`docker-compose.yml`)
+
+Masaüstü yerel yedeklemeye ek olarak, web/sunucu ortamında **Docker tabanlı otomatik günlük `.cari` yedekleme servisi** sunulmuştur:
+
+- `cari-finance-web`: Next.js web / API sunucusu (`:3000`)
+- `cari-finance-backup`: Her gün gece 00:00'da veritabanının `.cari` formatında yedeğini alan ve 30 günden eski yedekleri otomatik temizleyen Docker hacim konteyneri.
+
+```bash
+# Docker konteynerlerini başlatma (Web + Otomatik Otomatik Yedekleme)
+docker-compose up -d --build
+```
 
 ---
 
@@ -33,34 +43,22 @@ $$\text{İşlem} \longrightarrow \text{Belge (Document)} \longrightarrow \text{B
 - 💵 **Kasa & Banka Yönetimi**: Nakit TL kasaları, banka hesapları, gelen/giden havaleler ve hesaplar arası virman/transferler.
 - 👤 **Ortak İşlemleri**: Şirket ortaklarının işletmeye koyduğu fonlar veya işletmeden yaptığı para çekişlerinin şeffaf takibi.
 - 📄 **Kurumsal Antetli PDF & Excel Raporlama**: Şirket logonuz ve bilgilerinizi içeren antetli PDF dökümleri, mizan ve muavin hesap özetleri.
-- 💾 **Özel `.cari` Şirket Dosya Formatı**: Veritabanınızı tek tıkla `.cari` dosyası olarak yedekleme ve geri yükleme.
+- 💾 **Özel `.cari` Şirket Dosya Formatı & Docker Backup**: Veritabanınızı hem masaüstünden hem Docker konteynerinden otomatik yedekleme.
 - 📅 **Bütçe & Mali Yıl Filtreleme ($N, N-1 \dots N-5$)**: Cari yıl ve 5 yıl geriye dönük mali dönem filtrelemesi.
 - 🌓 **Aydınlık / Karanlık Tema**: Tek tıkla göz yormayan Light ve Dark tema geçişi.
 
 ---
 
-## 📊 Raporlama & Defter Hiyerarşisi
-
-- **İşletme Raporları**:
-  - 👥 Müşteri Cari Ekstresi
-  - 🚚 Tedarikçi Cari Ekstresi
-  - 💵 Kasa & Banka Raporu
-  - ⚡ Gelir - Gider Özeti
-- **Gelişmiş & Yönetici Alanı**:
-  - 📊 Mizan (Geçici & Kesin)
-  - 📖 Defter-i Kebir & Muavin
-  - 📜 Yevmiye Fiş Listesi
-
----
-
 ## 🏛️ Monorepo Mimari Yapısı
-
-Masaüstü öncelikli monorepo mimarisi:
 
 ```
 cari-finance-desktop/
 ├── pnpm-workspace.yaml               # Monorepo paket tanım dosyası
 ├── package.json                      # Kök dizin komutları
+├── Dockerfile                        # Multi-stage Next.js & Web Docker image
+├── docker-compose.yml                # Web App + Automatic Backup Volume Container
+├── scripts/
+│   └── docker-backup.sh              # 24 saatlik otomatik SQLite / .cari yedekleme betiği
 │
 ├── apps/
 │   ├── desktop/                      # (@cari-finance/desktop) Electron 33 + React Masaüstü Uygulaması (Ana Hedef)

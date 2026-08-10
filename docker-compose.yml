@@ -15,5 +15,15 @@ services:
     volumes:
       - cari_finance_data:/app/data
 
+  cari-finance-backup:
+    image: alpine:latest
+    container_name: cari_finance_backup
+    restart: always
+    volumes:
+      - cari_finance_data:/app/data
+      - ./backups:/app/backups
+      - ./scripts/docker-backup.sh:/app/docker-backup.sh:ro
+    entrypoint: ["/bin/sh", "-c", "chmod +x /app/docker-backup.sh && while true; do /app/docker-backup.sh; sleep 86400; done"]
+
 volumes:
   cari_finance_data:
