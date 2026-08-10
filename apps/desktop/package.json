@@ -1,6 +1,6 @@
 {
   "name": "@cari-finance/desktop",
-  "version": "1.0.1",
+  "version": "1.0.0-beta.1",
   "type": "module",
   "description": "Mutfak Dolabı & Mobilya İmalatı Cari Hesap ve Kasa Takip Masaüstü Uygulaması",
   "main": "dist-electron/main.js",
@@ -20,7 +20,12 @@
     },
     "files": [
       "dist/**/*",
-      "dist-electron/**/*"
+      "dist-electron/**/*",
+      "package.json"
+    ],
+    "asar": true,
+    "asarUnpack": [
+      "**/*.node"
     ],
     "win": {
       "target": [
