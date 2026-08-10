@@ -1,284 +1,301 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { Settings, Shield, HardDrive, Building, Save, CheckCircle2, Lock, Sun, Moon, Sparkles } from 'lucide-react';
+import {
+  Settings as SettingsIcon,
+  Building,
+  Save,
+  Database,
+  Download,
+  Upload,
+  CheckCircle2,
+  Lock,
+  Moon,
+  Sun,
+  ShieldAlert,
+} from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { Badge } from '@/components/ui/badge';
+import { CompanyLogo, LOGO_OPTIONS } from '@/components/common/CompanyLogo';
 import { useUIStore } from '@/stores/ui.store';
-import { LOGO_OPTIONS } from '@/components/common/CompanyLogo';
 import { clsx } from 'clsx';
 
 export const SettingsPage: React.FC = () => {
   const queryClient = useQueryClient();
-  const { setCompanyName, companyLogoIcon, setCompanyLogoIcon, theme, toggleTheme } = useUIStore();
+  const {
+    theme,
+    toggleTheme,
+    companyName,
+    companyLogoIcon,
+    setCompanyName,
+    setCompanyLogoIcon,
+  } = useUIStore();
 
-  const [companyNameInput, setCompanyNameInput] = useState('');
-  const [selectedIcon, setSelectedIcon] = useState(companyLogoIcon || 'building');
+  const [nameInput, setNameInput] = useState(companyName || '');
   const [taxNumber, setTaxNumber] = useState('');
   const [address, setAddress] = useState('');
   const [phone, setPhone] = useState('');
-  const [pinCode, setPinCode] = useState('');
+  const [selectedIcon, setSelectedIcon] = useState(companyLogoIcon || 'corporate');
   const [savedSuccess, setSavedSuccess] = useState(false);
 
-  const { data: settings } = useQuery({
+  const { data: dbSettings } = useQuery({
     queryKey: ['settings'],
-    queryFn: () => window.api.auth.getSettings(),
-  });
-
-  useEffect(() => {
-    if (settings) {
-      setCompanyNameInput(settings.companyName || 'Genel Cari & Kasa Takibi (Demo/Beta)');
-      setTaxNumber(settings.taxNumber || '');
-      setAddress(settings.address || '');
-      setPhone(settings.phone || '');
-      setPinCode(settings.pinCode || '');
-      if (settings.companyName) {
-        setCompanyName(settings.companyName);
+    queryFn: async () => {
+      const data = await window.api.auth.getSettings();
+      if (data) {
+        if (data.companyName) {
+          setNameInput(data.companyName);
+          setCompanyName(data.companyName);
+        }
+        if (data.taxNumber) setTaxNumber(data.taxNumber);
+        if (data.address) setAddress(data.address);
+        if (data.phone) setPhone(data.phone);
       }
-    }
-  }, [settings, setCompanyName]);
+      return data;
+    },
+  });
 
   const updateSettingsMutation = useMutation({
     mutationFn: (payload: any) => window.api.auth.updateSettings(payload),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['settings'] });
-      setCompanyName(companyNameInput);
+      setCompanyName(nameInput);
       setCompanyLogoIcon(selectedIcon);
       setSavedSuccess(true);
       setTimeout(() => setSavedSuccess(false), 3000);
     },
   });
 
+  const handleSaveCompanyInfo = (e: React.FormEvent) => {
+    e.preventDefault();
+    updateSettingsMutation.mutate({
+      companyName: nameInput,
+      taxNumber,
+      address,
+      phone,
+    });
+  };
+
   const handleBackupExport = async () => {
     try {
       const res = await window.api.backup.export();
-      if (res.success && res.filePath) {
-        alert(`Cari Finance Şirket Dosyası (.cari) kaydedildi:\n${res.filePath}`);
+      if (res.success) {
+        alert(`Yedekleme Başarılı!\nDosya Konumu: ${res.filePath}`);
       }
-    } catch (err) {
-      alert((err as Error).message);
+    } catch (err: any) {
+      alert(`Yedekleme Hatası: ${err.message}`);
     }
   };
 
   const handleBackupImport = async () => {
-    if (confirm('DİKKAT! Seçtiğiniz .cari şirket dosyası mevcut verilerin üzerine yazılacaktır. Devam etmek istiyor musunuz?')) {
+    if (confirm('DİKKAT! Yedekten geri yükleme yapıldığında mevcut veriler ezilecektir. Devam etmek istiyor musunuz?')) {
       try {
         const res = await window.api.backup.import();
         if (res.success) {
-          alert('Şirket dosyası (.cari) başarıyla geri yüklendi.');
+          alert('Veritabanı yedekten başarıyla yüklendi! Sayfa yenileniyor...');
           window.location.reload();
         }
-      } catch (err) {
-        alert((err as Error).message);
+      } catch (err: any) {
+        alert(`Geri Yükleme Hatası: ${err.message}`);
       }
     }
   };
 
-  const handleSave = (e: React.FormEvent) => {
-    e.preventDefault();
-    updateSettingsMutation.mutate({
-      companyName: companyNameInput,
-      taxNumber,
-      address,
-      phone,
-      pinCode: pinCode.trim() || null,
-    });
-  };
-
   return (
-    <div className="space-y-6 max-w-4xl">
+    <div className="space-y-6 max-w-5xl">
+      {/* Top Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <h1 className="text-2xl font-bold tracking-tight text-slate-900 dark:text-white flex items-center gap-2.5">
-            <Settings className="w-6 h-6 text-sky-500" />
-            Firma Ayarları, İkon & Temalar
+            <SettingsIcon className="w-6 h-6 text-sky-500" />
+            Sistem & Şirket Ayarları
           </h1>
           <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
-            Genel özel firma muhasebesi ünvanı, logo/ikon seçimi, tema modu, güvenlik PIN kodu ve .cari dosya yönetimi.
+            Firma unvanı, vektörel kurumsal logo seçimi, veritabanı `.cari` yedekleme ve görünüm teması.
           </p>
         </div>
 
         {savedSuccess && (
-          <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-emerald-500/10 border border-emerald-500/30 text-emerald-600 dark:text-emerald-400 text-xs font-semibold">
-            <CheckCircle2 className="w-4 h-4" />
-            Firma ayarları ve logosu güncellendi!
-          </div>
+          <Badge variant="success" className="gap-1 animate-pulse py-1 px-3">
+            <CheckCircle2 className="w-4 h-4" /> Değişiklikler Kaydedildi!
+          </Badge>
         )}
       </div>
 
-      <form onSubmit={handleSave} className="space-y-6">
-        {/* Tema Ayarı */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-base font-bold flex items-center gap-2">
-              {theme === 'dark' ? <Moon className="w-4 h-4 text-sky-400" /> : <Sun className="w-4 h-4 text-amber-500" />}
-              Görünüm Tema Modu (Dark / Light)
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-            <div>
-              <p className="text-sm font-semibold text-slate-700 dark:text-slate-200">
-                Mevcut Tema: <span className="text-sky-600 dark:text-sky-400 font-bold capitalize">{theme === 'dark' ? 'Karanlık Mod (Dark)' : 'Aydınlık Mod (Light)'}</span>
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        {/* Left Column (2 cols): Company Profile & Logo Selector */}
+        <div className="md:col-span-2 space-y-6">
+          {/* Company Profile Card */}
+          <Card>
+            <CardHeader className="border-b border-slate-200 dark:border-slate-800 pb-4">
+              <CardTitle className="text-base font-bold flex items-center gap-2">
+                <Building className="w-4 h-4 text-sky-500" />
+                Firma Bilgileri & Kurumsal Ünvan
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="pt-4">
+              <form onSubmit={handleSaveCompanyInfo} className="space-y-4">
+                <div>
+                  <label className="text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1 block">
+                    Firma Unvanı (Ekstre ve Raporlarda Çıkar) *
+                  </label>
+                  <Input
+                    required
+                    placeholder="Örn: ABC Mobilya İmalat Sanayi Ltd. Şti."
+                    value={nameInput}
+                    onChange={(e) => setNameInput(e.target.value)}
+                  />
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div>
+                    <label className="text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1 block">Vergi Dairesi / No</label>
+                    <Input
+                      placeholder="İnegöl V.D. / 1234567890"
+                      value={taxNumber}
+                      onChange={(e) => setTaxNumber(e.target.value)}
+                    />
+                  </div>
+
+                  <div>
+                    <label className="text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1 block">Telefon / İletişim</label>
+                    <Input
+                      placeholder="0224 715 00 00"
+                      value={phone}
+                      onChange={(e) => setPhone(e.target.value)}
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <label className="text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1 block">Fabrika / Adres Bilgisi</label>
+                  <Input
+                    placeholder="Organize Sanayi Bölgesi 4. Cadde No: 18 İnegöl / BURSA"
+                    value={address}
+                    onChange={(e) => setAddress(e.target.value)}
+                  />
+                </div>
+
+                <div className="flex justify-end pt-2">
+                  <Button type="submit" disabled={updateSettingsMutation.isPending} className="gap-2 text-xs font-semibold">
+                    <Save className="w-4 h-4" />
+                    {updateSettingsMutation.isPending ? 'Kaydediliyor...' : 'Firma Bilgilerini Kaydet'}
+                  </Button>
+                </div>
+              </form>
+            </CardContent>
+          </Card>
+
+          {/* Vektörel Kurumsal Logo Seçimi */}
+          <Card>
+            <CardHeader className="border-b border-slate-200 dark:border-slate-800 pb-4">
+              <CardTitle className="text-base font-bold">Vektörel Kurumsal Logo Simgesi</CardTitle>
+            </CardHeader>
+            <CardContent className="pt-4 space-y-3">
+              <p className="text-xs text-slate-500 dark:text-slate-400">
+                Sektörünüze uygun vektörel amblem seçin. Seçilen logo yan menüde ve üst başlıkta görüntülenecektir:
               </p>
-              <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">Aydınlık veya karanlık tema seçimi.</p>
-            </div>
 
-            <Button type="button" onClick={toggleTheme} variant="outline" className="gap-2 shrink-0">
-              {theme === 'dark' ? <Sun className="w-4 h-4 text-amber-400" /> : <Moon className="w-4 h-4 text-sky-400" />}
-              {theme === 'dark' ? 'Aydınlık Moda Geç' : 'Karanlık Moda Geç'}
-            </Button>
-          </CardContent>
-        </Card>
-
-        {/* Firma Amblem & İkon Seçimi */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-base font-bold flex items-center gap-2">
-              <Sparkles className="w-4 h-4 text-sky-500" />
-              Firma Logo & Amblem İkonu Seçimi
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-3">
-            <p className="text-xs text-slate-500 dark:text-slate-400">
-              Sektörünüze veya firmanıza uygun logoyu seçin. Seçilen ikon menüde ve üst başlıkta görüntülenecektir:
-            </p>
-
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-1">
-              {LOGO_OPTIONS.map((opt) => {
-                const IconComponent = opt.icon;
-                const isSelected = selectedIcon === opt.id;
-                return (
-                  <button
-                    key={opt.id}
-                    type="button"
-                    onClick={() => {
-                      setSelectedIcon(opt.id);
-                      setCompanyLogoIcon(opt.id);
-                    }}
-                    className={clsx(
-                      'flex items-center gap-2.5 p-3 rounded-xl border text-left transition-all',
-                      isSelected
-                        ? 'bg-sky-500/10 dark:bg-sky-600/20 border-sky-500 text-sky-600 dark:text-sky-400 font-bold shadow-sm'
-                        : 'border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800/60'
-                    )}
-                  >
-                    <div className="p-2 rounded-lg bg-gradient-to-tr from-sky-600 to-cyan-500 text-white shrink-0 shadow-sm">
-                      <IconComponent className="w-4 h-4" />
-                    </div>
-                    <span className="text-xs font-semibold leading-tight truncate">{opt.label}</span>
-                  </button>
-                );
-              })}
-            </div>
-          </CardContent>
-        </Card>
-
-        {/* Firma Bilgileri */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-base font-bold flex items-center gap-2">
-              <Building className="w-4 h-4 text-sky-500" />
-              Firma Ünvan & Sektör Bilgileri
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <div>
-              <label className="text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1 block">Firma Adı / Ünvanı *</label>
-              <Input
-                required
-                value={companyNameInput}
-                onChange={(e) => setCompanyNameInput(e.target.value)}
-                placeholder="Örn: ABC Ticaret & İmalat San. Ltd. Şti."
-              />
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
-                <label className="text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1 block">Vergi Numarası / Dairesi</label>
-                <Input
-                  value={taxNumber}
-                  onChange={(e) => setTaxNumber(e.target.value)}
-                  placeholder="1234567890"
-                />
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
+                {LOGO_OPTIONS.map((opt) => {
+                  const isSelected = selectedIcon === opt.id;
+                  return (
+                    <button
+                      key={opt.id}
+                      type="button"
+                      onClick={() => {
+                        setSelectedIcon(opt.id);
+                        setCompanyLogoIcon(opt.id);
+                      }}
+                      className={clsx(
+                        'flex items-center gap-3 p-3 rounded-xl border text-left transition-all',
+                        isSelected
+                          ? 'bg-sky-500/10 dark:bg-sky-600/20 border-sky-500 text-sky-600 dark:text-sky-400 font-bold shadow-sm'
+                          : 'border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800/60'
+                      )}
+                    >
+                      <CompanyLogo icon={opt.id} className="h-8 w-8 rounded-lg bg-gradient-to-tr from-sky-600 to-cyan-500 text-white shrink-0 shadow-sm" />
+                      <span className="text-xs font-semibold truncate">{opt.label}</span>
+                    </button>
+                  );
+                })}
               </div>
-              <div>
-                <label className="text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1 block">Telefon</label>
-                <Input
-                  value={phone}
-                  onChange={(e) => setPhone(e.target.value)}
-                  placeholder="0212 500 00 00"
-                />
-              </div>
-            </div>
-
-            <div>
-              <label className="text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1 block">Fabrika / İmalathane / Adres</label>
-              <Input
-                value={address}
-                onChange={(e) => setAddress(e.target.value)}
-                placeholder="Organize Sanayi Bölgesi 4. Cadde No: 18"
-              />
-            </div>
-          </CardContent>
-        </Card>
-
-        {/* Giriş Şifresi / PIN Kilidi */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-base font-bold flex items-center gap-2">
-              <Lock className="w-4 h-4 text-amber-500" />
-              Uygulama Giriş Şifresi (PIN Kodu)
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-3">
-            <p className="text-xs text-slate-500 dark:text-slate-400">
-              Uygulama kilitlendiğinde istenen güvenlik PIN kodunu belirleyin. Boş bırakırsanız şifresiz açılır.
-            </p>
-            <div className="w-full sm:w-64">
-              <Input
-                type="password"
-                maxLength={8}
-                value={pinCode}
-                onChange={(e) => setPinCode(e.target.value)}
-                placeholder="Örn: 1234"
-                className="font-mono text-base tracking-widest"
-              />
-            </div>
-          </CardContent>
-        </Card>
-
-        {/* Veritabanı Yedekleme & Geri Yükleme (.cari) */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-base font-bold flex items-center gap-2">
-              <HardDrive className="w-4 h-4 text-emerald-500" />
-              Özel .cari Şirket Dosyası Yönetimi
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <p className="text-xs text-slate-500 dark:text-slate-400">
-              Firma verilerinizi <strong>.cari</strong> şirket dosyası olarak kaydedebilir veya başka bir bilgisayardan alınan <strong>.cari</strong> dosyasını geri yükleyebilirsiniz.
-            </p>
-            <div className="flex flex-wrap gap-4 pt-2">
-              <Button type="button" onClick={handleBackupExport} variant="success" className="gap-2">
-                <HardDrive className="w-4 h-4" />
-                Şirket Dosyasını (.cari) Kaydet
-              </Button>
-              <Button type="button" onClick={handleBackupImport} variant="outline" className="gap-2">
-                <Shield className="w-4 h-4" />
-                .cari Dosyası Yükle
-              </Button>
-            </div>
-          </CardContent>
-        </Card>
-
-        <div className="flex justify-end pt-2">
-          <Button type="submit" variant="default" size="lg" className="gap-2 px-8">
-            <Save className="w-4 h-4" />
-            Firma Ayarlarını Kaydet
-          </Button>
+            </CardContent>
+          </Card>
         </div>
-      </form>
+
+        {/* Right Column (1 col): Backup, Restore & Theme */}
+        <div className="space-y-6">
+          {/* Appearance / Theme Card */}
+          <Card>
+            <CardHeader>
+              <CardTitle className="text-base font-bold">Görünüm & Tema</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-3">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-xs font-bold text-slate-900 dark:text-white">Uygulama Teması</p>
+                  <p className="text-[11px] text-slate-500 dark:text-slate-400">Light / Dark göz koruma modu</p>
+                </div>
+
+                <Button variant="outline" size="sm" onClick={toggleTheme} className="gap-2 text-xs">
+                  {theme === 'dark' ? (
+                    <>
+                      <Sun className="w-4 h-4 text-amber-500" />
+                      Aydınlık
+                    </>
+                  ) : (
+                    <>
+                      <Moon className="w-4 h-4 text-sky-500" />
+                      Karanlık
+                    </>
+                  )}
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Backup & Restore Card */}
+          <Card className="border-sky-500/30">
+            <CardHeader className="pb-3">
+              <CardTitle className="text-base font-bold flex items-center gap-2">
+                <Database className="w-4 h-4 text-sky-500" />
+                Özel `.cari` Veritabanı Yedeği
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-3">
+              <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">
+                Tüm cari hesap hareketlerinizi tek tıkla şifreli <strong>.cari</strong> dosyası olarak bilgisayarınıza indirebilir veya geri yükleyebilirsiniz.
+              </p>
+
+              <div className="space-y-2 pt-2">
+                <Button variant="default" onClick={handleBackupExport} className="w-full gap-2 text-xs font-semibold">
+                  <Download className="w-4 h-4" />
+                  Yedek Al (.cari İndir)
+                </Button>
+
+                <Button variant="outline" onClick={handleBackupImport} className="w-full gap-2 text-xs text-amber-500 border-amber-500/30 hover:bg-amber-500/10">
+                  <Upload className="w-4 h-4" />
+                  Yedekten Geri Yükle
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Security Banner */}
+          <Card className="bg-slate-900 text-white border-slate-800">
+            <CardContent className="p-4 space-y-2">
+              <div className="flex items-center gap-2 text-sky-400 font-bold text-xs">
+                <Lock className="w-4 h-4" /> Güvenlik & Yerel SQLite
+              </div>
+              <p className="text-[11px] text-slate-400 leading-relaxed">
+                Verileriniz yerel bilgisayarınızda SQLite veritabanında saklanır. Şifreli bulut senkronizasyonu veya PIN koruması açıktır.
+              </p>
+            </CardContent>
+          </Card>
+        </div>
+      </div>
     </div>
   );
 };
