@@ -2,6 +2,8 @@
 
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.6-blue.svg)](https://www.typescriptlang.org/)
 [![Electron](https://img.shields.io/badge/Electron-33.0-47848F.svg)](https://www.electronjs.org/)
+[![Next.js](https://img.shields.io/badge/Next.js-15_%2F_16_Latest-black.svg)](https://nextjs.org/)
+[![React](https://img.shields.io/badge/React-19-61DAFB.svg)](https://react.dev/)
 [![Pulumi](https://img.shields.io/badge/Pulumi-IaC-8A3391.svg)](https://www.pulumi.com/)
 [![Docker](https://img.shields.io/badge/Docker-Compose-2496ED.svg)](https://www.docker.com/)
 [![Drizzle ORM](https://img.shields.io/badge/Drizzle_ORM-SQLite-C5F74F.svg)](https://orm.drizzle.team/)
@@ -9,6 +11,21 @@
 [![pnpm Workspace](https://img.shields.io/badge/pnpm-Monorepo-F69220.svg)](https://pnpm.io/)
 
 **Cari & Kasa Finance**, işletmeler, imalathaneler, perakende ve hizmet sektörleri için tasarlanmış; karmaşık muhasebe terimlerinden arındırılmış **Pratik Cari, Kasa, Banka ve İşletme Finans Takip Sistemi**dir.
+
+---
+
+## 🏗️ Next.js 15/16 & React 19 Güncelleme Adımları
+
+Web katmanı (`apps/web`) en güncel Next.js & React 19 sürüm mimarisine uyarlanmıştır:
+
+```bash
+# Next.js 15/16 & React 19 Bağımlılık Yükseltmesi
+cd apps/web
+pnpm add next@latest react@rc react-dom@rc
+
+# Codemod Otomatik Yükseltme Betiği
+npx @next/codemod@canary upgrade latest
+```
 
 ---
 
@@ -37,7 +54,7 @@ Terminalde uzun komutlar yazmak yerine `make` veya `pnpm` kısayolları kullanı
 | `make package` veya `pnpm package` | Windows `.exe` kurucu paketini oluşturur. |
 | `make docker-up` veya `pnpm docker:up` | Docker servislerini arka planda başlatır. |
 | `make docker-backup` veya `pnpm docker:backup` | Otomatik `.cari` veritabanı yedeği alır. |
-| `make pulumi-up` | Pulumi IaC altyapısını dağıtır. |
+| `make pulumi-up` veya `pnpm pulumi:up` | Pulumi IaC altyapısını canlıya alır. |
 
 ---
 
@@ -60,7 +77,7 @@ Terminalde uzun komutlar yazmak yerine `make` veya `pnpm` kısayolları kullanı
 cari-finance-desktop/
 ├── Makefile                          # Terminal kısayol görev çalıştırıcısı (Task Runner)
 ├── package.json                      # Kök dizin komutları & Docker kısayolları
-├── Dockerfile                        # Multi-stage Next.js & Web Docker image
+├── Dockerfile                        # Multi-stage Next.js 15/16 & Web Docker image
 ├── docker-compose.yml                # Web App + Automatic Backup Volume Container
 ├── infra/                            # Pulumi Infrastructure as Code (IaC) TypeScript Stack
 │   ├── Pulumi.yaml
@@ -70,7 +87,7 @@ cari-finance-desktop/
 │
 ├── apps/
 │   ├── desktop/                      # (@cari-finance/desktop) Electron 33 + React Masaüstü Uygulaması (Ana Hedef)
-│   └── web/                          # (@cari-finance/web) Next.js 14 Web / API Katmanı
+│   └── web/                          # (@cari-finance/web) Next.js 15 / 16 + React 19 Web Katmanı
 │
 └── packages/
     ├── domain/                       # (@cari-finance/domain) Saf Finans Mantığı & Tip Tanımları

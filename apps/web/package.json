@@ -1,6 +1,6 @@
 {
   "name": "@cari-finance/web",
-  "version": "1.0.0",
+  "version": "1.0.0-beta.1",
   "private": true,
   "scripts": {
     "dev": "next dev",
@@ -10,9 +10,11 @@
   "dependencies": {
     "@cari-finance/db": "workspace:*",
     "@cari-finance/domain": "workspace:*",
-    "next": "^14.2.15",
+    "next": "^15.0.3",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
+    "client-only": "^0.0.1",
+    "server-only": "^0.0.1",
     "lucide-react": "^0.453.0"
   },
   "devDependencies": {

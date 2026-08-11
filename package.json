@@ -1,6 +1,6 @@
 {
   "name": "cari-finance-workspace",
-  "version": "1.0.0-beta.1",
+  "version": "1.0.0-beta.2",
   "private": true,
   "scripts": {
     "dev": "pnpm --filter @cari-finance/desktop dev",
@@ -26,5 +26,9 @@
       "electron",
       "esbuild"
     ]
+  },
+  "dependencies": {
+    "client-only": "^0.0.1",
+    "server-only": "^0.0.1"
   }
 }
